@@ -32,6 +32,7 @@ class Ball{
     public:
         void update_position();
         void collision();
+        Point get_position();
 
 };
 
