@@ -9,5 +9,6 @@ class Paddle{
     public: 
         void update_position();
         void collision();
+        Point get_position();
 
 };
