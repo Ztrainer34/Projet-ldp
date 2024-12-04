@@ -1,38 +1,44 @@
 #include <allegro5/allegro5.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_ttf.h>
-#include <allegro5/bitmap.h>
 #include <allegro5/color.h>
-#include <allegro5/display.h>
-#include <allegro5/drawing.h>
-#include <allegro5/events.h>
-#include <allegro5/keyboard.h>
-#include <allegro5/keycodes.h>
-#include <allegro5/mouse.h>
-#include <allegro5/system.h>
-#include <allegro5/timer.h>
-#include <allegro5/transformations.h>
+#include "Point.h"
 
-struct Point
-{
-    float x;
-    float y;
-};
-
-class Ball{
+class Ball : public virtual Drawable  {
     Point position;
-    const ALLEGRO_COLOR COLOR_RED  = al_map_rgb(255, 0, 0);
-    
+    const ALLEGRO_COLOR COLOR_RED = al_map_rgb(255, 0, 0);
     int speed;
-    int radius;
-    Ball(float x, float y, int speed, int radius) : position{x,y},speed(speed),
-     radius(radius), COLOR_RED(COLOR_RED){};
+    float radius;
 
-    public:
-        void update_position();
-        void collision();
+public:
+    Ball(float x, float y, int speed, float radius)
+        : position{x, y}, speed(speed), radius(radius) {}
 
+    // Update the ball's position
+    void update_position() {
+        // Logic to update position based on speed or other parameters
+    }
+
+    // Handle collisions
+    void collision() {
+        // Logic to handle collisions
+    }
+
+    // Getters and Setters for position
+    Point getPosition() const {
+        return position;
+    }
+
+    void setPosition(float x, float y) {
+        position.x = x;
+        position.y = y;
+    }
+
+    void setPosition(const Point& new_position) {
+        position = new_position;
+    }
+
+    // Getter and Setter for radius
+    float getRadius() const {
+        return radius;
+    }
 };
-
 
