@@ -14,6 +14,8 @@
 #include <allegro5/timer.h>
 #include <allegro5/transformations.h>
 
+#include "color.h"
+
 struct Point
 {
     float x;
@@ -21,19 +23,33 @@ struct Point
 };
 
 class Ball{
-    Point position;
-    const ALLEGRO_COLOR COLOR_RED  = al_map_rgb(255, 0, 0);
-    
-    int speed;
-    int radius;
-    Ball(float x, float y, int speed, int radius) : position{x,y},speed(speed),
-     radius(radius), COLOR_RED(COLOR_RED){};
+    Point center_;
+    float speed_;
+    int radius_;
+    ALLEGRO_COLOR frameColor_;
+    ALLEGRO_COLOR fillColor_;
 
     public:
-        void update_position();
-        void collision();
-        Point get_position();
+        Ball(Point center, float speed, int radius, 
+            ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor );
+        void update_position(); // to do
+        void collision();  // a faire
+        Point get_position();  // jsp si on a besoin
+        void draw();
 
 };
+
+Ball::Ball(Point center, float speed, int radius,
+ ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor) : center_{center},speed_{speed},
+     radius_{radius},frameColor_{frameColor}, fillColor_{fillColor} {};
+
+void Ball::draw(){
+
+    al_draw_filled_circle(center_.x, center_.y, radius_, fillColor_);
+    
+    al_draw_circle(center_.x, center_.y, radius_, frameColor_, 1);
+}
+
+
 
 
