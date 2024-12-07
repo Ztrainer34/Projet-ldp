@@ -4,26 +4,32 @@
 #include "Drawable.h"
 #include "Point.h"
 #include <allegro5/allegro_color.h>
+#include "paddle.h"
+struct speed {
+    float speed_x;
+    float speed_y;
+};
+
 
 class Ball : public virtual Drawable {
 private:
     Point position;           // Position of the ball
-    float speed;              // Speed of the ball
+    speed speed_;            // Speed of the ball
     float radius;             // Radius of the ball
     ALLEGRO_COLOR frameColor; // Color of the ball's border
     ALLEGRO_COLOR fillColor;  // Color of the ball's fill
 
 public:
     // Constructor
-    Ball(float x, float y, float speed, float radius,
+    Ball(float x, float y, float speed_x, float speed_y, float radius,
          ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor);
 
     // Update the ball's position
     void update_position();
 
     // Handle collisions (to be implemented)
-    void collision();
-
+    void handle_paddle_collision(float paddleX, float paddleWidth);
+    bool is_touching(Paddle& paddle) const;
     // Getters and Setters for position
     Point getPosition() const;
     void setPosition(const Point& new_position);
@@ -31,6 +37,7 @@ public:
     // Getter and Setter for radius
     float getRadius() const;
     void setRadius(float new_radius);
+    speed getspeed() const;
 
     // Draw the ball
     void draw() override;
