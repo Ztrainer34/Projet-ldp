@@ -37,4 +37,3 @@ void Block::setVisibility(bool visibility) {
 Size Block::getSize() const {
     return size_block;
 }
-
