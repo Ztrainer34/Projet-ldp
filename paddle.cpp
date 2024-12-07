@@ -1,36 +1,46 @@
+#ifndef BALL_H
+#define BALL_H
+
+#include "Drawable.h"
+#include "Point.h"
+#include <allegro5/allegro_color.h>
 #include "paddle.h"
-#include <allegro5/allegro_primitives.h>
-
-Paddle::Paddle(float x, float y, float speed, float width, float height,
-               ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor)
-    : center_{ x,y }, speed_{speed}, size_{width, height},
-      frameColor_{frameColor}, fillColor_{fillColor} {}
-
-void Paddle::draw() {
-    float x1 = center_.x - size_.width / 2;  // left edge
-    float y1 = center_.y - size_.height / 2; // top edge
-    float x2 = center_.x + size_.width / 2;  // right edge
-    float y2 = center_.y + size_.height / 2; // bottom edge
-
-    al_draw_filled_rectangle(x1, y1, x2, y2, fillColor_);
-    al_draw_rectangle(x1, y1, x2, y2, frameColor_, 1);
-}
-
-void Paddle::update_position() {
-    // Placeholder logic to update position
-    // Actual update logic can be added based on paddle movement.
-}
-
-void Paddle::collision() {
-    // Placeholder collision handling logic
-}
-
-Point Paddle::get_position() {
-    return center_;
-}
-
-void Paddle::mouseMove(Point mouseLoc) {
-    // Placeholder logic for moving the paddle with the mouse
-}
+struct speed {
+    float speed_x;
+    float speed_y;
+};
 
 
+class Ball : public virtual Drawable {
+private:
+    Point position;           // Position of the ball
+    speed speed_;            // Speed of the ball
+    float radius;             // Radius of the ball
+    ALLEGRO_COLOR frameColor; // Color of the ball's border
+    ALLEGRO_COLOR fillColor;  // Color of the ball's fill
+
+public:
+    // Constructor
+    Ball(float x, float y, float speed_x, float speed_y, float radius,
+         ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor);
+
+    // Update the ball's position
+    void update_position();
+
+    // Handle collisions (to be implemented)
+    void handle_paddle_collision(float paddleX, float paddleWidth);
+    bool is_touching(Paddle& paddle) const;
+    // Getters and Setters for position
+    Point getPosition() const;
+    void setPosition(const Point& new_position);
+
+    // Getter and Setter for radius
+    float getRadius() const;
+    void setRadius(float new_radius);
+    speed getspeed() const;
+
+    // Draw the ball
+    void draw() override;
+};
+
+#endif // BALL_H
