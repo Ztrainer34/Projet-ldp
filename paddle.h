@@ -27,16 +27,17 @@ public:
     void draw() override;
 
     // Update position of the paddle
-    void update_position();
+    void update_position(Point &new_position);
 
     // Handle collisions (Placeholder logic)
     void collision();
 
     // Get the current position of the paddle
     Point get_position();
-
+    Size get_size();
     // Handle mouse movement for the paddle
-    void mouseMove(Point mouseLoc);
+    void move_left(float delta, float boundary_left);
+    void move_right(float delta, float boundary_right);
 };
 
 #endif // PADDLE_H
