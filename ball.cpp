@@ -2,7 +2,6 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_ttf.h>
-#include <allegro5/bitmap.h>
 #include <allegro5/color.h>
 #include <allegro5/display.h>
 #include <allegro5/drawing.h>
@@ -13,43 +12,61 @@
 #include <allegro5/system.h>
 #include <allegro5/timer.h>
 #include <allegro5/transformations.h>
+#include "Point.h" // Assuming "Point.h" exists and defines the Point class or struct
 
-#include "color.h"
+class Ball {
+    Point position;
+    float speed;
+    float radius;
+    ALLEGRO_COLOR frameColor;
+    ALLEGRO_COLOR fillColor;
 
-struct Point
-{
-    float x;
-    float y;
+public:
+    // Constructor
+    Ball(Point position, float speed, float radius,
+         ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor)
+         : position(position), speed(speed), radius(radius),
+           frameColor(frameColor), fillColor(fillColor) {}
+
+    // Update the ball's position
+    void update_position() {
+        // Placeholder logic to update position based on speed or other parameters
+        position.x += speed; // Example update, modify as needed
+        position.y += speed;
+    }
+
+    // Handle collisions
+    void collision() {
+        // Logic to handle collisions, to be implemented
+    }
+
+    // Getters and Setters for position
+    Point getPosition() const {
+        return position;
+    }
+
+    void setPosition(float x, float y) {
+        position.x = x;
+        position.y = y;
+    }
+
+    void setPosition(const Point& new_position) {
+        position = new_position;
+    }
+
+    // Getter and Setter for radius
+    float getRadius() const {
+        return radius;
+    }
+
+    void setRadius(float new_radius) {
+        radius = new_radius;
+    }
+
+    // Draw the ball
+    void draw() {
+        al_draw_filled_circle(position.x, position.y, radius, fillColor);
+        al_draw_circle(position.x, position.y, radius, frameColor, 1);
+    }
 };
-
-class Ball{
-    Point center_;
-    float speed_;
-    int radius_;
-    ALLEGRO_COLOR frameColor_;
-    ALLEGRO_COLOR fillColor_;
-
-    public:
-        Ball(Point center, float speed, int radius, 
-            ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor );
-        void update_position(); // to do
-        void collision();  // a faire
-        Point get_position();  // jsp si on a besoin
-        void draw();
-
-};
-
-Ball::Ball(Point center, float speed, int radius,
- ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor) : center_{center},speed_{speed},
-     radius_{radius},frameColor_{frameColor}, fillColor_{fillColor} {};
-
-void Ball::draw(){
-
-    al_draw_filled_circle(center_.x, center_.y, radius_, fillColor_);
-    
-    al_draw_circle(center_.x, center_.y, radius_, frameColor_, 1);
-}
-
-
-
 
