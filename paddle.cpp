@@ -30,7 +30,7 @@ public:
     Paddle(Point center, float speed, float width, float height, 
         ALLEGRO_COLOR frameColor = COLOR_BLACK, ALLEGRO_COLOR fillColor = COLOR_GREY);
     void draw() override {}
-    void update_position();
+    void update_position(int direction);
     void collision();
     Point get_position();
     void mouseMove(Point mouseLoc);
@@ -43,6 +43,12 @@ Paddle::Paddle(Point center, float speed, float width, float height,
 
 Point Paddle::get_position() {
     return center_;
+}
+
+void Paddle::update_position(int direction){
+    // direction 1 vers la droite
+    // direction -1 vers la gauche
+    center_.x += direction * speed_; 
 }
 
 void Paddle::draw() {
