@@ -1,9 +1,9 @@
-#ifndef INPUT_HPP
-#define INPUT_HPP
+#ifndef PADDLE_MOVEMENT_HPP
+#define PADDLE_MOVEMENT_HPP
 
 #include <allegro5/allegro.h>
 #include "object.hpp" // ou paddle.hpp
 
 void paddleMovement(ALLEGRO_EVENT event, Paddle &paddle);
 
-#endif // INPUT_HPP
+#endif // PADDLE_MOVEMENT_HPP
