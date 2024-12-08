@@ -5,6 +5,7 @@
 #include "Point.h"
 #include <allegro5/allegro_color.h>
 #include "paddle.h"
+#include "Block.h"
 struct speed {
     float speed_x;
     float speed_y;
@@ -33,11 +34,15 @@ public:
     // Getters and Setters for position
     Point getPosition() const;
     void setPosition(const Point& new_position);
-
+    void handle_screen_collision(float screen_width, float screen_height);
+    bool is_touching_screen_boundary(float screen_width, float screen_height) const;
+    void handle_brick_collision(Block& brick);
+    bool is_touching_brick(const Block& brick) const ;
     // Getter and Setter for radius
     float getRadius() const;
     void setRadius(float new_radius);
     speed getspeed() const;
+
 
     // Draw the ball
     void draw() override;
