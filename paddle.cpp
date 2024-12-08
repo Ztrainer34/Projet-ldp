@@ -1,46 +1,45 @@
-#ifndef BALL_H
-#define BALL_H
-
-#include "Drawable.h"
-#include "Point.h"
-#include <allegro5/allegro_color.h>
 #include "paddle.h"
-struct speed {
-    float speed_x;
-    float speed_y;
-};
+#include <allegro5/allegro_primitives.h>
+#include "algorithm"
+
+Paddle::Paddle(float x, float y, float speed, float width, float height,
+               ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor)
+    : center_{ x,y }, speed_{speed}, size_{width, height},
+      frameColor_{frameColor}, fillColor_{fillColor} {}
+
+void Paddle::draw() {
+    float x1 = center_.x - size_.width / 2;  // left edge
+    float y1 = center_.y - size_.height / 2; // top edge
+    float x2 = center_.x + size_.width / 2;  // right edge
+    float y2 = center_.y + size_.height / 2; // bottom edge
+
+    al_draw_filled_rectangle(x1, y1, x2, y2, fillColor_);
+    al_draw_rectangle(x1, y1, x2, y2, frameColor_, 1);
+}
+void Paddle::move_left(float delta, float boundary_left) {
+    center_.x = std::max(center_.x - speed_ * delta, boundary_left + size_.width / 2);
+
+}
+
+void Paddle::move_right(float delta, float boundary_right) {
+    center_.x = std::min(center_.x + speed_ * delta, boundary_right - size_.width / 2);
+}
+void Paddle::update_position(Point &new_position) {
 
 
-class Ball : public virtual Drawable {
-private:
-    Point position;           // Position of the ball
-    speed speed_;            // Speed of the ball
-    float radius;             // Radius of the ball
-    ALLEGRO_COLOR frameColor; // Color of the ball's border
-    ALLEGRO_COLOR fillColor;  // Color of the ball's fill
+}
 
-public:
-    // Constructor
-    Ball(float x, float y, float speed_x, float speed_y, float radius,
-         ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor);
+void Paddle::collision() {
+    // Placeholder collision handling logic
+}
 
-    // Update the ball's position
-    void update_position();
+Point Paddle::get_position() {
+    return center_;
+}
 
-    // Handle collisions (to be implemented)
-    void handle_paddle_collision(float paddleX, float paddleWidth);
-    bool is_touching(Paddle& paddle) const;
-    // Getters and Setters for position
-    Point getPosition() const;
-    void setPosition(const Point& new_position);
+Size Paddle:: get_size() {
+    return size_;
+}
 
-    // Getter and Setter for radius
-    float getRadius() const;
-    void setRadius(float new_radius);
-    speed getspeed() const;
 
-    // Draw the ball
-    void draw() override;
-};
 
-#endif // BALL_H
