@@ -150,4 +150,3 @@ void Ball::draw() {
     al_draw_filled_circle(position.x, position.y, radius, fillColor);
     al_draw_circle(position.x, position.y, radius, frameColor, 1);
 }
-
