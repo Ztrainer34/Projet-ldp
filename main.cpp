@@ -11,6 +11,8 @@
 
 int main() {
     // Set up Allegro
+    const float screen_width = 1120;
+    const float screen_height = 600;
     if (!al_init()) {
         fprintf(stderr, "Failed to initialize Allegro!\n");
         return -1;
@@ -32,7 +34,7 @@ int main() {
     }
 
     // Set up the display
-    ALLEGRO_DISPLAY* display = al_create_display(800, 600);
+    ALLEGRO_DISPLAY* display = al_create_display(screen_width, screen_height);
     if (!display) {
         fprintf(stderr, "Failed to create display!\n");
         return -1;
@@ -61,10 +63,24 @@ int main() {
     Ball ball(400, 300, 3.0, 3.0, 20, blue, red);
     Paddle paddle(400, 550, 300, 100, 20, blue, red);
 
+
+
+    const int rows = 8;               // Augmenter le nombre de lignes
+    const int cols = 14;              // Augmenter le nombre de colonnes
+    const float block_width = 70;     // Réduire la largeur des blocs
+    const float block_height = 20;    // Réduire la hauteur des blocs
+    const float spacing_x = 10;       // Espacement horizontal entre les blocs
+    const float spacing_y = 10;       // Espacement vertical entre les blocs
+    const float start_x = 50;         // Position initiale en X
+    const float start_y = 50;         // Position initiale en Y
+
+
     std::vector<std::shared_ptr<Block>> blocks;
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
-            blocks.push_back(std::make_shared<Block>(i * 160+5, j * 40 + 40, 150, 30, blue, red));
+    for (float i = 0; i < cols; ++i) {
+        for (float j = 0; j < rows; ++j) {
+            float x = start_x + i * (block_width + spacing_x)-45;
+            float y = start_y + j * (block_height + spacing_y);
+            blocks.push_back(std::make_shared<Block>(x, y, block_width, block_height, blue, red));
         }
     }
 
@@ -87,7 +103,7 @@ int main() {
                 paddle.move_left(1.0 / 60.0, 0);
             }
             if (move_right) {
-                paddle.move_right(1.0 / 60.0, 800);
+                paddle.move_right(1.0 / 60.0, screen_width - 1);
             }
 
             // Ball movement and collisions
@@ -98,8 +114,8 @@ int main() {
                 ball.update_position();
             }
 
-            if (ball.is_touching_screen_boundary(800, 600)) {
-                ball.handle_screen_collision(800, 600);
+            if (ball.is_touching_screen_boundary(screen_width, screen_height)) {
+                ball.handle_screen_collision(screen_width, screen_height);
             }
 
 
@@ -124,7 +140,7 @@ int main() {
 
             // Ensure the ball doesn't skip over blocks by adjusting its position
 
-            if (ball.getPosition().y > 600) { // Ball missed
+            if (ball.getPosition().y > screen_height) { // Ball missed
                 lives--;
                 ball.setPosition({400, 300});
 
