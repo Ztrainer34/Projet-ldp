@@ -6,9 +6,12 @@
 #include <vector>
 #include <memory>
 #include <cstdio>
+#include <unordered_map>
+
 #include "Ball.hpp"
 #include "Paddle.hpp"
 #include "Block.hpp"
+#include "Level.hpp"
 
 int main() {
     // Set up Allegro
@@ -68,11 +71,14 @@ int main() {
     ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
     
     Point ballPosition(400, 300);
-    Ball ball(ballPosition, 3.0, 3.0, 20, blue, COLOR_RED);
+    Ball ball(ballPosition, 3.0, 3.0, 20, blue, RED);
     
     Size paddleSize(100, 20);
     Point paddleCenter(400, 550);
-    Paddle paddle(paddleCenter, 300, paddleSize, COLOR_BLACK, COLOR_RED);
+    Paddle paddle(paddleCenter, 300, paddleSize, BLACK, RED);
+
+    Level level(Size(screen_width, screen_height), 8, 14, Size(70, 20), 10, 10);
+
 
     const int rows = 8;               // Augmenter le nombre de lignes
     const int cols = 14;              // Augmenter le nombre de colonnes
@@ -85,26 +91,27 @@ int main() {
 
     Size block_size(block_width, block_height);
 
-    std::vector<std::shared_ptr<Block>> blocks;
-    for (int i = 0; i < cols; ++i) {
-        for (int j = 0; j < rows; ++j) {
-            Point position(
-                start_x + i * (block_size.width + spacing_x) - 45,
-                start_y + j * (block_size.height + spacing_y)
-            );
-            blocks.push_back(std::make_shared<Block>(position, block_size, blue, red));
-        }
-    }
+    level.generate_blocks(); // genere les blocks
+    std::unordered_map<ALLEGRO_COLOR, int> colorPoints = {
+        {WHITE, 50},
+        {ORANGE, 60},
+        {CYAN, 70},
+        {GREEN, 80},
+        {RED, 90},
+        {BLUE, 100},
+        {MAGENTA, 110},
+        {YELLOW, 120}
+    };
 
     size_t score = 0;
     size_t lives = 3;
-    size_t total_blocks = blocks.size();
+    size_t total_blocks = level.get_blocks().size();
+
 
     al_start_timer(timer);
 
     bool running = true;
     bool move_left = false, move_right = false;
-    float checkPaddlePosition ;
 
     while (running) {
         ALLEGRO_EVENT ev;
@@ -134,12 +141,14 @@ int main() {
 
 
             // Check collisions with all blocks
-            for (auto& block : blocks) {
+            for (auto& block : level.get_blocks()) {
                 if (block->getVisibility() && ball.is_touching_brick(*block)) {
-
+                    
+                    ALLEGRO_COLOR blockColor = block->getColor();
+                    int blockValue = colorPoints[blockColor]; // recupere valeur du block
 
                     ball.handle_brick_collision(*block); // Adjust the velocity based on collision
-                    score += 10;
+                    score += blockValue;
                     total_blocks--;
                     ball.update_position();
 
@@ -179,7 +188,7 @@ int main() {
             ball.draw();
             paddle.draw(); //
 
-            for (const auto& block : blocks) {
+            for (const auto& block : level.get_blocks()) {
                 block->draw();
             }
 
@@ -217,7 +226,7 @@ int main() {
             if (mouseX > paddlePosition.x){
                 paddle.move_right(1.0 / 60.0, screen_width - 1);
             }
-            // si souris a gauche deplacer a gauce
+            // si souris a gauche deplacer a gauche
             else if (mouseX < paddlePosition.x) {
                 paddle.move_left(1.0 / 60.0, 0);
             }
