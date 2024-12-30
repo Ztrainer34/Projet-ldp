@@ -22,6 +22,7 @@ public:
     // Draw the blocks to the screen
     void draw_blocks() const;
 
+    void reset_blocks();
 private:
     float screen_width_;   // Screen width
     float screen_height_;  // Screen height
