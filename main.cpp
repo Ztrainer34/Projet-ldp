@@ -2,12 +2,15 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <allegro5/mouse.h>
 #include <vector>
 #include <memory>
 #include <cstdio>
 #include "ball.h"
 #include "paddle.h"
 #include "Block.h"
+#include "level.h"
+#include "color.h"
 
 int main() {
     // Set up Allegro
@@ -22,6 +25,11 @@ int main() {
         fprintf(stderr, "Failed to install keyboard!\n");
         return -1;
     }
+    if (!al_install_mouse()) {
+        fprintf(stderr, "Failed to initialize mouse!\n");
+        return -1;
+    }
+
 
     if (!al_init_primitives_addon()) {
         fprintf(stderr, "Failed to initialize primitives addon!\n");
@@ -54,6 +62,7 @@ int main() {
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
     al_register_event_source(event_queue, al_get_keyboard_event_source());
+    al_register_event_source(event_queue, al_get_mouse_event_source());
 
     // Initialize game objects
     ALLEGRO_COLOR red = al_map_rgb(255, 0, 0);
@@ -63,7 +72,7 @@ int main() {
     Ball ball(400, 300, 3.0, 3.0, 20, blue, red);
     Paddle paddle(400, 550, 300, 100, 20, blue, red);
 
-
+    Level level(screen_width, screen_height, 8, 14, 70, 20, 10, 10);
 
     const int rows = 8;               // Augmenter le nombre de lignes
     const int cols = 14;              // Augmenter le nombre de colonnes
@@ -75,23 +84,16 @@ int main() {
     const float start_y = 50;         // Position initiale en Y
 
 
-    std::vector<std::shared_ptr<Block>> blocks;
-    for (float i = 0; i < cols; ++i) {
-        for (float j = 0; j < rows; ++j) {
-            float x = start_x + i * (block_width + spacing_x)-45;
-            float y = start_y + j * (block_height + spacing_y);
-            blocks.push_back(std::make_shared<Block>(x, y, block_width, block_height, blue, red));
-        }
-    }
-
+    level.generate_blocks();
     size_t score = 0;
     size_t lives = 3;
-    size_t total_blocks = blocks.size();
+    size_t total_blocks = level.get_blocks().size();
 
     al_start_timer(timer);
 
     bool running = true;
     bool move_left = false, move_right = false;
+    float checkPaddlePosition ;
 
     while (running) {
         ALLEGRO_EVENT ev;
@@ -105,6 +107,7 @@ int main() {
             if (move_right) {
                 paddle.move_right(1.0 / 60.0, screen_width - 1);
             }
+            // ici mettre le deplacement souris ?
 
             // Ball movement and collisions
             ball.update_position();
@@ -119,11 +122,8 @@ int main() {
             }
 
 
-
-
-
             // Check collisions with all blocks
-            for (auto& block : blocks) {
+            for (auto& block : level.get_blocks()) {
                 if (block->getVisibility() && ball.is_touching_brick(*block)) {
 
 
@@ -166,9 +166,9 @@ int main() {
             // Render objects
             al_clear_to_color(al_map_rgb(0, 0, 0));
             ball.draw();
-            paddle.draw();
+            paddle.draw(); //
 
-            for (const auto& block : blocks) {
+            for (const auto& block : level.get_blocks()) {
                 block->draw();
             }
 
@@ -197,6 +197,22 @@ int main() {
                 move_right = false;
             }
         }
+        else if(ev.type == ALLEGRO_EVENT_MOUSE_AXES){
+            float mouseX = static_cast<float>(ev.mouse.x);
+            Point paddlePosition = paddle.get_position();
+
+
+            // si souris a droite deplacer a droite
+            if (mouseX > paddlePosition.x){
+                paddle.move_right(1.0 / 60.0, screen_width - 1);
+            }
+            // si souris a gauche deplacer a gauce
+            else if (mouseX < paddlePosition.x) {
+                paddle.move_left(1.0 / 60.0, 0);
+            }
+        }
+
+
         else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
             running = false;
         }
