@@ -210,14 +210,16 @@ int main() {
         }
         else if(ev.type == ALLEGRO_EVENT_MOUSE_AXES){
             float mouseX = static_cast<float>(ev.mouse.x);
-            checkPaddlePosition = paddleCenter.x - static_cast<float>(ev.mouse.x);
+            Point paddlePosition = paddle.get_position();
+          
 
-            // bon juste adjust directement en creant set position de paddle 
-            if(checkPaddlePosition < 0){
-                move_right = true;
+            // si souris a droite deplacer a droite
+            if (mouseX > paddlePosition.x){
+                paddle.move_right(1.0 / 60.0, screen_width - 1);
             }
-            else if (checkPaddlePosition >= 0) {
-                move_left = true;
+            // si souris a gauche deplacer a gauce
+            else if (mouseX < paddlePosition.x) {
+                paddle.move_left(1.0 / 60.0, 0);
             }
         }
 
