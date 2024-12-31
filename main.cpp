@@ -92,7 +92,7 @@ int main() {
     Size block_size(block_width, block_height);
 
     level.generate_blocks(); // genere les blocks
-    std::unordered_map<ALLEGRO_COLOR, int> colorPoints = {
+    std::vector<std::pair<ALLEGRO_COLOR, int>> colorScores = {
         {WHITE, 50},
         {ORANGE, 60},
         {CYAN, 70},
@@ -144,11 +144,18 @@ int main() {
             for (auto& block : level.get_blocks()) {
                 if (block->getVisibility() && ball.is_touching_brick(*block)) {
                     
-                    ALLEGRO_COLOR blockColor = block->getColor();
-                    int blockValue = colorPoints[blockColor]; // recupere valeur du block
+                    ALLEGRO_COLOR blockColor = block->getColor(); // recupere la couleur du block
+                    for (const auto& pair : colorScores){
+                        if(memcmp(&pair.first, &blockColor, sizeof(ALLEGRO_COLOR))==0){ 
+                            // verifie la bonne couleur et evite les copies inutiles
+                            score += pair.second;
+                        }
+                        else{
+                            score += 10; // si couleur ne correspond pas augmente par defaut 
+                        }
+                    }
 
                     ball.handle_brick_collision(*block); // Adjust the velocity based on collision
-                    score += blockValue;
                     total_blocks--;
                     ball.update_position();
 
