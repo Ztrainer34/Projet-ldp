@@ -1,6 +1,8 @@
-#include "ball.h"
+#include "Ball.hpp"
 #include <allegro5/allegro_primitives.h>
 #include <cmath>
+#include <unordered_map>
+
 
 Ball::Ball(float x, float y, float speed_x,float speed_y, float radius,
            ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor)
@@ -100,6 +102,14 @@ bool Ball::is_touching_brick(const Block& brick) const {
             position.y - radius < brick_bottom);
 }
 
+bool colors_are_equal(const ALLEGRO_COLOR& c1, const ALLEGRO_COLOR& c2) {
+    constexpr float COLOR_EPSILON = 0.001f;
+    return (std::fabs(c1.r - c2.r) < COLOR_EPSILON &&
+            std::fabs(c1.g - c2.g) < COLOR_EPSILON &&
+            std::fabs(c1.b - c2.b) < COLOR_EPSILON &&
+            std::fabs(c1.a - c2.a) < COLOR_EPSILON);
+}
+
 // Function to handle the collision with a specific brick
 void Ball::handle_brick_collision(Block& brick) {
     if (!brick.getVisibility()) return; // Skip invisible bricks
@@ -119,9 +129,36 @@ void Ball::handle_brick_collision(Block& brick) {
         }
     }
 
-    // Mark the brick as no longer visible
+
+    if (colors_are_equal(brick.getColor(), COLOR_GOLD)) {
+        // Gold blocks remain visible
+        return;
+    }
+
+    static std::unordered_map<Block*, int> silver_hits; // Track hits on silver blocks
+    if (colors_are_equal(brick.getColor(), COLOR_SILVER)) {
+        silver_hits[&brick]++;
+
+        if (silver_hits[&brick] == 1) {
+            // After the first hit, change the outline color to indicate it's been hit once
+             // Assuming `Block` has a method for setting outline color
+            return; // Silver block stays visible after the first hit
+        } else if (silver_hits[&brick] >= 2) {
+            silver_hits.erase(&brick); // Remove from tracking after the second hit
+
+        }
+    }
+
+    // Mark the block as invisible for all other cases
     brick.setVisibility(false);
 }
+
+    // Mark the block as invisible for other colors
+
+
+
+
+
 
 
     // Mark the brick as no longer visible

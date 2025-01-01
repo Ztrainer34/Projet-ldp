@@ -6,16 +6,22 @@
 #include <vector>
 #include <memory>
 #include <cstdio>
-#include "ball.h"
-#include "paddle.h"
-#include "Block.h"
-#include "level.h"
+#include <unordered_map>
+
+#include "Block.hpp"
+#include "Ball.hpp"
+#include "Paddle.hpp"
+
+#include "Level.hpp"
 #include "color.h"
 
 int main() {
     // Set up Allegro
-    const float screen_width = 1120;
+    const float screen_width = 1200;
     const float screen_height = 600;
+
+    const int POINTS_SILVER = 200;
+    const int POINTS_OTHER = 50; // Example for other blocks
     if (!al_init()) {
         fprintf(stderr, "Failed to initialize Allegro!\n");
         return -1;
@@ -65,35 +71,43 @@ int main() {
     al_register_event_source(event_queue, al_get_mouse_event_source());
 
     // Initialize game objects
-    ALLEGRO_COLOR red = al_map_rgb(255, 0, 0);
-    ALLEGRO_COLOR blue = al_map_rgb(0, 0, 255);
-    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
 
-    Ball ball(400, 300, 3.0, 3.0, 20, blue, red);
-    Paddle paddle(400, 550, 300, 100, 20, blue, red);
+
+    Point ballPosition(400, 300);
+    Ball ball(400, 300, 3.0, 3.0, 20, COLOR_BLUE, COLOR_RED);
+
+    Size paddleSize(100, 20);
+    Point paddleCenter(400, 550);
+    Paddle paddle(400, 550, 300, 100, 20, COLOR_BLACK, COLOR_RED);
 
     Level level(screen_width, screen_height, 8, 14, 70, 20, 10, 10);
 
-    const int rows = 8;               // Augmenter le nombre de lignes
-    const int cols = 14;              // Augmenter le nombre de colonnes
-    const float block_width = 70;     // Réduire la largeur des blocs
-    const float block_height = 20;    // Réduire la hauteur des blocs
-    const float spacing_x = 10;       // Espacement horizontal entre les blocs
-    const float spacing_y = 10;       // Espacement vertical entre les blocs
-    const float start_x = 50;         // Position initiale en X
-    const float start_y = 50;         // Position initiale en Y
 
 
-    level.generate_blocks();
+    level.generate_blocks(); // genere les blocks
+    std::vector<std::pair<ALLEGRO_COLOR, int>> colorScores = {
+        {COLOR_WHITE, 50},
+        {COLOR_ORANGE, 60},
+        {COLOR_CYAN, 70},
+        {COLOR_GREEN, 80},
+        {COLOR_RED, 90},
+        {COLOR_BLUE, 100},
+        {COLOR_MAGENTA, 110},
+        {COLOR_YELLOW, 120},
+
+{COLOR_GOLD, 0},
+{COLOR_SILVER, 200}
+    };
+
     size_t score = 0;
     size_t lives = 3;
     size_t total_blocks = level.get_blocks().size();
+
 
     al_start_timer(timer);
 
     bool running = true;
     bool move_left = false, move_right = false;
-    float checkPaddlePosition ;
 
     while (running) {
         ALLEGRO_EVENT ev;
@@ -126,9 +140,35 @@ int main() {
             for (auto& block : level.get_blocks()) {
                 if (block->getVisibility() && ball.is_touching_brick(*block)) {
 
+                    ALLEGRO_COLOR blockColor = block->getColor(); // recupere la couleur du block
+                    for (auto it = colorScores.begin(); it != colorScores.end(); ++it){
+                        if (std::next(it) == colorScores.end()) {
+                            break; // Stop before the last element
+                        }
+                        const auto& pair = *it;
+                        if(memcmp(&pair.first, &blockColor, sizeof(ALLEGRO_COLOR))==0){
+                            // verifie la bonne couleur et evite les copies inutiles
+                            score += pair.second;
+                            break;
+                        }
+                        if(memcmp(&colorScores[9].first, &blockColor, sizeof(ALLEGRO_COLOR))==0) {
+                            block->incrementHits();
+                            if (block->getHits() == 2) {
+                                score += 200;
+                                break;
+
+                            }
+                            break;
+                        }
+
+
+
+                    }
 
                     ball.handle_brick_collision(*block); // Adjust the velocity based on collision
-                    score += 10;
+                    if (!block->getbonus()) {
+                        paddle.enlarge(20);
+                    }
                     total_blocks--;
                     ball.update_position();
 
@@ -150,7 +190,7 @@ int main() {
             if (total_blocks == 0) {
                 running = false;
                 al_clear_to_color(al_map_rgb(0, 0, 0));
-                al_draw_text(font, white, 400, 300, ALLEGRO_ALIGN_CENTER, "YOU WIN!");
+                al_draw_text(font, COLOR_WHITE, 400, 300, ALLEGRO_ALIGN_CENTER, "YOU WIN!");
                 al_flip_display();
                 al_rest(2.0);
             }
@@ -158,7 +198,7 @@ int main() {
             if (lives == 0) {
                 running = false;
                 al_clear_to_color(al_map_rgb(0, 0, 0));
-                al_draw_text(font, white, 400, 300, ALLEGRO_ALIGN_CENTER, "GAME OVER!");
+                al_draw_text(font, COLOR_WHITE, 400, 300, ALLEGRO_ALIGN_CENTER, "GAME OVER!");
                 al_flip_display();
                 al_rest(2.0);
             }
@@ -173,8 +213,8 @@ int main() {
             }
 
             // Render score and lives
-            al_draw_textf(font, white, 10, 10, 0, "Score: %zu", score);
-            al_draw_textf(font, white, 10, 30, 0, "Lives: %zu", lives);
+            al_draw_textf(font, COLOR_WHITE, 10, 10, 0, "Score: %zu", score);
+            al_draw_textf(font, COLOR_WHITE, 10, 30, 0, "Lives: %zu", lives);
 
             al_flip_display();
         }
@@ -206,7 +246,7 @@ int main() {
             if (mouseX > paddlePosition.x){
                 paddle.move_right(1.0 / 60.0, screen_width - 1);
             }
-            // si souris a gauche deplacer a gauce
+            // si souris a gauche deplacer a gauche
             else if (mouseX < paddlePosition.x) {
                 paddle.move_left(1.0 / 60.0, 0);
             }
