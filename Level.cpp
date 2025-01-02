@@ -39,9 +39,20 @@ void Level::generate_blocks(const std::string& file_path) {
 
                     // Choisir une couleur aléatoire
 
+                    auto block = std::make_shared<Block>(x, y, block_width_, block_height_, COLOR_BLUE, colors[i], 1);
+
+                    // Randomly assign a capsule to some blocks
+                    if (rand() % 4 == 0) { // 25% of blocks get a capsule (you can tweak this logic)
+                        auto capsule = std::make_shared<Capsule>(x + block_width_ / 2 - 10, y + block_height_ / 2, 20, 10, COLOR_BLUE);
+                        block->setCapsule(capsule);
+                    }
+
+                    blocks_.push_back(block);
 
 
-                    blocks_.push_back(std::make_shared<Block>(x, y, block_width_, block_height_, COLOR_BLUE, colors[i],'S'));
+
+
+
                 }
 
 

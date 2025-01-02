@@ -21,7 +21,7 @@ LDLIBS += $(shell pkg-config allegro-5 allegro_primitives-5 allegro_font-5 alleg
 TARGET := arkanoid
 
 # Source files
-SRCS := main.cpp paddle.cpp Block.cpp Ball.cpp Drawable.cpp
+SRCS := main.cpp Paddle.cpp Block.cpp Ball.cpp Level.cpp Capsule.cpp
 
 # Object files (derived from source files)
 OBJS := $(SRCS:.cpp=.o)

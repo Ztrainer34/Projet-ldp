@@ -6,6 +6,9 @@
 #include "Size.h"
 #include <allegro5/allegro5.h>
 #include "Bonus.hpp"
+#include <memory>
+#include "Capsule.h"
+#include <vector>
 
 class Block : public Drawable {
     Point position_block;
@@ -15,6 +18,8 @@ class Block : public Drawable {
     ALLEGRO_COLOR fillColor;
 
     Bonus bonus_;
+    bool has_capsule_;
+    std::shared_ptr<Capsule> capsule_;
     int hitCount_ = 0;
     bool ative = true;
 
@@ -42,6 +47,10 @@ public:
 
     void setbonus(bool bonus);
     bool getbonus() const;
+    void setCapsule(std::shared_ptr<Capsule> capsule);
+    std::shared_ptr<Capsule> getCapsule() const ;
+    bool hasCapsule() const;
+    void destroy(std::vector<std::shared_ptr<Capsule>>& capsules);
 };
 
 #endif // BLOCK_H

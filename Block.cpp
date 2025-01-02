@@ -4,9 +4,10 @@
 #include <allegro5/allegro_font.h>           // Font rendering
 #include <allegro5/allegro_primitives.h>     // Drawing shapes
 #include <allegro5/allegro_ttf.h>
+#include <vector>
 
 Block::Block(float x, float y, float width, float height, ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor,char type)
-    : position_block{x, y}, size_block{width, height}, frameColor(frameColor), fillColor(fillColor), is_visible(true),bonus_(type) {}
+    : position_block{x, y}, size_block{width, height}, frameColor(frameColor), fillColor(fillColor), is_visible(true),bonus_(type),has_capsule_(false) {}
 
 void Block::draw() {
     if (is_visible) {
@@ -58,5 +59,19 @@ void Block::setbonus(bool bonus) {
     ative = bonus;
 }
 bool Block::getbonus() const {return ative;}
+void Block::setCapsule(std::shared_ptr<Capsule> capsule) { capsule_ = capsule; has_capsule_ = true; }
+std::shared_ptr<Capsule> Block::getCapsule() const { return capsule_; }
+bool Block::hasCapsule() const { return has_capsule_; }
+
+void Block::destroy(std::vector<std::shared_ptr<Capsule>>& capsules) {
+    if (--hitCount_ <= 0) {
+        is_visible = false;
+
+        // Add the capsule to the falling list if the block has one
+        if (has_capsule_) {
+            capsules.push_back(capsule_);
+        }
+    }
+}
 
 

@@ -11,11 +11,20 @@
 #include "Block.hpp"
 #include "Ball.hpp"
 #include "Paddle.hpp"
-
+#include "Capsule.h"
 #include "Level.hpp"
 #include "color.h"
+#include <algorithm>
+#include <iostream>
+
+
+
+
+
 
 int main() {
+
+
     // Set up Allegro
     const float screen_width = 1200;
     const float screen_height = 600;
@@ -81,8 +90,8 @@ int main() {
     Paddle paddle(400, 550, 300, 100, 20, COLOR_BLACK, COLOR_RED);
 
     Level level(screen_width, screen_height, 8, 14, 70, 20, 10, 10);
-
-
+    std::vector<std::shared_ptr<Capsule>> capsules;
+    std::shared_ptr<Capsule> firstElement ;
 
     level.generate_blocks(); // genere les blocks
     std::vector<std::pair<ALLEGRO_COLOR, int>> colorScores = {
@@ -114,6 +123,7 @@ int main() {
         al_wait_for_event(event_queue, &ev);
 
         if (ev.type == ALLEGRO_EVENT_TIMER) {
+
             // Paddle movement
             if (move_left) {
                 paddle.move_left(1.0 / 60.0, 0);
@@ -124,7 +134,24 @@ int main() {
             // ici mettre le deplacement souris ?
 
             // Ball movement and collisions
-            ball.update_position();
+
+                ball.update_position();
+            for (auto& capsule : capsules) {
+                // Update the capsule's position (falling downward)
+
+                capsule->update();
+                // Check for collision with the paddle
+                if (capsule->checkCollision(paddle)) {
+                    capsule->setVisible(false); // Hide the capsule if it hits the paddle
+                    paddle.enlarge(50);         // Trigger the effect (e.g., enlarge the paddle)
+                }
+
+                // If the capsule falls off the screen, make it invisible
+                if (capsule->getY() > screen_height) {
+                    capsule->setVisible(false);
+                }
+
+            }
 
             if (ball.is_touching(paddle)) {
                 ball.handle_paddle_collision(paddle.get_position().x, paddle.get_size().width);
@@ -139,6 +166,7 @@ int main() {
             // Check collisions with all blocks
             for (auto& block : level.get_blocks()) {
                 if (block->getVisibility() && ball.is_touching_brick(*block)) {
+
 
                     ALLEGRO_COLOR blockColor = block->getColor(); // recupere la couleur du block
                     for (auto it = colorScores.begin(); it != colorScores.end(); ++it){
@@ -166,9 +194,28 @@ int main() {
                     }
 
                     ball.handle_brick_collision(*block); // Adjust the velocity based on collision
-                    if (!block->getbonus()) {
-                        paddle.enlarge(20);
+                    if (block->hasCapsule()) {
+                        capsules.push_back(block->getCapsule());
+
                     }
+
+                    for (auto& capsule : capsules) {
+                        // Update the capsule's position (falling downward)
+
+
+                        // Check for collision with the paddle
+                        if (capsule->checkCollision(paddle)) {
+                            capsule->setVisible(false); // Hide the capsule if it hits the paddle
+                            paddle.enlarge(50);         // Trigger the effect (e.g., enlarge the paddle)
+                        }
+
+                        // If the capsule falls off the screen, make it invisible
+                        if (capsule->getY() > screen_height) {
+                            capsule->setVisible(false);
+                        }
+
+                    }
+
                     total_blocks--;
                     ball.update_position();
 
@@ -208,8 +255,13 @@ int main() {
             ball.draw();
             paddle.draw(); //
 
+
             for (const auto& block : level.get_blocks()) {
                 block->draw();
+                if (block->hasCapsule()) {
+                    block->getCapsule()->draw();
+
+                }
             }
 
             // Render score and lives

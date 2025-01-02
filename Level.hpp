@@ -17,12 +17,16 @@ public:
     void set_level(size_t new_rows, size_t new_cols);
 
     // Get a reference to the current blocks
+    std::vector<std::shared_ptr<Capsule>> get_capsules() const {
+        return capsules;
+    }
     const std::vector<std::shared_ptr<Block>>& get_blocks() const;
 
     // Draw the blocks to the screen
     void draw_blocks() const;
 
     void reset_blocks();
+
 private:
     float screen_width_;   // Screen width
     float screen_height_;  // Screen height
@@ -34,6 +38,8 @@ private:
     float spacing_y_;      // Vertical spacing between blocks
 
     std::vector<std::shared_ptr<Block>> blocks_; // List of all blocks
+    std::vector<std::shared_ptr<Capsule>> capsules;
+
 };
 
 #endif // LEVEL_H

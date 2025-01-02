@@ -147,9 +147,10 @@ void Ball::handle_brick_collision(Block& brick) {
             silver_hits.erase(&brick); // Remove from tracking after the second hit
 
         }
+
     }
 
-    // Mark the block as invisible for all other cases
+
     brick.setVisibility(false);
 }
 
