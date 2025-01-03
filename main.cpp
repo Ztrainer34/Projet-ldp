@@ -137,12 +137,7 @@ int main() {
             // Ball movement and collisions
 
                 ball.update_position();
-            if (paddle.isLaserModeEnabled()) {
-                for (auto& laser : lasers) {
-                    laser.update(1.0 / 60.0);
 
-                }
-            }
 
             for (auto& capsule : capsules) {
                 // Update the capsule's position (falling downward)
@@ -169,6 +164,9 @@ int main() {
 
                         }
 
+
+
+
                         capsule->setVisible(false);
                     }
 
@@ -179,6 +177,47 @@ int main() {
                     capsule->setVisible(false);
                 }
 
+            }
+            if (paddle.isLaserModeEnabled()) {
+                for (auto& laser : lasers) {
+                    laser.update(1.0 / 60.0);
+
+                        for (auto& block : level.get_blocks()){
+                            if (!block->getVisibility()) continue; // Ignore invisible blocks
+
+                            float blockX = block->getPosition().x;
+                            float blockY = block->getPosition().y;
+                            float blockWidth = block->getSize().width;
+                            float blockHeight = block->getSize().height;
+
+
+                                float laserX = laser.getPosition().x;
+                                float laserY = laser.getPosition().y;
+                                float laserWidth = 2;   // Assuming laser width is 2 (or adjust if you have a different width)
+                                float laserHeight = 10;  // Assuming laser height is 10 (or adjust if you have a different height)
+
+                                // Check if the laser rectangle intersects the block's rectangle
+                                if (laserX + laserWidth > blockX && laserX < blockX + blockWidth &&
+                                    laserY + laserHeight > blockY && laserY < blockY + blockHeight) {
+                                    if (laser.isActive()) {
+                                        if (!block->colors_are_equals(block->getColor(),COLOR_GOLD)){
+                                            block->setVisibility(false);
+                                            if (block->hasCapsule()) {
+                                                capsules.push_back(block->getCapsule());
+                                            }
+                                    }
+                                }
+                                        if (block->colors_are_equals(block->getColor(),COLOR_SILVER)) {
+
+                                        }
+                                    laser.setInactive();
+                                    // Handle the collision here, e.g., destroy block or update score
+                                    break; // Only handle the first collision per laser for now
+                                    }
+
+                        }
+
+                }
             }
 
             if (ball.is_touching(paddle)) {
@@ -194,6 +233,7 @@ int main() {
             // Check collisions with all blocks
             for (auto& block : level.get_blocks()) {
                 if (block->getVisibility() && ball.is_touching_brick(*block)) {
+
 
 
                     ALLEGRO_COLOR blockColor = block->getColor(); // recupere la couleur du block
@@ -299,6 +339,7 @@ int main() {
             }
             if (ev.keyboard.keycode == ALLEGRO_KEY_SPACE) {
                 if (paddle.isLaserModeEnabled()) {
+
                     paddle.shootLaser(lasers); // Tirer un laser
                 }
             }
