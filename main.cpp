@@ -142,16 +142,20 @@ int main() {
                 capsule->update();
                 // Check for collision with the paddle
                 if (capsule->checkCollision(paddle)) {
+                    if (capsule->isVisible()) {
+                        paddle.enlarge(20);
+                    }
                     capsule->setVisible(false); // Hide the capsule if it hits the paddle
-                    paddle.enlarge(50);         // Trigger the effect (e.g., enlarge the paddle)
                 }
+                if (capsule->colors_are_equals(capsule->getColor(),COLOR_GREY)) {
+                    if (capsule->isVisible()) {
+                        lives++;
+                    }
 
-                // If the capsule falls off the screen, make it invisible
-                if (capsule->getY() > screen_height) {
                     capsule->setVisible(false);
                 }
-
             }
+
 
             if (ball.is_touching(paddle)) {
                 ball.handle_paddle_collision(paddle.get_position().x, paddle.get_size().width);
