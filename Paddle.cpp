@@ -3,6 +3,7 @@
 #include "algorithm"
 
 
+
 Paddle::Paddle(float x, float y, float speed, float width, float height,
                ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor)
     : center_{ x,y }, speed_{speed}, size_{width, height},
@@ -41,5 +42,17 @@ Point Paddle::get_position() {
 Size Paddle:: get_size() {
     return size_;
 }
+bool Paddle::isLaserModeEnabled() const{
+    return laser_mode_;
+}
 
-
+void Paddle::enableLaserMode() {
+    laser_mode_ = true;
+}
+void Paddle::shootLaser(std::vector<Laser> &lasers) {
+    if (laser_mode_) {
+        float x = center_.x + size_.width / 2; // Position centrale de la raquette
+        float y = center_.y;
+        lasers.emplace_back(x, y, 400, COLOR_RED); // Vitesse et couleur du laser
+    }
+}

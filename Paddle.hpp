@@ -5,6 +5,8 @@
 #include "Point.h"
 #include "Size.h"
 #include  "color.h"
+#include  "Laser.hpp"
+#include  <vector>
 #include <allegro5/allegro_color.h>
 
 // Define colors
@@ -16,6 +18,8 @@ private:
     float speed_;            // Speed of the paddle
     ALLEGRO_COLOR frameColor_;  // Frame color of the paddle
     ALLEGRO_COLOR fillColor_;   // Fill color of the paddle
+
+    bool laser_mode_ = false;
 
 public:
     // Constructor
@@ -38,6 +42,11 @@ public:
     void move_left(float delta, float boundary_left);
     void move_right(float delta, float boundary_right);
     void enlarge(float amount) { size_.width += amount;}
+    bool isLaserModeEnabled() const;
+    void enableLaserMode();
+    void shootLaser(std::vector<Laser>& lasers);
 };
+
+
 
 #endif // PADDLE_H

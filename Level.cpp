@@ -30,6 +30,11 @@ void Level::generate_blocks(const std::string& file_path) {
             COLOR_GOLD, COLOR_SILVER, // Ajout des couleurs dorées et argentées
         };
 
+        const std::vector<ALLEGRO_COLOR> colors_bonus = {
+            COLOR_BLUE,COLOR_GREY,COLOR_GREEN
+        };
+
+
         std::ifstream file("level1.txt");
         if (file_path == "base") {
             for (float i = 0; i < cols_; ++i) {
@@ -43,7 +48,9 @@ void Level::generate_blocks(const std::string& file_path) {
 
                     // Randomly assign a capsule to some blocks
                     if (rand() % 4 == 0) { // 25% of blocks get a capsule (you can tweak this logic)
-                        auto capsule = std::make_shared<Capsule>(x + block_width_ / 2 - 10, y + block_height_ / 2, 20, 10, COLOR_BLUE);
+
+                        ALLEGRO_COLOR random_color = colors_bonus[rand() % colors_bonus.size()];
+                        auto capsule = std::make_shared<Capsule>(x + block_width_ / 2 - 10, y + block_height_ / 2, 20, 10, COLOR_GREEN);
                         block->setCapsule(capsule);
                     }
 

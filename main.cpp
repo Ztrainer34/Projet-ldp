@@ -14,6 +14,7 @@
 #include "Capsule.h"
 #include "Level.hpp"
 #include "color.h"
+#include "Laser.hpp"
 #include <algorithm>
 #include <iostream>
 
@@ -91,7 +92,7 @@ int main() {
 
     Level level(screen_width, screen_height, 8, 14, 70, 20, 10, 10);
     std::vector<std::shared_ptr<Capsule>> capsules;
-    std::shared_ptr<Capsule> firstElement ;
+    std::vector<Laser> lasers;
 
     level.generate_blocks(); // genere les blocks
     std::vector<std::pair<ALLEGRO_COLOR, int>> colorScores = {
@@ -109,7 +110,7 @@ int main() {
     };
 
     size_t score = 0;
-    size_t lives = 3;
+    size_t lives = 1000;
     size_t total_blocks = level.get_blocks().size();
 
 
@@ -136,26 +137,49 @@ int main() {
             // Ball movement and collisions
 
                 ball.update_position();
+            if (paddle.isLaserModeEnabled()) {
+                for (auto& laser : lasers) {
+                    laser.update(1.0 / 60.0);
+
+                }
+            }
+
             for (auto& capsule : capsules) {
                 // Update the capsule's position (falling downward)
 
                 capsule->update();
                 // Check for collision with the paddle
                 if (capsule->checkCollision(paddle)) {
-                    if (capsule->isVisible()) {
-                        paddle.enlarge(20);
+                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_BLUE)) {
+                        if (capsule->isVisible()) {
+                            paddle.enlarge(20);
+                        }
+                        capsule->setVisible(false); // Hide the capsule if it hits the paddle
                     }
-                    capsule->setVisible(false); // Hide the capsule if it hits the paddle
-                }
-                if (capsule->colors_are_equals(capsule->getColor(),COLOR_GREY)) {
-                    if (capsule->isVisible()) {
-                        lives++;
+                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_GREY)) {
+                        if (capsule->isVisible()) {
+                            lives++;
+                        }
+
+                        capsule->setVisible(false);
+                    }
+                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_GREEN)) {
+                        if (capsule->isVisible()) {
+                            paddle.enableLaserMode();
+
+                        }
+
+                        capsule->setVisible(false);
                     }
 
+                }
+
+                // If the capsule falls off the screen, make it invisible
+                if (capsule->getY() > screen_height) {
                     capsule->setVisible(false);
                 }
-            }
 
+            }
 
             if (ball.is_touching(paddle)) {
                 ball.handle_paddle_collision(paddle.get_position().x, paddle.get_size().width);
@@ -198,27 +222,13 @@ int main() {
                     }
 
                     ball.handle_brick_collision(*block); // Adjust the velocity based on collision
+
                     if (block->hasCapsule()) {
                         capsules.push_back(block->getCapsule());
 
                     }
 
-                    for (auto& capsule : capsules) {
-                        // Update the capsule's position (falling downward)
 
-
-                        // Check for collision with the paddle
-                        if (capsule->checkCollision(paddle)) {
-                            capsule->setVisible(false); // Hide the capsule if it hits the paddle
-                            paddle.enlarge(50);         // Trigger the effect (e.g., enlarge the paddle)
-                        }
-
-                        // If the capsule falls off the screen, make it invisible
-                        if (capsule->getY() > screen_height) {
-                            capsule->setVisible(false);
-                        }
-
-                    }
 
                     total_blocks--;
                     ball.update_position();
@@ -259,6 +269,12 @@ int main() {
             ball.draw();
             paddle.draw(); //
 
+            if (paddle.isLaserModeEnabled()) {
+                for (const auto& laser : lasers) {
+                    laser.draw();
+                }
+            }
+
 
             for (const auto& block : level.get_blocks()) {
                 block->draw();
@@ -280,6 +296,11 @@ int main() {
             }
             if (ev.keyboard.keycode == ALLEGRO_KEY_D || ev.keyboard.keycode == ALLEGRO_KEY_P) {
                 move_right = true;
+            }
+            if (ev.keyboard.keycode == ALLEGRO_KEY_SPACE) {
+                if (paddle.isLaserModeEnabled()) {
+                    paddle.shootLaser(lasers); // Tirer un laser
+                }
             }
             if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
                 running = false;
