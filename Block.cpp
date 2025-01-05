@@ -5,6 +5,7 @@
 #include <allegro5/allegro_primitives.h>     // Drawing shapes
 #include <allegro5/allegro_ttf.h>
 #include <vector>
+#include <cmath>
 
 Block::Block(float x, float y, float width, float height, ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor,char type)
     : position_block{x, y}, size_block{width, height}, frameColor(frameColor), fillColor(fillColor), is_visible(true),bonus_(type),has_capsule_(false) {}
@@ -62,7 +63,13 @@ bool Block::getbonus() const {return ative;}
 void Block::setCapsule(std::shared_ptr<Capsule> capsule) { capsule_ = capsule; has_capsule_ = true; }
 std::shared_ptr<Capsule> Block::getCapsule() const { return capsule_; }
 bool Block::hasCapsule() const { return has_capsule_; }
-
+bool Block::colors_are_equals(const ALLEGRO_COLOR& c1, const ALLEGRO_COLOR& c2) {
+    constexpr float COLOR_EPSILON = 0.001f;
+    return (std::fabs(c1.r - c2.r) < COLOR_EPSILON &&
+            std::fabs(c1.g - c2.g) < COLOR_EPSILON &&
+            std::fabs(c1.b - c2.b) < COLOR_EPSILON &&
+            std::fabs(c1.a - c2.a) < COLOR_EPSILON);
+}
 void Block::destroy(std::vector<std::shared_ptr<Capsule>>& capsules) {
     if (--hitCount_ <= 0) {
         is_visible = false;
