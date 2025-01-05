@@ -51,6 +51,7 @@ public:
     std::shared_ptr<Capsule> getCapsule() const ;
     bool hasCapsule() const;
     void destroy(std::vector<std::shared_ptr<Capsule>>& capsules);
+    bool colors_are_equals(const ALLEGRO_COLOR& c1, const ALLEGRO_COLOR& c2);
 };
 
 #endif // BLOCK_H
