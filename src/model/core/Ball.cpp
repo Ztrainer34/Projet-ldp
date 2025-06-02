@@ -6,10 +6,8 @@
 #include <cmath>
 
 
-Ball::Ball(Point position, Speed speed, float radius,
-           ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor)
-    : position_{position}, speed_{speed.speed_x, speed.speed_y}, radius_{radius},
-      frameColor_{frameColor}, fillColor_{fillColor} {}
+Ball::Ball(Point position, float radius) 
+        : Object(position, Size(radius, radius), Speed(0, 0)) {}
 
 Ball::Ball(float x, float y, float speed_x,float speed_y, float radius,
            ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor)
