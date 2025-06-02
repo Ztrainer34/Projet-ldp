@@ -35,7 +35,7 @@ public:
          ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor);
 
     // Update the ball's position
-    void updatePosition();
+    void updatePosition() override;
 
     std::vector<Ball> split();
 

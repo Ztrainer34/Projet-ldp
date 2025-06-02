@@ -23,9 +23,16 @@ public:
     virtual void  setPosition(const Point &newPosition){
         position_ = newPosition;
     }
+    
+    void setPosition(float x, float y) noexcept { position_.setPosition(x, y); }
+
     virtual Size getSize() const{
         return size_;
     }
+
+    virtual void updatePosition() = 0;
+
+    virtual void updatePosition(float delta) {}
 
     virtual ~Object() = default;
 };
