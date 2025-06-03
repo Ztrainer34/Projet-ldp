@@ -10,8 +10,11 @@ public:
     Point() : x(0), y(0) {} // Constructeur par défaut pour éviter les erreurs
     Point(float x_, float y_) : x(x_), y(y_) {}
 
-    float x() const { return x; }
-    float y() const { return y; }
+    float getX() const { return x; }
+    float getY() const { return y; }
+
+    void setX(float newX) { x = newX; }
+    void setY(float newY) { y = newY;}
 
     void setPosition(float newX, float newY){
         x = newX;
@@ -27,8 +30,6 @@ public:
         y += other.y;
         return *this;
     }
-
-
 
 };
 

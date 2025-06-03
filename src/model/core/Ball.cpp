@@ -9,36 +9,35 @@
 Ball::Ball(Point position, float radius) 
         : Object(position, Size(radius, radius), Speed(0, 0)) {}
 
-Ball::Ball(float x, float y, float speed_x,float speed_y, float radius,
-           ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor)
-    : position_{x, y}, speed_{speed_x,speed_y}, radius_{radius},
-      frameColor_{frameColor}, fillColor_{fillColor} {}
-
+Ball::Ball(Point position, Speed speed, float radius)
+    : Object(position, speed), radius_(radius) {}
 
 void Ball::updatePosition() {
     // Update the ball's position_ based on speed
-    position_.x += speed_.speed_x;
-    position_.y += speed_.speed_y;
+    position_.setPosition(
+        getX() + getSpeedX(),
+        getY() + getSpeedY()
+    );
 }
 
 std::vector<Ball> Ball::split() {
     std::vector<Ball> newBalls;
 
     // init for angles
-    float baseSpeedX = speed_.speed_x;
-    float baseSpeedY = speed_.speed_y;
+    float baseSpeedX = getSpeedX();
+    float baseSpeedY = getSpeedY();
 
-    // Create three balls with adjusted directions
-    newBalls.emplace_back(position_, Speed(baseSpeedX, baseSpeedY), radius_, frameColor_, fillColor_);
-    newBalls.emplace_back(position_, Speed(baseSpeedX - 1.0f, baseSpeedY + 1.0f), radius_, frameColor_, fillColor_);
-    newBalls.emplace_back(position_, Speed(baseSpeedX + 1.0f, baseSpeedY - 1.0f), radius_, frameColor_, fillColor_);
+    // Create three balls with adjusted directions colors dans view
+    newBalls.emplace_back(position_, Speed(baseSpeedX, baseSpeedY), radius_);
+    newBalls.emplace_back(position_, Speed(baseSpeedX - 1.0f, baseSpeedY + 1.0f), radius_);
+    newBalls.emplace_back(position_, Speed(baseSpeedX + 1.0f, baseSpeedY - 1.0f), radius_);
 
     return newBalls;
 }
 
 void Ball::handlePaddleCollision(float paddleX, float paddleWidth) {
     // x is the distance of collision point from the left edge of the paddle
-    float x = position_.x - (paddleX - paddleWidth / 2);
+    float x = getX() - (paddleX - paddleWidth / 2);
 
     // Length L of the paddle
     float L = paddleWidth;
@@ -50,82 +49,85 @@ void Ball::handlePaddleCollision(float paddleX, float paddleWidth) {
     float alpha_radians = alpha * ALLEGRO_PI / 180.0;
 
     // Update ball's velocity based on the new angle
-    speed_.speed_x = speed_.speed_x;
-    speed_.speed_y  = -speed_.speed_y;
+    setSpeedY(-getSpeedY());
 }
 
 
-void Ball::handleScreenCollision(float screen_width, float screen_height) {
+void Ball::handleScreenCollision(float screenWidth, float screenHeight) {
     // Check collision with left and right walls
-    if (position_.x - radius_ < 0) {
+    if (getX() - radius_ < 0) {
         // Hit the left wall
-        position_.x = radius_; // Prevent the ball from going out of bounds
-        speed_.speed_x = -speed_.speed_x; // Reverse horizontal velocity
+                 // Prevent the ball from going out of bounds
+        setX(radius_);
+         // Reverse horizontal velocity
+        setSpeedX(-getSpeedX());
     }
-    else if (position_.x + radius_ > screen_width) {
+    else if (getX() + radius_ > screenWidth) {
         // Hit the right wall
-        position_.x = screen_width - radius_; // Prevent the ball from going out of bounds
-        speed_.speed_x = -speed_.speed_x; // Reverse horizontal velocity
+        setX(screenWidth - radius_); // Prevent the ball from going out of bounds
+        setSpeedY(-getSpeedY()); // Reverse horizontal velocity
     }
 
     // Check collision with top wall
-    if (position_.y - radius_ < 0) {
+    if (getY() - radius_ < 0) {
         // Hit the top wall
-        position_.y = radius_; // Prevent the ball from going out of bounds
-        speed_.speed_y = -speed_.speed_y; // Reverse vertical velocity
+        setY(radius_); // Prevent the ball from going out of bounds
+        setSpeedY(-getSpeedY()); // Reverse vertical velocity
     }
 
     // No action needed for bottom wall in typical Arkanoid-style games, but:
     // If you want to handle bottom wall collision (e.g., lose a life):
-    if (position_.y + radius_ > screen_height) {
+    if (getY() + radius_ > screenHeight) {
         // The ball has hit the bottom of the screen (you can handle this as needed)
         // For example: reset ball position_ or decrease player life
+        //todo !
     }
 }
 
 bool Ball::isTouching(Paddle& paddle) const{
     // Ball boundaries
-    float ball_left = position_.x - radius_;
-    float ball_right = position_.x + radius_;
-    float ball_top = position_.y - radius_;
-    float ball_bottom = position_.y + radius_;
+    float ballLeft = getX() - radius_;
+    float ballRight = getX() + radius_;
+    float ballTop = getY() - radius_;
+    float ballBottom = getY() + radius_;
 
     // Paddle boundaries
-    float paddle_left = paddle.getPosition().x - paddle.getSize().width / 2;
-    float paddle_right = paddle.getPosition().x + paddle.getSize().width / 2;
-    float paddle_top = paddle.getPosition().y - paddle.getSize().height / 2;
-    float paddle_bottom = paddle.getPosition().y + paddle.getSize().height / 2;
+    float paddleLeft = paddle.getX() - paddle.getWidth() / 2;
+    float paddleRight = paddle.getX() + paddle.getWidth() / 2;
+    float paddleTop = paddle.getY() - paddle.getHeight() / 2;
+    float paddleBottom = paddle.getY() + paddle.getHeight() / 2;
 
     // Check for overlap
-    return ball_right >= paddle_left &&
-           ball_left <= paddle_right &&
-           ball_bottom >= paddle_top &&
-           ball_top <= paddle_bottom;
+    return ballRight >= paddleLeft &&
+           ballLeft <= paddleRight &&
+           ballBottom >= paddleTop &&
+           ballTop <= paddleBottom;
 }
-bool Ball::isTouchingScreenBoundary(float screen_width, float screen_height) const {
-    return (position_.x - radius_ < 0 || position_.x + radius_ > screen_width ||
-            position_.y - radius_ < 0 || position_.y + radius_ > screen_height);
+
+bool Ball::isTouchingScreenBoundary(float screenWidth, float screenHeight) const {
+    return (getX() - radius_ < 0 || getX() + radius_ > screenWidth ||
+            getY() - radius_ < 0 || getY() + radius_ > screenHeight);
 }
 
 // Function to check if the ball is touching a specific brick
 // Function to check if the ball is touching a specific brick
 bool Ball::isTouchingBrick(const Block& brick) const {
     // Get brick position_ and size
-    float brick_left = brick.getPosition().x;
-    float brick_right = brick_left + brick.getSize().width;
-    float brick_top = brick.getPosition().y;
-    float brick_bottom = brick_top + brick.getSize().height;
+    float brickLeft = brick.getX();
+    float brickRight = brickLeft + brick.getWidth();
+    float brickTop = brick.getY();
+    float brickBottom = brickTop + brick.getHeight();
 
     // Check if the ball overlaps with the brick
-    return (position_.x + radius_ > brick_left &&
-            position_.x - radius_ < brick_right &&
-            position_.y + radius_ > brick_top &&
-            position_.y - radius_ < brick_bottom);
+    return (getX() + radius_ > brickLeft &&
+            getX() - radius_ < brickRight &&
+            getY() + radius_ > brickTop &&
+            getY() - radius_ < brickBottom);
 }
 
 bool Ball::IsBallMissed() const {
     bool missed = false;
-    if (position_.y < 500) {  // position_ paddle a 550
+    if (getY() < 500) {  // position_ paddle a 550
         missed = true;
     }
     return missed;
@@ -136,17 +138,17 @@ void Ball::handleBrickCollision(Block& brick) {
     if (!brick.getVisibility()) return; // Skip invisible bricks
 
     // Get brick position_ and size
-    float brick_left = brick.getPosition().x;
-    float brick_right = brick_left + brick.getSize().width;
-    float brick_top = brick.getPosition().y;
-    float brick_bottom = brick_top + brick.getSize().height;
+    float brickLeft = brick.getPosition().getX();
+    float brickRight = brickLeft + brick.getWidth();
+    float brickTop = brick.getPosition().getY();
+    float brickBottom = brickTop + brick.getHeight();
 
     // Determine which side of the brick the ball is hitting
-    if (position_.y - radius_ < brick_bottom && position_.y + radius_ > brick_top) {
-        if (position_.x < brick_left || position_.x > brick_right) {
-            speed_.speed_x = -speed_.speed_x; // Reverse horizontal velocity
+    if (getY() - radius_ < brickBottom && getY() + radius_ > brickTop) {
+        if (getX() < brickLeft || getX() > brickRight) {
+            setSpeedX(-getSpeedX()); // Reverse horizontal velocity
         } else {
-            speed_.speed_y = -speed_.speed_y; // Reverse vertical velocity
+            setSpeedY(-getSpeedY()); // Reverse vertical velocity
         }
     }
 
@@ -161,15 +163,4 @@ float Ball::getRadius() const {
 void Ball::setRadius(float new_radius) {
     radius_ = new_radius;
 }
-Speed Ball::getspeed() const {
-      return speed_;
-}
 
-void Ball::setSpeed(Speed newSpeed){
-    speed_ = newSpeed;
-}
-
-void Ball::draw() {
-    al_draw_filled_circle(position_.x, position_.y, radius_, fillColor_);
-    al_draw_circle(position_.x, position_.y, radius_, frameColor_, 1);
-}

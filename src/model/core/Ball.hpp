@@ -18,9 +18,10 @@ private:
 public:
     // Constructor
     Ball(Point position, float radius);
+    Ball(Point position, Speed speed, float radius);
         
 
-    Ball(float x, float y, float speed_x, float speed_y, float radius);
+    //Ball(float x, float y, float speed_x, float speed_y, float radius);
 
     // Update the ball's position
     void updatePosition() override;

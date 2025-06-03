@@ -26,10 +26,10 @@ private:
     std::shared_ptr<Bonus> bonus_; // Composition : Capsule contient un Bonus
 public:
     // Constructor
-    Capsule(float x, float y, float width, float height, ALLEGRO_COLOR color, std::shared_ptr<Bonus> bonus);
-    Capsule(Point position, Size size, ALLEGRO_COLOR color, std::shared_ptr<Bonus> bonus);
+    Capsule(float x, float y, float width, float height, std::shared_ptr<Bonus> bonus);
+    Capsule(Point position, Size size, std::shared_ptr<Bonus> bonus);
     // Nouveau constructeur sans bonus
-    Capsule(Point position, Size size, ALLEGRO_COLOR color);
+    Capsule(Point position, Size size);
 
 
     // Draws the capsule on the screen
@@ -41,10 +41,7 @@ public:
 
     // Getters
     bool isVisible() const;
-    float getX() const;
-    float getY() const;
-    float getWidth() const;
-    float getHeight() const;
+
     std::shared_ptr<Bonus> getBonus() const;
 
     // Setters
@@ -52,8 +49,6 @@ public:
     bool checkCollision(Paddle& paddle) const;
     bool colors_are_equals(const ALLEGRO_COLOR& c1, const ALLEGRO_COLOR& c2);
     ALLEGRO_COLOR getColor() const;
-
-
 
 };
 

@@ -15,21 +15,18 @@
 class Capsule;
 
 class Block : public Object {
-private:
-    Point positionBlock;      
-    Size sizeBlock;            
-    bool isVisible;            // Visibilité du bloc
-    ALLEGRO_COLOR frameColor;  
-    ALLEGRO_COLOR fillColor;  
+private:          
+    bool isVisible;            // Visibilité du bloc 
 
     //Bonus bonus_;
     bool has_capsule_;
     std::shared_ptr<Capsule> capsule_;
     int hitCount_ = 0;
     bool active = true; 
+    char type_;
 
 public:
-    Block(Point position, Size size, ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor, char type);
+    Block(Point position, Size size, char type);
 
     void draw() override;
 

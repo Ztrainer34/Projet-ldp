@@ -5,29 +5,8 @@
 
 #include <allegro5/allegro_primitives.h>
 
-Block::Block(Point position, Size size, ALLEGRO_COLOR frameColor, ALLEGRO_COLOR fillColor,char type)
-    : positionBlock(position), sizeBlock(size), frameColor(frameColor), fillColor(fillColor), isVisible(true) {}
-
-void Block::draw() {
-    if (isVisible) {
-        al_draw_filled_rectangle(positionBlock.x, positionBlock.y,
-                                 positionBlock.x + sizeBlock.width,
-                                 positionBlock.y + sizeBlock.height,
-                                 fillColor);
-    }
-}
-Point Block::getPosition() const {
-    return positionBlock;
-}
-
-void Block::setPosition(float x, float y) {
-    positionBlock.x = x;
-    positionBlock.y = y;
-}
-void Block::setPosition(const Point& new_position) {
-    positionBlock = new_position;
-}
-
+Block::Block(Point position, Size size, char type)
+    : Object(position, size), type_(type), isVisible(true) {}
 
 bool Block::getVisibility() const {
     return isVisible;
@@ -38,19 +17,6 @@ void Block::setVisibility(bool visibility) {
 }
 
 
-ALLEGRO_COLOR Block::getColor() const {
-    return fillColor;
-}
-
-ALLEGRO_COLOR Block::getFrameColor() const {
-    return frameColor;
-}
-void Block::setFrameColor(ALLEGRO_COLOR& new_color) {
-    frameColor = new_color;
-}
-Size Block::getSize() const {
-    return sizeBlock;
-}
 void Block::setbonus(bool bonus) {
     active = bonus;
 }

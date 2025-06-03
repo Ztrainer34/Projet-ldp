@@ -5,7 +5,13 @@
 #include "Point.hpp"
 
 
-class Laser {
+class Laser : public Object {
+private:
+    Point position_;
+    float speed_;
+    ALLEGRO_COLOR color_;
+    bool active_;
+    
 public:
     // Constructeur
     Laser(float x, float y, float speed, ALLEGRO_COLOR color);
@@ -19,18 +25,9 @@ public:
     // Vérifie si le laser est actif
     bool isActive() const;
 
-    // Récupère la position du laser
-    const Point& getPosition() const;
-
     // Désactiver le laser
     void setInactive();
 
-
-private:
-    Point position_;
-    float speed_;
-    ALLEGRO_COLOR color_;
-    bool active_;
 };
 
 #endif // LASER_HPP
