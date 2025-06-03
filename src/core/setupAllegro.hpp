@@ -4,7 +4,7 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/mouse.h>
-#include "../model/core/Size.hpp"
+#include "../utils/Size.hpp"
 
 class SetupAllegro{
 private:

@@ -2,7 +2,7 @@
 #define OBJECT_HPP
 
 #include "Point.hpp"
-#include "Size.hpp"
+#include "../../utils/Size.hpp"
 #include "Speed.hpp"
 #include "../../utils/Constants.hpp"
 
