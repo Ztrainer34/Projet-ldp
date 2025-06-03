@@ -4,21 +4,24 @@
 #include "Point.hpp"
 #include "Size.hpp"
 #include "Speed.hpp"
+#include "../../utils/Constants.hpp"
 
+namespace CST = Constants;
 class Object {
 protected:
     Point position_;
     Size size_; 
     Speed speed_;
+    bool visible_;
     virtual ~Object() = default;
 
 public:
-    Object() : position_(), size_(), speed_() {}
+    Object() : position_(), size_(), speed_(), visible_() {}
     Object(Point position, Size size, Speed speed) 
         : position_(position), size_(size), speed_(speed) {}
     
     Object(Point position, Speed speed) : position_(position), speed_(speed) {}
-    Object(Point position, Size size) : position_(position), size_(size) {}
+    Object(Point position, Size size, bool visible) : position_(position), size_(size), visible_(visible) {}
 
     Object(const Object &)            = default;
     Object(Object &&)                 = default;
@@ -57,9 +60,10 @@ public:
 
     virtual void updatePosition() = 0;
 
-    virtual void updatePosition(float delta) {}
+    virtual void updatePosition(float delta) = 0;
 
-    virtual void isVisible() = 0;
+    virtual bool isVisible(){ return visible_; };
+    virtual void setVisibility(bool newVisible) { visible_ = newVisible; }
 
 };
 #endif // OBJECT_HPP

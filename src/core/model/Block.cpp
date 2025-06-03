@@ -5,16 +5,8 @@
 
 #include <allegro5/allegro_primitives.h>
 
-Block::Block(Point position, Size size, char type)
-    : Object(position, size), type_(type), isVisible(true) {}
-
-bool Block::getVisibility() const {
-    return isVisible;
-}
-
-void Block::setVisibility(bool visibility) {
-    isVisible = visibility;
-}
+Block::Block(Point position, Size size, bool visible, char type)
+    : Object(position, size, visible), type_(type) {}
 
 
 void Block::setbonus(bool bonus) {
@@ -33,7 +25,7 @@ bool Block::colors_are_equals(const ALLEGRO_COLOR& c1, const ALLEGRO_COLOR& c2) 
 }
 void Block::destroy(std::vector<std::shared_ptr<Capsule>>& capsules) {
     if (--hitCount_ <= 0) {
-        isVisible = false;
+        setVisibility(false);
 
         // Add the capsule to the falling list if the block has one
         if (has_capsule_) {

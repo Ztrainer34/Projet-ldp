@@ -1,11 +1,11 @@
 #ifndef BALL_H
 #define BALL_H
 
-#include "Point.hpp"
+
 #include "Object.hpp"
 
-#include <allegro5/allegro_color.h>
 #include <vector>
+
 
 // Déclarations anticipées
 class Paddle;

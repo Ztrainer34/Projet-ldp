@@ -29,8 +29,10 @@ std::vector<Ball> Ball::split() {
 
     // Create three balls with adjusted directions colors dans view
     newBalls.emplace_back(position_, Speed(baseSpeedX, baseSpeedY), radius_);
-    newBalls.emplace_back(position_, Speed(baseSpeedX - 1.0f, baseSpeedY + 1.0f), radius_);
-    newBalls.emplace_back(position_, Speed(baseSpeedX + 1.0f, baseSpeedY - 1.0f), radius_);
+    newBalls.emplace_back(position_, Speed(baseSpeedX - CST::BALL_SPLIT_OFFSET, 
+        baseSpeedY + CST::BALL_SPLIT_OFFSET), radius_);
+    newBalls.emplace_back(position_, Speed(baseSpeedX + CST::BALL_SPLIT_OFFSET, 
+        baseSpeedY - CST::BALL_SPLIT_OFFSET), radius_);
 
     return newBalls;
 }
@@ -127,7 +129,7 @@ bool Ball::isTouchingBrick(const Block& brick) const {
 
 bool Ball::IsBallMissed() const {
     bool missed = false;
-    if (getY() < 500) {  // position_ paddle a 550
+    if (getY() < CST::SCREEN_BOTTOM_Y) {  // position_ paddle a 550
         missed = true;
     }
     return missed;

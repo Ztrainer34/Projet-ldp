@@ -2,25 +2,21 @@
 #define LASER_HPP
 
 #include <allegro5/allegro.h>
-#include "Point.hpp"
+#include "Object.hpp"
 
 
 class Laser : public Object {
 private:
-    Point position_;
-    float speed_;
-    ALLEGRO_COLOR color_;
+
     bool active_;
     
 public:
-    // Constructeur
-    Laser(float x, float y, float speed, ALLEGRO_COLOR color);
+    Laser(Point position, Speed speed);
 
     // Mise à jour de la position du laser
-    void update(float deltaTime);
+    void updatePosition(float deltaTime) override;
 
-    // Dessiner le laser
-    void draw() const;
+    
 
     // Vérifie si le laser est actif
     bool isActive() const;

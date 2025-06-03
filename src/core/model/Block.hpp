@@ -10,13 +10,14 @@
 #include <memory>
 
 #include <vector>
+#include "../../utils/Constants.hpp"
 
+namespace C = Constants;
 // Déclarations anticipées
 class Capsule;
 
 class Block : public Object {
 private:          
-    bool isVisible;            // Visibilité du bloc 
 
     //Bonus bonus_;
     bool has_capsule_;
@@ -26,7 +27,7 @@ private:
     char type_;
 
 public:
-    Block(Point position, Size size, char type);
+    Block(Point position, Size size, bool visible, char type);
 
     void draw() override;
 
