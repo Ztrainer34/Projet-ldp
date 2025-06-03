@@ -44,8 +44,8 @@ public:
     virtual void setSize(const Size& newSize) { size_ = newSize; }
     virtual float getWidth() const { return size_.getWidth(); }
     virtual float getHeight() const { return size_.getHeight(); }
-    virtual float setWidth(float newWidth) { size_.setWidth(newWidth); }
-    virtual float setHeight(float newHeight) { size_.setHeight(newHeight); }
+    virtual void setWidth(float newWidth) { size_.setWidth(newWidth); }
+    virtual void setHeight(float newHeight) { size_.setHeight(newHeight); }
 
     virtual Speed getSpeed() const { return speed_; }
     virtual float getSpeedX() const { return speed_.getSpeedX(); }
