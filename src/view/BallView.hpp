@@ -1,14 +1,17 @@
 // view/BallView.hpp
 #pragma once
-#include "../core/model/Ball.hpp"
+#include "../core/model/Ball.hpp"  // Inclure ici, pas dans le .hpp
 #include "Drawable.hpp"
+
+
+
 
 class BallView : public Drawable {
 private:
-    Ball& ball;
+    const Ball& ball;
 
 public:
-    BallView(Ball& b) : ball(b) {}
+    BallView(const Ball& b) : ball(b) {}
 
     void draw() override;
 };
