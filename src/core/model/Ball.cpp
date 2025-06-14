@@ -137,7 +137,7 @@ bool Ball::IsBallMissed() const {
 
 // Function to handle the collision with a specific brick
 void Ball::handleBrickCollision(Block& brick) {
-    if (!brick.getVisibility()) return; // Skip invisible bricks
+    if (!brick.isVisible()) return; // Skip invisible bricks
 
     // Get brick position_ and size
     float brickLeft = brick.getPosition().getX();

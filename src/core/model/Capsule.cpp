@@ -13,16 +13,11 @@ Capsule::Capsule(Point position, Size size, bool visible, std::shared_ptr<Bonus>
 Capsule::Capsule(Point position, Size size, bool visible) : Object(position, size, visible) {}
 
 
-
 void Capsule::updatePosition() { 
     setY(getY() + C::FALL_SPEED);
 }
     
-
-
 std::shared_ptr<Bonus> Capsule::getBonus() const { return bonus_ ; }
-
-ALLEGRO_COLOR Capsule::getColor() const { return color_; }
 
 
 bool Capsule::checkCollision(Paddle& paddle) const{

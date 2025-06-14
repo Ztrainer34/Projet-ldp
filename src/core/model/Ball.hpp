@@ -46,7 +46,7 @@ public:
 
     bool IsBallMissed() const ;
     // Draw the ball
-    void draw() override;
+    
 };
 
 #endif // BALL_H

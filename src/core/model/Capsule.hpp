@@ -31,8 +31,6 @@ public:
     std::shared_ptr<Bonus> getBonus() const;
 
     bool checkCollision(Paddle& paddle) const;
-    bool colors_are_equals(const ALLEGRO_COLOR& c1, const ALLEGRO_COLOR& c2);
-    ALLEGRO_COLOR getColor() const;
 
 };
 

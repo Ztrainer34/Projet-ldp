@@ -1,8 +1,10 @@
-#include "Drawable.hpp"
+#include "BlockView.hpp"
 
-class BlockView : public Drawable{
-private:
-
-public:
-    void draw() override;
-};
+void BlockView::draw(){  
+    if (block.isVisible()) {
+    al_draw_filled_rectangle(block.getX(), block.getY(),
+                                block.getX() + block.getWidth(),
+                                block.getY() + block.getHeight(),
+                                getFillColor());
+    }
+}

@@ -16,8 +16,6 @@ public:
     // Mise à jour de la position du laser
     void updatePosition(float deltaTime) override;
 
-    
-
     // Vérifie si le laser est actif
     bool isActive() const;
 
