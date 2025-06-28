@@ -1,4 +1,8 @@
+#pragma once
 #include <algorithm> // pour std::max/min
+#include <allegro5/allegro.h> 
+#include "../model/Paddle.hpp"
+
 
 class PaddleController {
 private:
@@ -7,36 +11,22 @@ private:
     float boundary_left_;
     float boundary_right_;
 
+    bool moving_left_ = false;
+    bool moving_right_ = false;
+    bool shoot_requested_ = false;
+
+
 public:
     PaddleController(Paddle& p, std::vector<Laser>& l,
                      float left, float right)
       : paddle_(p), lasers_(l),
         boundary_left_(left), boundary_right_(right) {}
 
-    // Appelé depuis la boucle de jeu
-    void handleInput(const InputState& input, float deltaTime) {
-        // Mouvement
-        if (input.isKeyDown(Key::Left)) {
-            auto pos = paddle_.getPosition();
-            pos.x = std::max(boundary_left_,
-                             pos.x - paddle_.getSpeed() * deltaTime);
-            paddle_.setPosition(pos);
-        }
-        else if (input.isKeyDown(Key::Right)) {
-            auto pos = paddle_.getPosition();
-            pos.x = std::min(boundary_right_,
-                             pos.x + paddle_.getSpeed() * deltaTime);
-            paddle_.setPosition(pos);
-        }
+    // Méthodes pour que la boucle main nous informe des événements
+    void onKeyDown(int keycode);
+    void onKeyUp(int keycode);
+    void onMouseMove(float mouseX);
+    void update(float deltaTime);
 
-        // Bonus laser
-        if (input.isKeyPressed(Key::Space) && paddle_.isLaserModeEnabled()) {
-            lasers_.push_back(Laser(paddle_.getPosition()));
-        }
-    }
-
-    // Activation externe du bonus
-    void activateLaserBonus() {
-        paddle_.setLaserMode(true);
-    }
+    void activateLaserBonus();
 };

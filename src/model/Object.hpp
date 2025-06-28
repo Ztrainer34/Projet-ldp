@@ -2,9 +2,9 @@
 #define OBJECT_HPP
 
 #include "Point.hpp"
-#include "../../utils/Size.hpp"
+#include "Size.hpp"
 #include "Speed.hpp"
-#include "../../utils/Constants.hpp"
+#include "../utils/Constants.hpp"
 
 namespace CST = Constants;
 class Object {

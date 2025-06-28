@@ -96,6 +96,7 @@ int main() {
     Size paddleSize(100, 20);
     Point paddleCenter(400, 550);
     Paddle paddle(paddleCenter, 20, paddleSize, COLOR_RED, COLOR_BLUE, false);
+    PaddleController paddle_controller(paddle_model, lasers, 0, screen_width);
     
     float spacing_x = 10;
     float spacing_y = 10;
@@ -138,15 +139,31 @@ int main() {
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue, &ev);
 
+        // ================================================================
+        // SECTION 1 : GESTION DES ÉVÉNEMENTS (Redirection vers les contrôleurs)
+        // ================================================================
+
+        if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+            paddle_controller.onKeyDown(ev.keyboard.keycode);
+            if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+                running = false;
+            }
+        }
+        else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
+            paddle_controller.onKeyUp(ev.keyboard.keycode);
+        }
+        else if (ev.type == ALLEGRO_EVENT_MOUSE_AXES) {
+            paddle_controller.onMouseMove(ev.mouse.x);
+        }
+        else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+            running = false;
+        }
+        
+
         if (ev.type == ALLEGRO_EVENT_TIMER) {
             
             // Paddle movement
-            if (moveLeft) {
-                paddle.moveLeft(1.0 / 60.0, 0);
-            }
-            if (moveRight) {
-                paddle.moveRight(1.0 / 60.0, screenSize.width - 1);
-            }
+            paddle_controller.update(1.0 / 60.0);
             // Ball movement and collisions
 
                 ball.updatePosition();
@@ -340,56 +357,7 @@ int main() {
 
             al_flip_display();
         }
-        else if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
         
-            if (ev.keyboard.keycode == ALLEGRO_KEY_A || ev.keyboard.keycode == ALLEGRO_KEY_Q) {
-                moveLeft = true;
-            }
-            if (ev.keyboard.keycode == ALLEGRO_KEY_D || ev.keyboard.keycode == ALLEGRO_KEY_P) {
-                moveRight = true;
-            }
-            
-            if (ev.keyboard.keycode == ALLEGRO_KEY_SPACE) {
-                if (paddle.isLaserModeEnabled()) {
-
-                    paddle.shootLaser(lasers); // Tirer un laser
-                }
-                else{
-                    score.setHighscore(0); // reset le highscore
-                }
-
-            }
-            if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
-                running = false;
-            }
-        }
-        else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
-            if (ev.keyboard.keycode == ALLEGRO_KEY_A || ev.keyboard.keycode == ALLEGRO_KEY_Q) {
-                moveLeft = false;
-            }
-            if (ev.keyboard.keycode == ALLEGRO_KEY_D || ev.keyboard.keycode == ALLEGRO_KEY_P) {
-                moveRight = false;
-            }
-        }
-        else if(ev.type == ALLEGRO_EVENT_MOUSE_AXES){
-            float mouseX = static_cast<float>(ev.mouse.x);
-            Point paddlePosition = paddle.getPosition();
-
-
-            // si souris a droite deplacer a droite
-            if (mouseX > paddlePosition.x){
-                paddle.moveRight(1.0 / 60.0, screen_width - 1);
-            }
-            // si souris a gauche deplacer a gauche
-            else if (mouseX < paddlePosition.x) {
-                paddle.moveLeft(1.0 / 60.0, 0);
-            }
-        }
-
-
-        else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-            running = false;
-        }
     }
 
     // Cleanup

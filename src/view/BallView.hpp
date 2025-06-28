@@ -1,6 +1,6 @@
 // view/BallView.hpp
 #pragma once
-#include "../core/model/Ball.hpp"  // Inclure ici, pas dans le .hpp
+#include "../model/Ball.hpp"  // Inclure ici, pas dans le .hpp
 #include "Drawable.hpp"
 
 

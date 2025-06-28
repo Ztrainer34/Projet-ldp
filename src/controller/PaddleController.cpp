@@ -1,32 +1,60 @@
 #include "PaddleController.hpp"
-#include <algorithm> // pour std::max/min
 
-PaddleController::PaddleController(Paddle& p, 
-                                   std::vector<Laser>& lasers, 
-                                   float leftBound, 
-                                   float rightBound)
-    : paddle_(p), lasers_(lasers),
-      boundary_left_(leftBound), boundary_right_(rightBound) {}
 
-void PaddleController::handleInput(const InputState& input, float deltaTime) {
-    // Mouvement
-    auto pos = paddle_.getPosition();
-    if (input.isKeyDown(Key::Left)) {
-        pos.x = std::max(boundary_left_ + paddle_.getSize().width/2,
-                         pos.x - paddle_.getSpeed() * deltaTime);
+void PaddleController::onKeyDown(int keycode) {
+    if (keycode == ALLEGRO_KEY_A || keycode == ALLEGRO_KEY_Q) {
+        moving_left_ = true;
     }
-    else if (input.isKeyDown(Key::Right)) {
-        pos.x = std::min(boundary_right_ - paddle_.getSize().width/2,
-                         pos.x + paddle_.getSpeed() * deltaTime);
+    if (keycode == ALLEGRO_KEY_D || keycode == ALLEGRO_KEY_P) {
+        moving_right_ = true;
+    }
+    if (keycode == ALLEGRO_KEY_SPACE) {
+        if(paddle_.isLaserModeEnabled()){
+            shoot_requested_ = true;
+        }
+    }
+}
+
+void PaddleController::onKeyUp(int keycode) {
+    if (keycode == ALLEGRO_KEY_A || keycode == ALLEGRO_KEY_Q) {
+        moving_left_ = false;
+    }
+    if (keycode == ALLEGRO_KEY_D || keycode == ALLEGRO_KEY_P) {
+        moving_right_ = false;
+    }
+}
+
+void PaddleController::onMouseMove(float mouseX) {
+    float newX = mouseX - paddle_.getWidth() / 2; // Centrer
+
+    // Limites de l'écran
+    newX = std::max(boundary_left_, newX);
+    newX = std::min(boundary_right_ - paddle_.getWidth(), newX);
+
+    Point currentPos = paddle_.getPosition();
+    paddle_.setPosition({newX, currentPos.getY()});
+}
+
+void PaddleController::update(float deltaTime) {
+    // Mouvement basé sur l'état interne
+    auto pos = paddle_.getPosition();
+    if (moving_left_) {
+        pos.setX(std::max(boundary_left_, pos.getX() - paddle_.getSpeedX() * deltaTime));
+    }
+    else if (moving_right_) {
+        pos.setX(std::min(boundary_right_ - paddle_.getWidth(), pos.getX() + paddle_.getSpeedX() * deltaTime));
     }
     paddle_.setPosition(pos);
 
     // Tir laser
-    if (input.isKeyPressed(Key::Space) && paddle_.isLaserModeEnabled()) {
-        auto center = paddle_.getPosition();
-        lasers_.emplace_back(center.x + paddle_.getSize().width/2,
-                             center.y, 400, COLOR_RED);
+    if (shoot_requested_ && paddle_.isLaserModeEnabled()) {
+        Point start_pos = {paddle_.getX() + paddle_.getWidth() / 2, paddle_.getY()};
+        Speed laser_speed = {0, -400};
+        lasers_.emplace_back(start_pos, laser_speed);
     }
+    
+    // IMPORTANT : On "consomme" la demande de tir pour qu'il ne se répète pas
+    shoot_requested_ = false; 
 }
 
 void PaddleController::activateLaserBonus() {
