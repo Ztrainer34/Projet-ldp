@@ -6,6 +6,7 @@
 
 #include <vector>
 
+// todo methode reset
 
 // Déclarations anticipées
 class Paddle;

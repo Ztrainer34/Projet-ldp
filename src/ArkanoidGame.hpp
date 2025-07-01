@@ -1,30 +1,63 @@
+#ifndef ARKANOIDGAME_HPP
+#define ARKANOIDGAME_HPP
+
+
+#include "model/Paddle.hpp"
+#include "model/Laser.hpp"
+#include "model/Ball.hpp"
+#include "model/Block.hpp"
+#include "model/Capsule.hpp"
+
+#include "model/game/Level.hpp"
+
+
+#include "controller/PaddleController.hpp"
+// ... autres includes nécessaires
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
-#include <allegro5/mouse.h>
 #include <vector>
 #include <memory>
-#include <cstdio>
-#include <unordered_map>
-#include "Laser.hpp"
-#include "Block.hpp"
-#include "Ball.hpp"
-#include "Bonus.hpp"
-#include "BonusCatch.hpp"
-#include "BonusInterruption.hpp"
-#include "BonusLaser.hpp"
-#include "BonusSlow.hpp"
-#include "Paddle.hpp"
-#include "Capsule.hpp"
-#include "Level.hpp"
-#include "color.hpp"
-#include "Score.hpp"
-#include "setupAllegro.hpp"
 
-#include <algorithm>
-#include <iostream>
+class ArkanoidGame {
+private:
+    // --- État du jeu et de la fenêtre ---
+    ALLEGRO_DISPLAY* display_;
+    ALLEGRO_TIMER* timer_;
+    ALLEGRO_EVENT_QUEUE* event_queue_;
+    bool running_ = true;
+    const float screen_width_ = 1200;
+    const float screen_height_ = 600;
 
-class ArkanoidGame{
-    SetupAllegro setupAllegro;
+    // --- Modèles (M) ---
+    Ball ball_;
+    Paddle paddle_; 
+    std::vector<std::shared_ptr<Capsule>> capsules;
+    Level level_;
+    std::vector<Laser> lasers_;
+    // ... Ball, Capsules, ScoreManager, etc.
+
+    // --- Contrôleurs (C) ---
+    PaddleController paddle_controller_;
+    // ... BallController, CollisionController, etc.
+
+    // --- Vues (V) ---
+    // Vous ajouterez vos objets vues ici
+    // PaddleView paddle_view_;
+
+    // --- Méthodes privées pour organiser la boucle de jeu ---
+    void initGameObject();
+    void processEvents();
+    void updateGame(float deltaTime);
+    void renderGame();
+
+public:
+    // Le constructeur fera l'initialisation
+    ArkanoidGame();
+
+    // Le destructeur fera le nettoyage
+    ~ArkanoidGame();
+
+    // La méthode publique pour lancer le jeu
+    void run();
 };
+
+#endif // ARKANOIDGAME_HPP

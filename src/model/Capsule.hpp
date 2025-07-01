@@ -6,7 +6,6 @@
 #include <memory>
 
 #include "Object.hpp"
-#include "../../utils/Constants.hpp"
 
 namespace C = Constants;
 
