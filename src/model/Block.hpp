@@ -22,12 +22,8 @@ private:
 
 public:
     Block(Point position, Size size, bool visible, char type);
-
-    void draw() override;
-
     // Handle collision with a ball
     
-
     int getHits() const { return hitCount_; } // Get the current hit count
     void incrementHits() { hitCount_++; }    // Increment the hit coun
 

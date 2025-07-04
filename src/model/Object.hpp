@@ -27,8 +27,6 @@ public:
     Object(Object &&)                 = default;
     Object &operator=(const Object &) = default;
     Object &operator=(Object &&)      = default;
-
-    virtual void draw() = 0;
     
      float getX() const { return position_.getX(); }
      float getY() const { return position_.getY(); }
@@ -43,27 +41,27 @@ public:
     void setX(float x) { return position_.setX(x); }
     void setY(float y) { return position_.setY(y); }
     
-     Size getSize() const { return size_; }
-     void setSize(const Size& newSize) { size_ = newSize; }
-     float getWidth() const { return size_.getWidth(); }
-     float getHeight() const { return size_.getHeight(); }
-     void setWidth(float newWidth) { size_.setWidth(newWidth); }
-     void setHeight(float newHeight) { size_.setHeight(newHeight); }
+    Size getSize() const { return size_; }
+    void setSize(const Size& newSize) { size_ = newSize; }
+    float getWidth() const { return size_.getWidth(); }
+    float getHeight() const { return size_.getHeight(); }
+    void setWidth(float newWidth) { size_.setWidth(newWidth); }
+    void setHeight(float newHeight) { size_.setHeight(newHeight); }
 
-     Speed getSpeed() const { return speed_; }
-     float getSpeedX() const { return speed_.getSpeedX(); }
-     float getSpeedY() const { return speed_.getSpeedY(); }
-     void setSpeed(const Speed& newSpeed) { speed_ = newSpeed; }
-     void setSpeed(float x, float y) { speed_.setSpeed(x, y); }
-     void setSpeedX(float x) { speed_.setSpeedX(x); }
-     void setSpeedY(float y) { speed_.setSpeedY(y); }
+    Speed getSpeed() const { return speed_; }
+    float getSpeedX() const { return speed_.getSpeedX(); }
+    float getSpeedY() const { return speed_.getSpeedY(); }
+    void setSpeed(const Speed& newSpeed) { speed_ = newSpeed; }
+    void setSpeed(float x, float y) { speed_.setSpeed(x, y); }
+    void setSpeedX(float x) { speed_.setSpeedX(x); }
+    void setSpeedY(float y) { speed_.setSpeedY(y); }
 
-    virtual void updatePosition() = 0;
+    virtual void updatePosition() { }
 
-    virtual void updatePosition(float delta) = 0;
+    virtual void updatePosition(float delta) { } 
 
-     bool isVisible() const { return visible_; };
-     void setVisibility(bool newVisible) { visible_ = newVisible; }
+    bool isVisible() const { return visible_; };
+    void setVisibility(bool newVisible) { visible_ = newVisible; }
 
     virtual ~Object() = default;
 

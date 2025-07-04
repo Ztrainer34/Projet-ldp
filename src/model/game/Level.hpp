@@ -3,21 +3,34 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 
-#include "Point.hpp"
-#include "Size.hpp"
+
+#include "../Point.hpp"
+#include "../Size.hpp"
 
 class Block;
 class Capsule;
 
 class Level {
+private:
+    Size screen_size_;      // Screen size
+    size_t rows_;           // Number of rows of blocks
+    size_t cols_;           // Number of columns of blocks
+    Size block_size_;       // Size of each block
+    float spacing_x_;       // Horizontal spacing between blocks
+    float spacing_y_;       // Vertical spacing between blocks
+    std::vector<std::shared_ptr<Capsule>> capsules;
+    std::vector<std::shared_ptr<Block>> blocks_; // List of all blocks
+
 public:
     // Constructor to initialize level properties
     Level(Size screen_size, size_t rows, size_t cols, Size block_size, float spacing_x, float spacing_y);
     
     // Generate blocks for the level
-    void generateBlocks(const std::string& file_path= "base");
+    void generateBlocks(const std::string& file_path = std::string("base"));
+
 
     // Set a new level configuration
     void set_level(size_t new_rows, size_t new_cols);
@@ -36,17 +49,6 @@ public:
     }
      std::vector<std::shared_ptr<Block>>& get_blocks() { return blocks_; }
 
-
-
-private:
-    Size screen_size_;      // Screen size
-    size_t rows_;           // Number of rows of blocks
-    size_t cols_;           // Number of columns of blocks
-    Size block_size_;       // Size of each block
-    float spacing_x_;       // Horizontal spacing between blocks
-    float spacing_y_;       // Vertical spacing between blocks
-    std::vector<std::shared_ptr<Capsule>> capsules;
-    std::vector<std::shared_ptr<Block>> blocks_; // List of all blocks
 };
 
 #endif // LEVEL_HPP

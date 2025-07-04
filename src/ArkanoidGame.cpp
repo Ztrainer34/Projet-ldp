@@ -11,7 +11,9 @@ ArkanoidGame::ArkanoidGame()
       timer_(nullptr),
       event_queue_(nullptr),
       // --- Initialisation des Modèles ---
-      paddle_({screen_width_ / 2, 550}, {100, 20}, 300.0f, false),
+      ball_(Point(400, 300), 20), // 20 = radius ball a supp
+      paddle_(Point(screen_width_ / 2, 550), Size(100, 20), Speed(300.0f, 0.0f), false),
+      //Paddle(Point position, Size size, Speed speed, bool laser_mode);
       level_({screen_width_, screen_height_}, 8, 14, {70, 20}, 10, 10),
       // --- Initialisation des Contrôleurs ---
       paddle_controller_(paddle_, lasers_, 0, screen_width_)
