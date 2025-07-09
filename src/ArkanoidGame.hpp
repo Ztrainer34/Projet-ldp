@@ -1,7 +1,7 @@
 #ifndef ARKANOIDGAME_HPP
 #define ARKANOIDGAME_HPP
 
-
+#include "AllegroSystem.hpp"
 #include "model/Paddle.hpp"
 #include "model/Laser.hpp"
 #include "model/Ball.hpp"
@@ -20,9 +20,7 @@
 class ArkanoidGame {
 private:
     // --- État du jeu et de la fenêtre ---
-    ALLEGRO_DISPLAY* display_;
-    ALLEGRO_TIMER* timer_;
-    ALLEGRO_EVENT_QUEUE* event_queue_;
+    AllegroSystem allegroSystem_;
     bool running_ = true;
     const float screen_width_ = 1200;
     const float screen_height_ = 600;
