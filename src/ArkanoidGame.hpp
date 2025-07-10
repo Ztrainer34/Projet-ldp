@@ -28,7 +28,7 @@ private:
     // --- Modèles (M) ---
     Ball ball_;
     Paddle paddle_; 
-    std::vector<std::shared_ptr<Capsule>> capsules;
+    std::vector<std::shared_ptr<Capsule>> capsules_;
     Level level_;
     std::vector<Laser> lasers_;
     // ... Ball, Capsules, ScoreManager, etc.

@@ -166,7 +166,7 @@ int main() {
             paddle_controller.update(1.0 / 60.0);
             // Ball movement and collisions
 
-                ball.updatePosition();
+            ball.updatePosition();
 
             for (auto& capsule : capsules) {
                 // Update the capsule's position (falling downward)
