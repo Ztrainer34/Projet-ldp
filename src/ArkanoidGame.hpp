@@ -7,23 +7,28 @@
 #include "model/Ball.hpp"
 #include "model/Block.hpp"
 #include "model/Capsule.hpp"
-
 #include "model/game/Level.hpp"
 
 
 #include "controller/PaddleController.hpp"
+#include "controller/CollisionController.hpp"
+#include "controller/MovementController.hpp"
+
+#include "utils/Constants.hpp"
+
+
 // ... autres includes nécessaires
 #include <allegro5/allegro.h>
 #include <vector>
 #include <memory>
+
+namespace CST = Constants;
 
 class ArkanoidGame {
 private:
     // --- État du jeu et de la fenêtre ---
     AllegroSystem allegroSystem_;
     bool running_ = true;
-    const float screen_width_ = 1200;
-    const float screen_height_ = 600;
 
     // --- Modèles (M) ---
     Ball ball_;
@@ -35,6 +40,9 @@ private:
 
     // --- Contrôleurs (C) ---
     PaddleController paddle_controller_;
+    MovementController movementController_;
+    CollisionController collisionController_;
+
     // ... BallController, CollisionController, etc.
 
     // --- Vues (V) ---

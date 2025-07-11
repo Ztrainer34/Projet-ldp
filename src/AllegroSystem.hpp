@@ -6,7 +6,9 @@
 #include <allegro5/mouse.h>
 
 #include "model/Size.hpp"
+#include "utils/Constants.hpp"
 
+namespace CST = Constants;
 class AllegroSystem{
 private:
     ALLEGRO_DISPLAY* display_;
@@ -15,7 +17,7 @@ private:
     bool Valid_ = true;
     
 public:
-    AllegroSystem(float screenWidth, float screenHeight);
+    AllegroSystem();
 
     ALLEGRO_DISPLAY* getDisplay() const { return display_; }
     ALLEGRO_TIMER* getTimer() const { return timer_; }

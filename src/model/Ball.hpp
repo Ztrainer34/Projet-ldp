@@ -29,17 +29,6 @@ public:
 
     std::vector<Ball> split();
 
-    // Handle collisions (to be implemented)
-    void handlePaddleCollision(float paddleX, float paddleWidth);
-    void handleBrickCollision(Block& brick);
-    void handleScreenCollision(float screen_width, float screen_height);
-
-    bool isTouching(Paddle& paddle) const;
-    bool isTouchingBrick(const Block& brick) const ;
-    bool isTouchingScreenBoundary(float screen_width, float screen_height) const;
-
-    // Getters and Setters for position in class Object
-    
 
     // Getter and Setter for radius
     float getRadius() const;

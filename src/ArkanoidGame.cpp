@@ -7,15 +7,17 @@
 
 ArkanoidGame::ArkanoidGame()
     // On utilise la liste d'initialisation pour construire les membres
-    : allegroSystem_(screen_width_, screen_height_),
+    : allegroSystem_(),
       // --- Initialisation des Modèles ---
       ball_(Point(400, 300), 20), // 20 = radius ball a supp
-      paddle_(Point(screen_width_ / 2, 550), Size(100, 20), Speed(300.0f, 0.0f), false),
+      paddle_(Point(CST::SCREEN_WIDTH / 2, 550), Size(100, 20), Speed(300.0f, 0.0f), false),
       //Paddle(Point position, Size size, Speed speed, bool laser_mode);
-      level_({screen_width_, screen_height_}, 8, 14, {70, 20}, 10, 10),
+      level_({CST::SCREEN_WIDTH, CST::SCREEN_HEIGHT}, 8, 14, {70, 20}, 10, 10),
       capsules_(),
       // --- Initialisation des Contrôleurs ---
-      paddle_controller_(paddle_, lasers_, 0, screen_width_)
+      paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH),
+      movementController_(ball_,lasers_),
+      collisionController_()
       // ... initialisez les autres membres ici
 {
     

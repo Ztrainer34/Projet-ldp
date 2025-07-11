@@ -1,14 +1,14 @@
 #include "AllegroSystem.hpp"
 #include <iostream>
 
-AllegroSystem::AllegroSystem(float screen_width, float screen_height) {
+AllegroSystem::AllegroSystem() {
     if (!al_init() || !al_install_keyboard() || !al_install_mouse() || !al_init_primitives_addon() || !al_init_font_addon() || !al_init_ttf_addon()) {
         std::cerr << "Erreur initialisation Allegro!\n";
         Valid_ = false;
         return;
     }
 
-    display_ = al_create_display(screen_width, screen_height);
+    display_ = al_create_display(CST::SCREEN_WIDTH , CST::SCREEN_HEIGHT);
     if (!display_) {
         std::cerr << "Erreur création display!\n";
         Valid_ = false;
