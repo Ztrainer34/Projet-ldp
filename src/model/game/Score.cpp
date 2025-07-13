@@ -6,8 +6,20 @@
 #include <fstream>
 #include <vector>
 
+#include "../../utils/Color.hpp"
+
 ScoreManager::ScoreManager(const std::string& file, unsigned int score, unsigned int highscore) : 
-filename_{file}, score_{score}, highscore_(highscore) {
+highscoreFile_{file}, score_{score}, highscore_(highscore) {
+
+    score_rules_[COLOR_WHITE]   = 50;
+    score_rules_[COLOR_ORANGE]  = 60;
+    score_rules_[COLOR_CYAN]    = 70;
+    score_rules_[COLOR_GREEN]   = 80;
+    score_rules_[COLOR_RED]     = 90;
+    score_rules_[COLOR_BLUE]    = 100;
+    score_rules_[COLOR_MAGENTA] = 110;
+    score_rules_[COLOR_YELLOW]  = 120;
+
     loadHighscore(); // charge et met a jour le highscore pendant l'initialisation à partir du fichier
 }
 
@@ -16,7 +28,7 @@ ScoreManager::~ScoreManager() {
 }
 
 void ScoreManager::loadHighscore() {
-    std::ifstream infile(filename_);
+    std::ifstream infile(highscoreFile_);
     if (infile) {
         infile >> highscore_;   
     } else {
@@ -25,7 +37,7 @@ void ScoreManager::loadHighscore() {
 }
 
 void ScoreManager::saveHighscore() {
-    std::ofstream outfile(filename_);
+    std::ofstream outfile(highscoreFile_);
     if (outfile) {
         outfile << highscore_;
     } else {
@@ -64,11 +76,11 @@ void ScoreManager::updateScore(std::vector<std::pair<ALLEGRO_COLOR,
 
 }
 
-unsigned int ScoreManager::getHighscore(){
+unsigned int ScoreManager::getHighscore() const{
     return highscore_;
 }
 
-unsigned int ScoreManager::getScore(){
+unsigned int ScoreManager::getScore() const{
     return score_;
 }
 

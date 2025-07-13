@@ -5,8 +5,8 @@
 
 #include <allegro5/allegro_primitives.h>
 
-Block::Block(Point position, Size size, bool visible, char type)
-    : Object(position, size, visible), type_(type) {}
+Block::Block(Point position, Size size, bool visible,  int hitPoints)
+    : Object(position, size, visible), hitPoints_(hitPoints) {}
 
 
 void Block::setbonus(bool bonus) {
@@ -18,7 +18,7 @@ std::shared_ptr<Capsule> Block::getCapsule() const { return capsule_; }
 bool Block::hasCapsule() const { return has_capsule_; }
 
 void Block::destroy(std::vector<std::shared_ptr<Capsule>>& capsules) {
-    if (--hitCount_ <= 0) {
+    if (hitPoints_ <= 0) {
         setVisibility(false);
 
         // Add the capsule to the falling list if the block has one

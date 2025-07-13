@@ -112,7 +112,9 @@ void CollisionController::handleBallBlockCollision(Block& brick) {
     }
 
     // Mark the brick as no longer visible
+    brick.onHit();
     brick.setVisibility(false);
+    //score
 }
 
 bool CollisionController::checkAllCollision(){

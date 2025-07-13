@@ -6,9 +6,9 @@
 struct ColorComparator {
     // Cette fonction surcharge l'opérateur () et définit comment comparer deux couleurs.
     bool operator()(const ALLEGRO_COLOR& a, const ALLEGRO_COLOR& b) const {
-        if (a.r != b.r) return a.r < b.r; // D'abord, on compare le rouge
+        if (a.r != b.r) return a.r < b.r; // on compare le rouge
         if (a.g != b.g) return a.g < b.g; // Si les rouges sont égaux, on compare le vert
-        if (a.b != b.b) return a.b < b.b; // etc.
+        if (a.b != b.b) return a.b < b.b; 
         return a.a < b.a;
     }
 };

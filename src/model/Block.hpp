@@ -11,21 +11,21 @@ namespace C = Constants;
 class Capsule;
 
 class Block : public Object {
-private:          
+protected:          
 
     //Bonus bonus_;
     bool has_capsule_;
     std::shared_ptr<Capsule> capsule_;
-    int hitCount_ = 0;
+    int hitPoints_;
     bool active = true; 
-    char type_;
 
 public:
-    Block(Point position, Size size, bool visible, char type);
+    Block(Point position, Size size, bool visible, int hitPoints);
     // Handle collision with a ball
     
-    int getHits() const { return hitCount_; } // Get the current hit count
-    void incrementHits() { hitCount_++; }    // Increment the hit coun
+    int getHp() const { return hitPoints_; } // Get the current hit count
+    void incrementHits() { hitPoints_++; }    // Increment the hit coun
+    virtual void onHit() { hitPoints_--; }
 
     void setbonus(bool bonus);
     bool getbonus() const;
