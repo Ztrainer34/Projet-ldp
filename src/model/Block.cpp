@@ -5,9 +5,11 @@
 
 #include <allegro5/allegro_primitives.h>
 
+Block::Block(Point position, Size size, bool visible, ALLEGRO_COLOR color, int hitPoints, int score)
+    : Object(position, size, visible), color_(color), hitPoints_(hitPoints), scoreValue_(score) {}
+
 Block::Block(Point position, Size size, bool visible,  int hitPoints)
     : Object(position, size, visible), hitPoints_(hitPoints) {}
-
 
 void Block::setbonus(bool bonus) {
     active = bonus;

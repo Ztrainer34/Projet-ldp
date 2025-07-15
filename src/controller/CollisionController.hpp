@@ -5,7 +5,8 @@
 #include "../model/Block.hpp"
 
 #include "../model/game/Level.hpp"
-#include "utils/Constants.hpp"
+#include "../model/game/Score.hpp"
+#include "../utils/Constants.hpp"
 
 #include <vector>
 #include <memory>
@@ -20,6 +21,9 @@ private:
     std::vector<Laser>& lasers_;
     Level& level_;
 
+    ScoreManager& scoreManager_;
+    // BonusManager& bonus_manager_;
+
     bool isBallTouchingPaddle() const ; // ball touch paddle
     bool isBallTouchingBlock(const Block& block) const ; // ball touch block
     bool isBallTouchingScreenBoundary() const; // ball touch screen
@@ -31,8 +35,9 @@ private:
 
 public:
     CollisionController(Ball& ball, Paddle& paddle, std::vector<std::shared_ptr<Block>>& blocks, 
-        std::vector<Laser>& lasers, Level& level);
+        std::vector<Laser>& lasers, Level& level, ScoreManager& scoreManager);
     // Détection passive (const)
+    void checkBallBlockCollisions();
     bool checkAllCollision();
 
 };

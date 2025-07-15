@@ -5,6 +5,6 @@
 class SilverBlock : Block{
 
 public:
-    SilverBlock(Point pos, Size size, bool visible, int hp);
-    void onHit() override;
+    SilverBlock(Point pos, Size size, bool visible); // 2 hp
+    
 };

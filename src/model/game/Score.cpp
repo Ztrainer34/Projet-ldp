@@ -10,16 +10,6 @@
 
 ScoreManager::ScoreManager(const std::string& file, unsigned int score, unsigned int highscore) : 
 highscoreFile_{file}, score_{score}, highscore_(highscore) {
-
-    score_rules_[COLOR_WHITE]   = 50;
-    score_rules_[COLOR_ORANGE]  = 60;
-    score_rules_[COLOR_CYAN]    = 70;
-    score_rules_[COLOR_GREEN]   = 80;
-    score_rules_[COLOR_RED]     = 90;
-    score_rules_[COLOR_BLUE]    = 100;
-    score_rules_[COLOR_MAGENTA] = 110;
-    score_rules_[COLOR_YELLOW]  = 120;
-
     loadHighscore(); // charge et met a jour le highscore pendant l'initialisation à partir du fichier
 }
 
@@ -45,35 +35,11 @@ void ScoreManager::saveHighscore() {
     }
 }
 
-void ScoreManager::updateScore(std::vector<std::pair<ALLEGRO_COLOR,
- int>>& colorScores, const ALLEGRO_COLOR& blockColor, std::shared_ptr<Block>& block){
-
-    for (auto it = colorScores.begin(); it != colorScores.end(); ++it){
-            if (std::next(it) == colorScores.end()) {
-                break; // Stop before the last element
-            }
-            const auto& pair = *it;
-            if(memcmp(&pair.first, &blockColor, sizeof(ALLEGRO_COLOR))==0){
-                // verifie la bonne couleur et evite les copies inutiles
-                score_+= pair.second;
-                break;
-            }
-            if(memcmp(&colorScores[9].first, &blockColor, sizeof(ALLEGRO_COLOR))==0) {
-                block->incrementHits();
-                if (block->getHits() == 2) {
-                    score_ += 200;
-                    break;
-                    }
-                break;
-            }
-            else{
-                score_ += 1; // block defaut
-            }
+void ScoreManager::updateScore(unsigned int pts){
+    score_ += pts;
     if(score_ > highscore_){
         setHighscore(score_); 
     }
-    }
-
 }
 
 unsigned int ScoreManager::getHighscore() const{

@@ -20,7 +20,7 @@ private:
     unsigned int highscore_ = 0;
     std::string highscoreFile_;
     std::vector<std::shared_ptr<Block>> blocks_; // List of all blocks
-    std::map<ALLEGRO_COLOR, int, ColorComparator> score_rules_;  // colorcomp pour faciliter l'update et tri du score 
+    
 
 public:
     ScoreManager(const std::string& file, unsigned int score, unsigned int highscore);
@@ -28,11 +28,11 @@ public:
 
     void loadHighscore(); // preserve le highscore entre plusieurs partie
     void saveHighscore();
-    void updateScore(std::vector<std::pair<ALLEGRO_COLOR, int>>& colorScores, const ALLEGRO_COLOR& blockColor,
-    std::shared_ptr<Block>& block);
+    void updateScore(unsigned int pts);
     unsigned int getHighscore() const;
     unsigned int getScore() const;
     void setHighscore(unsigned int newScore);
+    void resetScore(){ score_ = 0; }
 
     std::vector<std::shared_ptr<Block>>& get_blocks() { return blocks_; }
 

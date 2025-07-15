@@ -1,8 +1,8 @@
 #include "CollisionController.hpp"
 
 CollisionController::CollisionController(Ball& ball, Paddle& paddle, 
-    std::vector<std::shared_ptr<Block>>& blocks, std::vector<Laser>& lasers, Level& level) :
-    ball_(ball), paddle_(paddle), blocks_(blocks), lasers_(lasers), level_(level) {}
+    std::vector<std::shared_ptr<Block>>& blocks, std::vector<Laser>& lasers, Level& level, ScoreManager& scoreManager) :
+    ball_(ball), paddle_(paddle), blocks_(blocks), lasers_(lasers), level_(level) ,scoreManager_(scoreManager){}
 
 bool CollisionController::isBallTouchingPaddle() const{
     // Ball boundaries
@@ -110,36 +110,41 @@ void CollisionController::handleBallBlockCollision(Block& brick) {
             ball_.setSpeedY(-ball_.getSpeedY()); // Reverse vertical velocity
         }
     }
+    ball_.updatePosition();
+}
 
-    // Mark the brick as no longer visible
-    brick.onHit();
-    brick.setVisibility(false);
-    //score
+// Dans CollisionController::handleBallBlockCollision(Block& block)
+
+void CollisionController::checkBallBlockCollisions() {
+    for (auto& block : blocks_) { // or level.getblocks
+        if (block->isVisible() && isBallTouchingBlock(*block)) {
+            
+            // Le contrôleur notifie la brique qu'elle a été touchée
+            block->onHit();
+
+            // Si le coup a détruit la brique...
+            if (!block->isVisible()) { 
+                
+                // ... on notifie le ScoreManager en lui passant la valeur de la brique.
+                scoreManager_.updateScore(block->getScoreValue());
+
+                // ... on notifie le BonusManager
+                //bonus_manager_.onBlockDestroyed(*block_ptr);
+                //if (block->hasCapsule()) {
+                //capsules.push_back(block->getCapsule());
+
+                //}
+            }
+            handleBallBlockCollision(*block);
+            // If you want multiple collisions in a single frame, remove this break
+            break;
+        }
+    }
 }
 
 bool CollisionController::checkAllCollision(){
     if (isBallTouchingScreenBoundary()) { handleBallScreenCollision(); }
     if (isBallTouchingPaddle()) { handleBallPaddleCollision(); }
-
-    for (auto& block : level_.getBlocks()) {
-        if (block->isVisible() && isBallTouchingBlock(*block)) {
-            ALLEGRO_COLOR blockColor = block->getColor(); // recupere la couleur du block
-            score.updateScore(colorScores, blockColor, block);
-            
-            handleBallBlockCollision(*block); // Adjust the velocity based on collision
-
-            if (block->hasCapsule()) {
-                capsules.push_back(block->getCapsule());
-
-            }
-
-            totalBlocks--;
-            ball.updatePosition();
-
-            // Break only if you want one collision per frame
-            // If you want multiple collisions in a single frame, remove this break
-            break;
-        }
-    }
-
+    checkBallBlockCollisions();
+    // todo check laser
 }
