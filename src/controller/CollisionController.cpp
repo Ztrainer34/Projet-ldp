@@ -1,8 +1,9 @@
 #include "CollisionController.hpp"
 
-CollisionController::CollisionController(Ball& ball, Paddle& paddle, 
-    std::vector<std::shared_ptr<Block>>& blocks, std::vector<Laser>& lasers, Level& level, ScoreManager& scoreManager) :
-    ball_(ball), paddle_(paddle), blocks_(blocks), lasers_(lasers), level_(level) ,scoreManager_(scoreManager){}
+CollisionController::CollisionController(Ball& ball, Paddle& paddle_, 
+    std::vector<std::shared_ptr<Block>>& blocks, std::vector<Laser>& lasers, Level& level, ScoreManager& scoreManager,
+std::vector<std::shared_ptr<Capsule>>& capsules) :
+    ball_(ball), paddle_(paddle_), blocks_(blocks), lasers_(lasers), level_(level) ,scoreManager_(scoreManager), capsules_(capsules) {}
 
 bool CollisionController::isBallTouchingPaddle() const{
     // Ball boundaries
@@ -44,10 +45,36 @@ bool CollisionController::isBallTouchingBlock(const Block& block) const {
             ball_.getY() - ball_.getRadius() < brickBottom);
 }
 
+bool CollisionController::isCapsuleTouchingPaddle(const Capsule& capsule) const{
+    // Capsule's bounding box
+    float capsuleLeft = capsule.getX();
+    float capsuleRight = capsule.getX() + capsule.getWidth();
+    float capsuleTop = capsule.getY();
+    float capsuleBottom = capsule.getY() + capsule.getHeight();
+
+        // Paddle's bounding box
+    Point paddlePos = paddle_.getPosition();
+    Size paddleSize = paddle_.getSize();
+    float paddleLeft = paddlePos.getX();
+    float paddleRight = paddlePos.getX() + paddleSize.getWidth();
+    float paddleTop = paddlePos.getY();
+    float paddleBottom = paddlePos.getY() + paddleSize.getHeight();
+
+        // Check if capsule is within the paddle_'s boundaries
+    if (capsuleBottom >= paddleTop &&     // Capsule's bottom is at or below the paddle_'s top
+            capsuleTop <= paddleBottom &&     // Capsule's top is at or above the paddle_'s bottom
+            capsuleRight >= paddleLeft &&     // Capsule's right is at or beyond the paddle_'s left
+            capsuleLeft <= paddleRight) {     // Capsule's left is at or before the paddle_'s right
+            return true;                      // Collision detected
+            }
+
+    return false;   
+}
+
 void CollisionController::handleBallPaddleCollision(){
     float x = ball_.getX() - (paddle_.getX() - paddle_.getWidth() / 2);
 
-    // Length L of the paddle
+    // Length L of the paddle_
     float L = paddle_.getWidth();
 
     // Calculate angle alpha (in degrees)
@@ -58,8 +85,6 @@ void CollisionController::handleBallPaddleCollision(){
 
     // Update ball's velocity based on the new angle
     ball_.setSpeedY(-ball_.getSpeedY());
-
-    ball_.updatePosition();
 }
 
 void CollisionController::handleBallScreenCollision() {
@@ -110,7 +135,6 @@ void CollisionController::handleBallBlockCollision(Block& brick) {
             ball_.setSpeedY(-ball_.getSpeedY()); // Reverse vertical velocity
         }
     }
-    ball_.updatePosition();
 }
 
 // Dans CollisionController::handleBallBlockCollision(Block& block)
@@ -140,6 +164,66 @@ void CollisionController::checkBallBlockCollisions() {
             break;
         }
     }
+}
+
+void CollisionController::checkCapsulePaddleCollision(){
+    for (auto& capsule : capsules_) {
+                // Update the capsule's position (falling downward)
+
+                capsule->update();
+                // Check for collision with the paddle
+                if (isCapsuleTouchingPaddle(*capsule)) { // TODO DURATION BONUS
+ 
+                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_BLUE)) {
+                        if (capsule->isVisible()) {
+                            paddle.enlarge(20);  // agrandir
+                            capsule->getBonus()->applyEffect(paddle);
+                            capsule->getBonus()->checkDuration();
+                        }
+                        capsule->setVisible(false); // Hide the capsule if it hits the paddle
+                    }
+                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_GREY)) {
+                        if (capsule->isVisible()) {
+                            lives++; // joueur
+                        }
+                        capsule->setVisible(false);
+                    }
+                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_PINK)) {
+                        if (capsule->isVisible()) {
+                            paddle.enableLaserMode(); // laser
+                        }
+                        capsule->setVisible(false);
+                    }
+                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_GREEN)) {
+                        if (capsule->isVisible()) {
+                            // attraper
+                            capsule->getBonus()->applyEffect(paddle, ball);  
+                            capsule->getBonus()->checkDuration();    
+                        }capsule->setVisible(false);
+                    }
+
+                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_ORANGE)) {
+                        if (capsule->isVisible()) {
+                            // slow
+                            capsule->getBonus()->applyEffect(ball);      
+                            capsule->getBonus()->checkDuration();
+                        }capsule->setVisible(false);
+                    }
+                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_CYAN)) {
+                        if (capsule->isVisible()) {
+                            // divise
+                            capsule->getBonus()->applyEffect(ball);      
+                            
+                        }capsule->setVisible(false);
+                    }
+                    
+                }
+                // If the capsule falls off the screen, make it invisible
+                if (capsule->getY() > screen_height) {
+                    capsule->setVisible(false);
+                }
+
+            }
 }
 
 bool CollisionController::checkAllCollision(){
