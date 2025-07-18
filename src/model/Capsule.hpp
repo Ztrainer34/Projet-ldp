@@ -28,7 +28,7 @@ public:
     // Updates the capsule's position
     void updatePosition() override;
     std::shared_ptr<Bonus> getBonus() const;
-
+    ALLEGRO_COLOR getColor() const {return color_;};
     bool checkCollision(Paddle& paddle) const;
 
 };
