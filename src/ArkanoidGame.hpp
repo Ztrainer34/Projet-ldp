@@ -8,11 +8,13 @@
 #include "model/Block.hpp"
 #include "model/Capsule.hpp"
 #include "model/game/Level.hpp"
+#include "model/game/ScoreManager.hpp"
 
 
 #include "controller/PaddleController.hpp"
 #include "controller/CollisionController.hpp"
 #include "controller/MovementController.hpp"
+#include "controller/bonuses/BonusManager.hpp"
 
 #include "utils/Constants.hpp"
 
@@ -21,6 +23,8 @@
 #include <allegro5/allegro.h>
 #include <vector>
 #include <memory>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_color.h>
 
 namespace CST = Constants;
 
@@ -36,6 +40,12 @@ private:
     std::vector<std::shared_ptr<Capsule>> capsules_;
     Level level_;
     std::vector<Laser> lasers_;
+    ScoreManager scoreManager_;
+    unsigned int lives_;
+    size_t totalBlocks_;
+    ALLEGRO_FONT* font_;
+    std::vector<std::pair<ALLEGRO_COLOR, int>> colorScores_;
+    BonusManager bonusManager_;
     // ... Ball, Capsules, ScoreManager, etc.
 
     // --- Contrôleurs (C) ---
