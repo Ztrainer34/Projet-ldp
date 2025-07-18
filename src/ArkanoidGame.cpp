@@ -25,7 +25,8 @@ ArkanoidGame::ArkanoidGame()
       lives_(3),
       totalBlocks_(level_.getBlocks().size()),
       font_(nullptr),
-      bonusManager_(capsules_)
+      bonusManager_(capsules_),
+      gameView_()
 {
     
  // --- SETUP DES OBJETS DE JEU ---
@@ -43,6 +44,10 @@ ArkanoidGame::ArkanoidGame()
         {al_map_rgb(192,192,192), 200} // Silver
     };
     font_ = al_create_builtin_font();
+    
+    // Initialize view objects
+    gameView_.addRenderable(std::make_unique<BallView>(ball_, COLOR_BLUE, COLOR_RED));
+    gameView_.addRenderable(std::make_unique<PaddleView>(paddle_, COLOR_RED, COLOR_BLUE));
 }
 
 ArkanoidGame::~ArkanoidGame() {
@@ -98,15 +103,24 @@ void ArkanoidGame::run() {
             }
             // Render
             al_clear_to_color(al_map_rgb(0, 0, 0));
-            ball_.draw();
-            paddle_.draw();
+            gameView_.renderAll();
+            // Draw blocks (they might need individual views)
             for (const auto& block : level_.getBlocks()) {
-                block->draw();
-                if (block->hasCapsule()) block->getCapsule()->draw();
+                if (block->isVisible()) {
+                    BlockView blockView(*block, block->getColor(), block->getColor());
+                    blockView.draw();
+                    if (block->hasCapsule()) {
+                        CapsuleView capsuleView(*block->getCapsule(), block->getCapsule()->getColor());
+                        capsuleView.draw();
+                    }
+                }
             }
             // Draw capsules (falling bonuses)
             for (const auto& capsule : capsules_) {
-                if (capsule->isVisible()) capsule->draw();
+                if (capsule->isVisible()) {
+                    CapsuleView capsuleView(*capsule, capsule->getColor());
+                    capsuleView.draw();
+                }
             }
             al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());
             al_draw_textf(font_, al_map_rgb(255,255,255), 10, 30, 0, "Lives: %u", lives_);

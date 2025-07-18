@@ -17,6 +17,12 @@
 #include "controller/bonuses/BonusManager.hpp"
 
 #include "utils/Constants.hpp"
+#include "view/PaddleView.hpp"
+#include "view/BallView.hpp"
+#include "view/BlockView.hpp"
+#include "view/CapsuleView.hpp"
+#include "view/GameView.hpp"
+#include "utils/Color.hpp"
 
 
 // ... autres includes nécessaires
@@ -46,6 +52,7 @@ private:
     ALLEGRO_FONT* font_;
     std::vector<std::pair<ALLEGRO_COLOR, int>> colorScores_;
     BonusManager bonusManager_;
+    GameView gameView_;
     // ... Ball, Capsules, ScoreManager, etc.
 
     // --- Contrôleurs (C) ---
