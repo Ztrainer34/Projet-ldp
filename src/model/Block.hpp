@@ -44,6 +44,7 @@ public:
     bool hasCapsule() const;
     void destroy(std::vector<std::shared_ptr<Capsule>>& capsules);
     
+    virtual ~Block() = default;
 };
 
 #endif // BLOCK_H

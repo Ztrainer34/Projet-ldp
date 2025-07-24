@@ -8,7 +8,7 @@
 #include "model/Block.hpp"
 #include "model/Capsule.hpp"
 #include "model/game/Level.hpp"
-#include "model/game/ScoreManager.hpp"
+#include "model/game/Score.hpp"
 
 
 #include "controller/PaddleController.hpp"
@@ -41,10 +41,10 @@ private:
     bool running_ = true;
 
     // --- Modèles (M) ---
+    Level level_;
     Ball ball_;
     Paddle paddle_; 
     std::vector<std::shared_ptr<Capsule>> capsules_;
-    Level level_;
     std::vector<Laser> lasers_;
     ScoreManager scoreManager_;
     unsigned int lives_;

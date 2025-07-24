@@ -31,7 +31,7 @@ public:
     ALLEGRO_COLOR getFrameColor() const { return frameColor; }
     ALLEGRO_COLOR getFillColor() const { return fillColor; }
 
-    virtual bool colorsAreEqual() = 0;
+    //virtual bool colorsAreEqual() = 0;
     //virtual bool colorsAreEqual(const ALLEGRO_COLOR& c1, const ALLEGRO_COLOR& c2) = 0;
 
     bool colorsAreEqual(const ALLEGRO_COLOR& c1, const ALLEGRO_COLOR& c2) const {

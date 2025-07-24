@@ -1,7 +1,7 @@
 #ifndef CAPSULEVIEW_HPP
 #define CAPSULEVIEW_HPP
 
-#include "../core/model/Capsule.hpp" 
+#include "../model/Capsule.hpp" 
 #include "Drawable.hpp"         
 
 

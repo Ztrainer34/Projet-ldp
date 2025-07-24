@@ -12,15 +12,15 @@ ArkanoidGame::ArkanoidGame()
     // On utilise la liste d'initialisation pour construire les membres
     : allegroSystem_(),
       // --- Initialisation des Modèles ---
+      level_(Size(70, 20), Point(50, 50), Point(10, 10)),
       ball_(Point(400, 300), 20), // 20 = radius ball a supp
       paddle_(Point(CST::SCREEN_WIDTH / 2, 550), Size(100, 20), Speed(300.0f, 0.0f), false),
       //Paddle(Point position, Size size, Speed speed, bool laser_mode);
-      level_({CST::SCREEN_WIDTH, CST::SCREEN_HEIGHT}, 8, 14, {70, 20}, 10, 10),
       capsules_(),
       // --- Initialisation des Contrôleurs ---
       paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH),
       movementController_(ball_,lasers_),
-      collisionController_(ball_, paddle_, level_.getBlocks(), lasers_, level_, scoreManager_),
+      collisionController_(ball_, paddle_, level_.getBlocks(), lasers_, level_, scoreManager_,capsules_),
       scoreManager_("highscore.txt", 0, 0),
       lives_(3),
       totalBlocks_(level_.getBlocks().size()),
@@ -30,7 +30,7 @@ ArkanoidGame::ArkanoidGame()
 {
     
  // --- SETUP DES OBJETS DE JEU ---
-    level_.generateBlocks();
+    level_.generateBlocks(level1_layout);
     colorScores_ = {
         {al_map_rgb(255,255,255), 50},
         {al_map_rgb(255,165,0), 60},
@@ -46,8 +46,23 @@ ArkanoidGame::ArkanoidGame()
     font_ = al_create_builtin_font();
     
     // Initialize view objects
+   
     gameView_.addRenderable(std::make_unique<BallView>(ball_, COLOR_BLUE, COLOR_RED));
     gameView_.addRenderable(std::make_unique<PaddleView>(paddle_, COLOR_RED, COLOR_BLUE));
+
+    // 2. Ajouter les vues pour TOUTES les briques
+    for (const auto& block : level_.getBlocks()) {
+        // On crée une vue unique pour chaque modèle de brique
+        ALLEGRO_COLOR blockColor = block->getColor();
+        auto block_view = std::make_unique<BlockView>(*block, blockColor, blockColor);
+        
+        // On déplace la possession de cette vue vers le GameView
+        gameView_.addRenderable(std::move(block_view));
+    }
+
+    // Note : Vous ferez de même pour les capsules quand elles sont créées.
+    // Quand une brique est détruite et libère une capsule, vous créerez une
+    // CapsuleView et l'ajouterez à gameView_.
 }
 
 ArkanoidGame::~ArkanoidGame() {
@@ -82,7 +97,7 @@ void ArkanoidGame::run() {
             // Collisions
             collisionController_.checkAllCollision();
             // Ball missed
-            if (ball_.getPosition().y > CST::SCREEN_HEIGHT) {
+            if (ball_.getY() > CST::SCREEN_HEIGHT) {
                 lives_--;
                 ball_.setPosition({400, 300});
             }
@@ -172,5 +187,9 @@ void ArkanoidGame::renderGame() {
     // Mettez ici toute la logique d'affichage
     al_clear_to_color(al_map_rgb(0, 0, 0));
     // ... paddle_view_.draw(), ball_view_.draw(), etc.
+    gameView_.renderAll();
+    al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());
+    al_draw_textf(font_, al_map_rgb(255,255,255), 10, 30, 0, "Lives: %u", lives_);
+    al_draw_textf(font_, al_map_rgb(255,255,255), 20, 10, 0, "Highscore: %u", scoreManager_.getHighscore());
     al_flip_display();
 }

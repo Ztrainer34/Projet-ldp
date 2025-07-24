@@ -1,5 +1,5 @@
 #pragma once
-#include "../core/model/Block.hpp"  // Inclure ici, pas dans le .hpp
+#include "../model/Block.hpp"  // Inclure ici, pas dans le .hpp
 #include "Drawable.hpp"
 
 

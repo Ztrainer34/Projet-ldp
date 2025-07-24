@@ -1,7 +1,7 @@
 #ifndef PADDLEVIEW_HPP
 #define PADDLEVIEW_HPP
 
-#include "../core/model/Paddle.hpp"
+#include "../model/Paddle.hpp"
 #include "Drawable.hpp"
 
 class PaddleView : public Drawable {

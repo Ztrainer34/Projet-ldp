@@ -1,53 +1,68 @@
 #ifndef LEVEL_HPP
 #define LEVEL_HPP
 
+#include "../Point.hpp"
+#include "../Size.hpp"
+#include "../Block.hpp"
+#include "../GoldBlock.hpp"
+#include "../SilverBlock.hpp"
+#include "../Capsule.hpp"
+#include "../../utils/Color.hpp"
+
 #include <vector>
 #include <memory>
 #include <string>
+#include <map>
 
 
+// On peut le mettre dans un fichier dédié, par exemple "layouts/LevelData.hpp"
 
-#include "../Point.hpp"
-#include "../Size.hpp"
+// '-' = Espace vide
+// 'G' = Brique dorée
+// 'S' = Brique argentée
+// '1' à '8' = Briques standard de différentes couleurs
 
-class Block;
-class Capsule;
+const std::vector<std::string> level1_layout = {
+    "GGGGGGGGGGGGGG",
+    "S-S-S-S-S-S-S-",
+    "11223344556677",
+    "88776655443322"
+};
 
 class Level {
 private:
-    Size screen_size_;      // Screen size
+    Size screenSize_;      // Screen size
     size_t rows_;           // Number of rows of blocks
     size_t cols_;           // Number of columns of blocks
-    Size block_size_;       // Size of each block
+    Size blockSize_;       // Size of each block
     float spacing_x_;       // Horizontal spacing between blocks
     float spacing_y_;       // Vertical spacing between blocks
-    std::vector<std::shared_ptr<Capsule>> capsules;
+    float start_x_;
+    float start_y_;
+    std::vector<std::shared_ptr<Capsule>> capsules_;
     std::vector<std::shared_ptr<Block>> blocks_; // List of all blocks
 
 public:
     // Constructor to initialize level properties
-    Level(Size screen_size, size_t rows, size_t cols, Size block_size, float spacing_x, float spacing_y);
+    Level(Size screenSize, size_t rows, size_t cols, Size blockSize, float spacing_x, float spacing_y);
+    Level(Size blockSize, Point startPos, Point spacing);
+
     
-    // Generate blocks for the level
-    void generateBlocks(const std::string& file_path = std::string("base"));
+    // La méthode "usine" qui lit un layout et crée les modèles de briques
+    void generateBlocks(const std::vector<std::string>& layout);
 
 
     // Set a new level configuration
-    void set_level(size_t new_rows, size_t new_cols);
 
     // Get a reference to the current blocks
     std::vector<std::shared_ptr<Block>>& getBlocks()  { return blocks_; }
     
-    void reset_blocks();
-
-    // Draw the blocks to the screen
-    void draw_blocks() const;
+    void resetBlocks();
 
      // Get a reference to the current blocks
-    std::vector<std::shared_ptr<Capsule>> get_capsules() const {
-        return capsules;
+    std::vector<std::shared_ptr<Capsule>> getCapsules() const {
+        return capsules_;
     }
-     std::vector<std::shared_ptr<Block>>& get_blocks() { return blocks_; }
 
 };
 

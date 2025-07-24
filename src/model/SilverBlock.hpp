@@ -2,7 +2,7 @@
 
 #include "Block.hpp"
 
-class SilverBlock : Block{
+class SilverBlock : public Block {
 
 public:
     SilverBlock(Point pos, Size size, bool visible); // 2 hp

@@ -1,7 +1,7 @@
 #ifndef LASERVIEW_HPP
 #define LASERVIEW_HPP
 
-#include "../core/model/Laser.hpp" // Chemin vers ton modèle Laser
+#include "../model/Laser.hpp" // Chemin vers ton modèle Laser
 #include "Drawable.hpp"         // Chemin vers ton interface Drawable
 
 
