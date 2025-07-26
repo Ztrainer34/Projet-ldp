@@ -1,0 +1,20 @@
+{
+  "name": "C++ Development",
+  "image": "mcr.microsoft.com/devcontainers/cpp:latest", // Ou une autre image de base Linux
+  "features": {
+    // Optionnel : si vous voulez des fonctionnalités C++ spécifiques
+    // "ghcr.io/devcontainers/features/cpp:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "llvm-vs-code-extensions.vscode-clangd"
+        // Autres extensions VS Code utiles
+      ]
+    }
+  },
+  // Ceci est la partie cruciale pour l'installation d'Allegro
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y liballegro5-dev liballegro-primitives5-dev liballegro-font5-dev liballegro-ttf5-dev",
+  "remoteUser": "codespace"
+}
