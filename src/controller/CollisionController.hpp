@@ -8,7 +8,7 @@
 #include "../model/game/Level.hpp"
 #include "../model/game/Score.hpp"
 #include "../utils/Constants.hpp"
-
+#include "GameContext.hpp"
 #include <vector>
 #include <memory>
 
@@ -18,6 +18,7 @@ class BonusManager;
 namespace CST = Constants;
 class CollisionController {
 private:
+    GameContext& gameContext_;
     Ball& ball_;
     Paddle& paddle_;
     std::vector<std::shared_ptr<Block>>& blocks_;
@@ -34,6 +35,7 @@ private:
     bool isBallTouchingBlock(const Block& block) const ; // ball touch block
     bool isBallTouchingScreenBoundary() const; // ball touch screen
     bool isCapsuleTouchingPaddle(const Capsule& capsule) const;
+    bool isLaserTouchingBlock(const std::shared_ptr<Block> block, const Laser& laser) const;
 
     void handleBallPaddleCollision(); // collision entre la balle et la raquette
     void handleBallBlockCollision(Block& brick); // collision entre la balle et une brique
@@ -41,13 +43,16 @@ private:
 
 
 public:
-    CollisionController(Ball& ball, Paddle& paddle, std::vector<std::shared_ptr<Block>>& blocks, 
+    CollisionController(GameContext& context, Ball& ball, Paddle& paddle, std::vector<std::shared_ptr<Block>>& blocks, 
         std::vector<Laser>& lasers, Level& level, ScoreManager& scoreManager,
-    std::vector<std::shared_ptr<Capsule>>& capsules, unsigned int* lives, BonusManager& bonusManager); // Add bonusManager to constructor
+    std::vector<std::shared_ptr<Capsule>>& capsules, BonusManager& bonusManager); // Add bonusManager to constructor
     // Détection passive (const)
     void checkBallBlockCollisions();
+    /**
+     * @brief itere sur les capsule actif
+     */
     void checkCapsulePaddleCollision();
-    void checkLaserBlockCollisions();
+    void checkLaserBlockCollisions(GameContext& context);
     bool checkAllCollision();
 
 };

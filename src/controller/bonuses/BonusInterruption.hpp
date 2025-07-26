@@ -2,7 +2,7 @@
 #define BONUS_BONUSINTERRUPTION_HPP
 
 #include "Bonus.hpp"
-#include "BonusContext.hpp"
+#include "GameContext.hpp"
 
 class Ball;
 
@@ -13,7 +13,7 @@ public:
     BonusInterruption();
 
 
-    void applyEffect(BonusContext& bonusContext) override;
+    void applyEffect(GameContext& gameContext) override;
 
 };
 

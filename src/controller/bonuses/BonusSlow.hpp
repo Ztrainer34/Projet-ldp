@@ -2,7 +2,7 @@
 #define BONUS_BONUSSLOW_HPP
 
 #include "Bonus.hpp"
-#include "BonusContext.hpp"
+#include "GameContext.hpp"
 
 class Ball;
 
@@ -12,7 +12,7 @@ public:
     BonusSlow(const Point& position,char type, ALLEGRO_COLOR color);
     BonusSlow();
 
-    void applyEffect(BonusContext& bonusContext) override;
+    void applyEffect(GameContext& gameContext) override;
 
 
 

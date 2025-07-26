@@ -1,0 +1,20 @@
+#pragma once
+#include "../model/Paddle.hpp"
+#include "../model/Ball.hpp"
+#include "../model/Laser.hpp"
+#include "../model/game/Level.hpp"
+#include <vector>
+
+/**
+ * @brief permet de simplifier les param dans les constructeurs, méthodes
+ */
+struct GameContext {
+    Paddle& paddle;
+    Ball& ball;
+    std::vector<Laser>& lasers;
+    unsigned int& lives;
+    Level& level;
+    std::vector<std::shared_ptr<Block>>& blocks_;
+    std::vector<std::shared_ptr<Capsule>>& capsules_;
+    
+};

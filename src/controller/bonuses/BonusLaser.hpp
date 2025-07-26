@@ -6,7 +6,7 @@
 #include "../../utils/Utils.hpp"
 #include "../../model/game/Level.hpp"
 #include "Bonus.hpp"
-#include "BonusContext.hpp"
+#include "GameContext.hpp"
 
 class Capsule;
 class Block;
@@ -28,7 +28,7 @@ public:
                              Level& level) override;
 
 
-    void applyEffect(BonusContext& bonusContext) override;
+    void applyEffect(GameContext& gameContext) override;
     // Mise à jour de la position du laser
     void update(float deltaTime);
 

@@ -67,8 +67,8 @@ void BonusLaser::applyEffect(Paddle& paddle,
         }
     }
 
-void applyEffect(BonusContext& bonusContext){
-    bonusContext.paddle.setLaserMode(true); 
+void applyEffect(GameContext& gameContext){
+    gameContext.paddle.setLaserMode(true); 
 }
 
 

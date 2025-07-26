@@ -9,11 +9,11 @@ BonusCatch::BonusCatch(const Point& position, char type, ALLEGRO_COLOR color)
 BonusCatch::BonusCatch() : Bonus() {}
 
 // Appliquer l'effet spécifique au bonus "BonusCatch"
-void BonusCatch::applyEffect(BonusContext& bonusContext) {
+void BonusCatch::applyEffect(GameContext& gameContext) {
     activate(); // Activer le bonus
-    Point paddleCenter = bonusContext.paddle.getPosition(); // Obtenir la position centrale de la raquette
+    Point paddleCenter = gameContext.paddle.getPosition(); // Obtenir la position centrale de la raquette
     
-    bonusContext.ball.setPosition(paddleCenter); // Positionner la balle au centre de la raquette
+    gameContext.ball.setPosition(paddleCenter); // Positionner la balle au centre de la raquette
     checkDuration();
     // TODO: Ajouter la vérification de la durée dans une capsule de temps
 }

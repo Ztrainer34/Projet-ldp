@@ -3,7 +3,7 @@
 
 #include "../../model/Object.hpp"
 #include "../../model/Point.hpp"
-#include "BonusContext.hpp"
+#include "../GameContext.hpp"
 
 #include <allegro5/allegro_color.h>
 #include <chrono>
@@ -24,6 +24,7 @@ protected:
     ALLEGRO_COLOR color_;
     bool visible_;
     bool active_; // effet actif ou pas 
+    bool hasDuration_;
     std::chrono::time_point<std::chrono::steady_clock> startTime_; 
     // Représente une horloge monotone qui ne peut pas reculer.
     const std::chrono::seconds effectDuration_ = std::chrono::seconds(6);
@@ -44,7 +45,7 @@ public:
                              Level& level) = 0;
     virtual void applyEffect() = 0;
 
-    virtual void applyEffect(BonusContext& context) = 0;
+    virtual void applyEffect(GameContext& context) = 0;
 
     virtual void cancelEffect(Paddle& paddle, Ball& ball) = 0;
     // Obtenez le type de bonus
@@ -64,6 +65,8 @@ public:
     bool is_visible() const { return visible_; }
     void set_visible(bool visible) { visible_ = visible; }
     bool isActive() const { return active_; }
+
+    bool hasDuration() const { return hasDuration_; }
 };
 
 

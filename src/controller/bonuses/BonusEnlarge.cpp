@@ -6,10 +6,10 @@
 BonusEnlarge::BonusEnlarge() 
     : Bonus() {}
 
-void BonusEnlarge::applyEffect(BonusContext& bonusContext){
+void BonusEnlarge::applyEffect(GameContext& GameContext){
         // Logique spécifique au bonus "BonusEnlarge"
         activate(); 
-        bonusContext.paddle.enlarge(20);  // agrandir
+        GameContext.paddle.enlarge(20);  // agrandir
         checkDuration();
 
         // VERIFIER LA DUREE DANS CAPSULE ou MAIN 

@@ -2,7 +2,7 @@
 #define BONUS_BONUSENLARGE_HPP
 
 #include "Bonus.hpp"
-#include "BonusContext.hpp"
+#include "GameContext.hpp"
 
 class Paddle;
 
@@ -11,7 +11,7 @@ class BonusEnlarge : public Bonus {
 public:
     BonusEnlarge();
     
-    void applyEffect(BonusContext& bonusContext) override;
+    void applyEffect(GameContext& gameContext) override;
 
 
     

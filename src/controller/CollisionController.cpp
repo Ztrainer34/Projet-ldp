@@ -2,10 +2,11 @@
 #include "../utils/Utils.hpp" // Add this include
 #include "../controller/bonuses/BonusManager.hpp"
 
-CollisionController::CollisionController(Ball& ball, Paddle& paddle_, 
+CollisionController::CollisionController(GameContext& context, Ball& ball, Paddle& paddle_, 
     std::vector<std::shared_ptr<Block>>& blocks, std::vector<Laser>& lasers, Level& level, ScoreManager& scoreManager,
-    std::vector<std::shared_ptr<Capsule>>& capsules, unsigned int* lives, BonusManager& bonusManager) :
-    ball_(ball), paddle_(paddle_), blocks_(blocks), lasers_(lasers), level_(level) ,scoreManager_(scoreManager), capsules_(capsules), lives_(lives), bonusManager_(bonusManager) {}
+    std::vector<std::shared_ptr<Capsule>>& capsules, BonusManager& bonusManager) :
+    gameContext_(context),
+    ball_(ball), paddle_(paddle_), blocks_(blocks), lasers_(lasers), level_(level) ,scoreManager_(scoreManager), capsules_(capsules), bonusManager_(bonusManager) {}
 
 bool CollisionController::isBallTouchingPaddle() const{
     // Ball boundaries
@@ -71,6 +72,24 @@ bool CollisionController::isCapsuleTouchingPaddle(const Capsule& capsule) const{
             }
 
     return false;   
+}
+
+bool CollisionController::isLaserTouchingBlock(const std::shared_ptr<Block> block, const Laser& laser) const{
+    float laserX = laser.getX();
+    float laserY = laser.getY();
+    float laserWidth = laser.getWidth();
+    float laserHeight = laser.getHeight();
+
+    float blockX = block->getX();
+    float blockY = block->getY();
+    float blockWidth = block->getWidth();
+    float blockHeight = block->getHeight();
+
+    // Check if the laser rectangle intersects the block's rectangle
+    if (laserX + laserWidth > blockX && laserX < blockX + blockWidth &&
+        laserY + laserHeight > blockY && laserY < blockY + blockHeight){
+            return true;
+        }
 }
 
 void CollisionController::handleBallPaddleCollision(){
@@ -144,24 +163,20 @@ void CollisionController::handleBallBlockCollision(Block& brick) {
 void CollisionController::checkBallBlockCollisions() {
     for (auto& block : blocks_) { // or level.getblocks
         if (block->isVisible() && isBallTouchingBlock(*block)) {
-            
+            handleBallBlockCollision(*block);
+
             // Le contrôleur notifie la brique qu'elle a été touchée
             block->onHit();
 
             // Si le coup a détruit la brique...
             if (!block->isVisible()) { 
-                
-                // ... on notifie le ScoreManager en lui passant la valeur de la brique.
                 scoreManager_.updateScore(block->getScoreValue());
 
-                // ... on notifie le BonusManager
-                //bonus_manager_.onBlockDestroyed(*block_ptr);
-                //if (block->hasCapsule()) {
-                //capsules.push_back(block->getCapsule());
-
-                //}
+                // drop une capsule 
+                bonusManager_.onBlockDestroyed(*block); 
+        
             }
-            handleBallBlockCollision(*block);
+            
             // If you want multiple collisions in a single frame, remove this break
             break;
         }
@@ -169,26 +184,32 @@ void CollisionController::checkBallBlockCollisions() {
 }
 
 void CollisionController::checkCapsulePaddleCollision(){
-    // Delegate to BonusManager to handle all capsule/bonus logic
-    bonusManager_.update(paddle_, ball_, *lives_);
+    for (auto it = capsules_.begin(); it != capsules_.end(); ) {
+        if (isCapsuleTouchingPaddle(**it)) {
+            bonusManager_.onCapsuleCollected(**it);
+            it = capsules_.erase(it); // On supprime la capsule de l'écran
+        } else {
+            ++it;
+        }
+    }
 }
 
-void CollisionController::checkLaserBlockCollisions(){
+void CollisionController::checkLaserBlockCollisions(GameContext& context){
+    lasers_ = context.lasers;
     for (auto& laser : lasers_) {
         if (!laser.isActive()) continue;
-
-        for (auto& block_ptr : blocks_) {
-            if (!block_ptr->isVisible()) continue;
+        for (auto& block : context.blocks_) {
+            if (!block->isVisible()) continue;
 
             // Votre logique de détection de collision (AABB) va ici
-            if (/* le laser touche la brique */) {
+            if (isLaserTouchingBlock(block, laser)) {
                 
-                block_ptr->onHit();
+                block->onHit();
                 laser.setInactive(); // Le laser est consommé
 
-                if (block_ptr->isDestroyed()) {
-                    score_manager_.addPoints(block_ptr->getScoreValue());
-                    bonus_manager_.onBlockDestroyed(*block_ptr);
+                if (!block->isVisible()) {
+                    scoreManager_.updateScore(block->getScoreValue());
+                    bonusManager_.onBlockDestroyed(*block);
                 }
                 
                 break; // Le laser ne peut détruire qu'une brique
@@ -201,6 +222,7 @@ bool CollisionController::checkAllCollision(){
     if (isBallTouchingScreenBoundary()) { handleBallScreenCollision(); }
     if (isBallTouchingPaddle()) { handleBallPaddleCollision(); }
     checkBallBlockCollisions();
-    checkLaserBlockCollisions();
+    checkCapsulePaddleCollision();
+    checkLaserBlockCollisions(gameContext_);
     
 }

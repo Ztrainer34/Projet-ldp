@@ -2,8 +2,8 @@
 
 #include "Bonus.hpp"
 
-BonusManager::BonusManager(std::vector<std::shared_ptr<Capsule>>& capsules, BonusContext& bonusContext)
-    : capsules_(capsules), bonusContext_(bonusContext) {}
+BonusManager::BonusManager(std::vector<std::shared_ptr<Capsule>>& capsules, GameContext& gameContext, std::vector<std::shared_ptr<Bonus>>& bonuses)
+    : capsules_(capsules), gameContext_(gameContext), bonuses_(bonuses) {}
 
 void BonusManager::update(Paddle& paddle, Ball& ball, unsigned int& lives) {
     for (auto& capsule : capsules_) {
@@ -41,3 +41,19 @@ void BonusManager::update(Paddle& paddle, Ball& ball, unsigned int& lives) {
         }
     }
 } 
+
+void BonusManager::onBlockDestroyed(const Block& block){
+    if (block.hasCapsule()) {
+        capsules_.push_back(block.getCapsule());
+    }
+}
+
+void BonusManager::onCapsuleCollected(const Capsule& capsule) {
+    // Appliquer l'effet du bonus.
+    if (auto bonus = capsule.getBonus()) {
+        bonus->applyEffect(gameContext_);
+        if (bonus->hasDuration()) {
+            bonuses_.push_back(bonus);
+        }
+    }
+}
