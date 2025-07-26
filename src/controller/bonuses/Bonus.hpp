@@ -3,6 +3,7 @@
 
 #include "../../model/Object.hpp"
 #include "../../model/Point.hpp"
+#include "BonusContext.hpp"
 
 #include <allegro5/allegro_color.h>
 #include <chrono>
@@ -31,7 +32,8 @@ public:
     Bonus(Point position, char type, ALLEGRO_COLOR color)
         : position_{position}, type_{type}, color_{color}, visible_{true} {}
 
-
+    Bonus();
+    
     virtual void applyEffect(Paddle& paddle, Ball& ball) = 0;
     virtual void applyEffect(Ball& ball) = 0;
     virtual void applyEffect(Paddle& paddle) = 0;
@@ -41,6 +43,8 @@ public:
                              std::vector<std::shared_ptr<Capsule>>& capsules,
                              Level& level) = 0;
     virtual void applyEffect() = 0;
+
+    virtual void applyEffect(BonusContext& context) = 0;
 
     virtual void cancelEffect(Paddle& paddle, Ball& ball) = 0;
     // Obtenez le type de bonus

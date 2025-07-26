@@ -4,8 +4,9 @@
 #include <allegro5/allegro.h>
 #include "../../model/Point.hpp"
 #include "../../utils/Utils.hpp"
+#include "../../model/game/Level.hpp"
 #include "Bonus.hpp"
-
+#include "BonusContext.hpp"
 
 class Capsule;
 class Block;
@@ -17,6 +18,7 @@ public:
     // Constructeur
     BonusLaser(float x, float y, float speed, ALLEGRO_COLOR color);
     BonusLaser(const Point& position, float speed, ALLEGRO_COLOR color);
+    BonusLaser();
        
 
     void applyEffect(Paddle& paddle,
@@ -25,6 +27,8 @@ public:
                              std::vector<std::shared_ptr<Capsule>>& capsules,
                              Level& level) override;
 
+
+    void applyEffect(BonusContext& bonusContext) override;
     // Mise à jour de la position du laser
     void update(float deltaTime);
 

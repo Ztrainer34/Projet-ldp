@@ -3,13 +3,13 @@
 #include "../../model/Paddle.hpp"
 
 
-BonusEnlarge::BonusEnlarge(const Point& position, char type, ALLEGRO_COLOR color)
-    : Bonus(position, type, color) {}
+BonusEnlarge::BonusEnlarge() 
+    : Bonus() {}
 
-void BonusEnlarge::applyEffect(Paddle& paddle){
+void BonusEnlarge::applyEffect(BonusContext& bonusContext){
         // Logique spécifique au bonus "BonusEnlarge"
         activate(); 
-        paddle.enlarge(20);  // agrandir
+        bonusContext.paddle.enlarge(20);  // agrandir
         checkDuration();
 
         // VERIFIER LA DUREE DANS CAPSULE ou MAIN 

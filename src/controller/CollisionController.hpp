@@ -47,6 +47,7 @@ public:
     // Détection passive (const)
     void checkBallBlockCollisions();
     void checkCapsulePaddleCollision();
+    void checkLaserBlockCollisions();
     bool checkAllCollision();
 
 };

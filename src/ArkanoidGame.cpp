@@ -180,6 +180,9 @@ void ArkanoidGame::updateGame(float deltaTime) {
     // Mettez ici toute la logique de mise à jour
     paddle_controller_.update(deltaTime);
     ball_.updatePosition();
+    movementController_.update(deltaTime); 
+    collisionController_.checkAllCollision();
+    // bonusmanager update
     // ... ball_controller.update(), collision_controller.checkCollisions(), etc.
 }
 

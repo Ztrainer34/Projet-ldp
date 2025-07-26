@@ -2,8 +2,8 @@
 
 #include "Bonus.hpp"
 
-BonusManager::BonusManager(std::vector<std::shared_ptr<Capsule>>& capsules)
-    : capsules_(capsules) {}
+BonusManager::BonusManager(std::vector<std::shared_ptr<Capsule>>& capsules, BonusContext& bonusContext)
+    : capsules_(capsules), bonusContext_(bonusContext) {}
 
 void BonusManager::update(Paddle& paddle, Ball& ball, unsigned int& lives) {
     for (auto& capsule : capsules_) {

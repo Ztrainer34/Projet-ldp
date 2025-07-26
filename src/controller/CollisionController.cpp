@@ -173,9 +173,34 @@ void CollisionController::checkCapsulePaddleCollision(){
     bonusManager_.update(paddle_, ball_, *lives_);
 }
 
+void CollisionController::checkLaserBlockCollisions(){
+    for (auto& laser : lasers_) {
+        if (!laser.isActive()) continue;
+
+        for (auto& block_ptr : blocks_) {
+            if (!block_ptr->isVisible()) continue;
+
+            // Votre logique de détection de collision (AABB) va ici
+            if (/* le laser touche la brique */) {
+                
+                block_ptr->onHit();
+                laser.setInactive(); // Le laser est consommé
+
+                if (block_ptr->isDestroyed()) {
+                    score_manager_.addPoints(block_ptr->getScoreValue());
+                    bonus_manager_.onBlockDestroyed(*block_ptr);
+                }
+                
+                break; // Le laser ne peut détruire qu'une brique
+            }
+        }
+    }
+}
+
 bool CollisionController::checkAllCollision(){
     if (isBallTouchingScreenBoundary()) { handleBallScreenCollision(); }
     if (isBallTouchingPaddle()) { handleBallPaddleCollision(); }
     checkBallBlockCollisions();
-    // todo check laser
+    checkLaserBlockCollisions();
+    
 }

@@ -9,6 +9,7 @@
 BonusLaser::BonusLaser(float x, float y, float speed, ALLEGRO_COLOR color)
     : Bonus(Point(x, y),'L', color), position_(x, y), speed_(speed), color_(color), active_(true) {}
 
+BonusLaser::BonusLaser() : Bonus() {}
 // Mise à jour de la position du bonuslaser
 void BonusLaser::update(float deltaTime) {
     //position_.y -= speed_ * deltaTime; // Le bonuslaser monte vers le haut
@@ -66,24 +67,14 @@ void BonusLaser::applyEffect(Paddle& paddle,
         }
     }
 
-// Dessiner le bonuslaser
-void BonusLaser::draw() const {
-    if (active_) {
-        al_draw_filled_rectangle(position_.getX() - 2, position_.getY(), position_.getX() + 2, position_.getY() + 10, color_);
-    }
+void applyEffect(BonusContext& bonusContext){
+    bonusContext.paddle.setLaserMode(true); 
 }
 
-// Vérifie si le bonuslaser est actif
-bool BonusLaser::isActive() const {
-    return active_;
-}
+
 
 // Récupérer la position du bonuslaser
 const Point& BonusLaser::getPosition() const {
     return position_;
 }
 
-// Désactiver le bonuslaser
-void BonusLaser::setInactive() {
-    active_ = false;
-}
