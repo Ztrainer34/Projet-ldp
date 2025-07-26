@@ -1,9 +1,11 @@
 #include "CollisionController.hpp"
+#include "../utils/Utils.hpp" // Add this include
+#include "../controller/bonuses/BonusManager.hpp"
 
 CollisionController::CollisionController(Ball& ball, Paddle& paddle_, 
     std::vector<std::shared_ptr<Block>>& blocks, std::vector<Laser>& lasers, Level& level, ScoreManager& scoreManager,
-std::vector<std::shared_ptr<Capsule>>& capsules) :
-    ball_(ball), paddle_(paddle_), blocks_(blocks), lasers_(lasers), level_(level) ,scoreManager_(scoreManager), capsules_(capsules) {}
+    std::vector<std::shared_ptr<Capsule>>& capsules, unsigned int* lives, BonusManager& bonusManager) :
+    ball_(ball), paddle_(paddle_), blocks_(blocks), lasers_(lasers), level_(level) ,scoreManager_(scoreManager), capsules_(capsules), lives_(lives), bonusManager_(bonusManager) {}
 
 bool CollisionController::isBallTouchingPaddle() const{
     // Ball boundaries
@@ -167,63 +169,8 @@ void CollisionController::checkBallBlockCollisions() {
 }
 
 void CollisionController::checkCapsulePaddleCollision(){
-    for (auto& capsule : capsules_) {
-                // Update the capsule's position (falling downward)
-
-                capsule->update();
-                // Check for collision with the paddle
-                if (isCapsuleTouchingPaddle(*capsule)) { // TODO DURATION BONUS
- 
-                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_BLUE)) {
-                        if (capsule->isVisible()) {
-                            paddle.enlarge(20);  // agrandir
-                            capsule->getBonus()->applyEffect(paddle);
-                            capsule->getBonus()->checkDuration();
-                        }
-                        capsule->setVisible(false); // Hide the capsule if it hits the paddle
-                    }
-                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_GREY)) {
-                        if (capsule->isVisible()) {
-                            lives++; // joueur
-                        }
-                        capsule->setVisible(false);
-                    }
-                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_PINK)) {
-                        if (capsule->isVisible()) {
-                            paddle.enableLaserMode(); // laser
-                        }
-                        capsule->setVisible(false);
-                    }
-                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_GREEN)) {
-                        if (capsule->isVisible()) {
-                            // attraper
-                            capsule->getBonus()->applyEffect(paddle, ball);  
-                            capsule->getBonus()->checkDuration();    
-                        }capsule->setVisible(false);
-                    }
-
-                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_ORANGE)) {
-                        if (capsule->isVisible()) {
-                            // slow
-                            capsule->getBonus()->applyEffect(ball);      
-                            capsule->getBonus()->checkDuration();
-                        }capsule->setVisible(false);
-                    }
-                    if (capsule->colors_are_equals(capsule->getColor(),COLOR_CYAN)) {
-                        if (capsule->isVisible()) {
-                            // divise
-                            capsule->getBonus()->applyEffect(ball);      
-                            
-                        }capsule->setVisible(false);
-                    }
-                    
-                }
-                // If the capsule falls off the screen, make it invisible
-                if (capsule->getY() > screen_height) {
-                    capsule->setVisible(false);
-                }
-
-            }
+    // Delegate to BonusManager to handle all capsule/bonus logic
+    bonusManager_.update(paddle_, ball_, *lives_);
 }
 
 bool CollisionController::checkAllCollision(){

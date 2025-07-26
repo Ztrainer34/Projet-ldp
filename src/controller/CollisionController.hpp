@@ -12,6 +12,8 @@
 #include <vector>
 #include <memory>
 
+// Forward declaration
+class BonusManager;
 
 namespace CST = Constants;
 class CollisionController {
@@ -24,6 +26,8 @@ private:
     std::vector<std::shared_ptr<Capsule>>& capsules_;
 
     ScoreManager& scoreManager_;
+    unsigned int* lives_; // Add this line
+    BonusManager& bonusManager_; // Add this line
     // BonusManager& bonus_manager_;
 
     bool isBallTouchingPaddle() const ; // ball touch paddle
@@ -39,7 +43,7 @@ private:
 public:
     CollisionController(Ball& ball, Paddle& paddle, std::vector<std::shared_ptr<Block>>& blocks, 
         std::vector<Laser>& lasers, Level& level, ScoreManager& scoreManager,
-    std::vector<std::shared_ptr<Capsule>>& capsules);
+    std::vector<std::shared_ptr<Capsule>>& capsules, unsigned int* lives, BonusManager& bonusManager); // Add bonusManager to constructor
     // Détection passive (const)
     void checkBallBlockCollisions();
     void checkCapsulePaddleCollision();

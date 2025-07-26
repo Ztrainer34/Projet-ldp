@@ -34,10 +34,10 @@ void BonusManager::update(Paddle& paddle, Ball& ball, unsigned int& lives) {
                         break;
                 }
             }
-            capsule->setVisible(false);
+            capsule->setVisibility(false);
         }
         if (capsule->getY() > 600) { // Assuming screen height
-            capsule->setVisible(false);
+            capsule->setVisibility(false);
         }
     }
 } 

@@ -1,5 +1,5 @@
 #include "BonusInterruption.hpp"
-#include "Ball.hpp"
+#include "../../model/Ball.hpp"
 
 BonusInterruption::BonusInterruption(const Point& position, char type, ALLEGRO_COLOR color)
     : Bonus(position, type, color) {}

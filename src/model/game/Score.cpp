@@ -1,5 +1,5 @@
 #include "Score.hpp"
-#include "Block.hpp"
+#include "../Block.hpp"
 
 #include <string>
 #include <iostream>

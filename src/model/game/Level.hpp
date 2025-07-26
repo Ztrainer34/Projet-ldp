@@ -64,6 +64,8 @@ public:
         return capsules_;
     }
 
+    const std::vector<std::shared_ptr<Block>>& get_blocks() const;
+
 };
 
 #endif // LEVEL_HPP

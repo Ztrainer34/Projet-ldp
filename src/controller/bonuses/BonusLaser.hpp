@@ -2,7 +2,8 @@
 #define LASER_HPP
 
 #include <allegro5/allegro.h>
-#include "Point.hpp"
+#include "../../model/Point.hpp"
+#include "../../utils/Utils.hpp"
 #include "Bonus.hpp"
 
 

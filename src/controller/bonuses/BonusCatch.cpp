@@ -1,7 +1,7 @@
 // BonusCatch.cpp
 #include "BonusCatch.hpp"
-#include "Paddle.hpp"
-#include "Ball.hpp"
+#include "../../model/Paddle.hpp"
+#include "../../model/Ball.hpp"
 
 BonusCatch::BonusCatch(const Point& position, char type, ALLEGRO_COLOR color)
     : Bonus(position, type, color) {}

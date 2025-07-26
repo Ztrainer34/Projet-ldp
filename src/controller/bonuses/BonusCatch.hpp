@@ -14,7 +14,7 @@ public:
 
     void update_position() override {
         // Logique pour faire tomber le bonus
-        position_.y += 1; // Exemple : chute verticale
+        position_.setY(position_.getY() +1); // Exemple : chute verticale
     }
     void applyEffect(Paddle& paddle, Ball& ball) override;
 

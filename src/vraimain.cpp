@@ -5,7 +5,7 @@
 
 int main() {
     // Plus besoin de try/catch
-    AllegroSystem allegroSystem(1200, 600);
+    AllegroSystem allegroSystem;
 
 
     if (!allegroSystem.isValid()) {

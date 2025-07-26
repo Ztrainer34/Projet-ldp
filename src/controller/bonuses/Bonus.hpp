@@ -1,8 +1,8 @@
 #ifndef BONUS_HPP
 #define BONUS_HPP
 
-#include "Object.hpp"
-#include "Point.hpp"
+#include "../../model/Object.hpp"
+#include "../../model/Point.hpp"
 
 #include <allegro5/allegro_color.h>
 #include <chrono>

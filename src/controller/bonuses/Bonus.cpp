@@ -1,8 +1,8 @@
 #include "Bonus.hpp"
-#include "Paddle.hpp"
-#include "Ball.hpp"
+#include "../../model/Paddle.hpp"
+#include "../../model/Ball.hpp"
 #include "BonusLaser.hpp"
-#include "Level.hpp"
+#include "../../model/game/Level.hpp"
 
 void Bonus::checkDuration() {
     if (active_) {

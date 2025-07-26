@@ -71,3 +71,7 @@ void Level::resetBlocks() {
     blocks_.clear();     // Clear all existing blocks
     generateBlocks(level1_layout);   // Regenerate blocks
 }
+
+const std::vector<std::shared_ptr<Block>>& Level::get_blocks() const {
+    return blocks_;
+}

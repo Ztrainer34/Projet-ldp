@@ -1,6 +1,6 @@
 
 #include "BonusEnlarge.hpp"
-#include "Paddle.hpp"
+#include "../../model/Paddle.hpp"
 
 
 BonusEnlarge::BonusEnlarge(const Point& position, char type, ALLEGRO_COLOR color)

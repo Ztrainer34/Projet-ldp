@@ -1,7 +1,7 @@
 
 #include "BonusSlow.hpp"
 
-#include "Ball.hpp"
+#include "../../model/Ball.hpp"
 
 
 BonusSlow::BonusSlow(const Point& position,char type, ALLEGRO_COLOR color)

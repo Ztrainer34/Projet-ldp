@@ -20,7 +20,7 @@ ArkanoidGame::ArkanoidGame()
       // --- Initialisation des Contrôleurs ---
       paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH),
       movementController_(ball_,lasers_),
-      collisionController_(ball_, paddle_, level_.getBlocks(), lasers_, level_, scoreManager_,capsules_),
+      collisionController_(ball_, paddle_, level_.getBlocks(), lasers_, level_, scoreManager_,capsules_, &lives_, bonusManager_),
       scoreManager_("highscore.txt", 0, 0),
       lives_(3),
       totalBlocks_(level_.getBlocks().size()),

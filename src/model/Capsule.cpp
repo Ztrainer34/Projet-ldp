@@ -3,7 +3,7 @@
 #include "Capsule.hpp"
 #include <cmath>
 #include "Paddle.hpp"
-#include "Bonus.hpp"
+#include "../controller/bonuses/Bonus.hpp"
 
 
 
