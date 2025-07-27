@@ -7,10 +7,10 @@
 
 
 Ball::Ball(Point position, float radius) 
-        : Object(position, Size(radius, radius), Speed(3.0, 3.0)) {}
+        : Object(position, Size(radius, radius), Speed(3.0, 3.0)), radius_(radius) {}
 
 Ball::Ball(Point position, Speed speed, float radius)
-    : Object(position, Size(radius, radius), speed) {}
+    : Object(position, Size(radius, radius), speed), radius_(radius) {}
 
 void Ball::updatePosition() {
     // Update the ball's position_ based on speed

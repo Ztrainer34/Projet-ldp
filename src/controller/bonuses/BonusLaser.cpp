@@ -73,40 +73,6 @@ void BonusLaser::applyEffect(GameContext& gameContext){
     gameContext.paddle.setLaserMode(true); 
 }
 
-void BonusLaser::applyEffect(Paddle& paddle, Ball& ball) {
-    paddle.setLaserMode(true);
-}
-
-void BonusLaser::applyEffect(Ball& ball) {
-    // Laser bonus doesn't affect ball directly
-}
-
-void BonusLaser::applyEffect(Paddle& paddle) {
-    paddle.setLaserMode(true);
-}
-
-void BonusLaser::applyEffect() {
-    // Default implementation
-}
-
-void BonusLaser::cancelEffect(Paddle& paddle, Ball& ball) {
-    paddle.setLaserMode(false);
-}
-
-void BonusLaser::update_position() {
-    // Update position if needed
-}
-
-void BonusLaser::checkDuration() {
-    Bonus::checkDuration();
-}
-
-void BonusLaser::draw() const {
-    if (active_) {
-        al_draw_filled_rectangle(position_.getX(), position_.getY(), 
-                                position_.getX() + 2, position_.getY() + 10, color_);
-    }
-}
 
 void BonusLaser::setInactive() {
     active_ = false;
