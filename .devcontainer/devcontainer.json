@@ -1,0 +1,32 @@
+// .devcontainer/devcontainer.json
+{
+	// Nom de votre environnement de développement
+	"name": "Arkanoid C++ Project",
+
+	// Image Docker à utiliser. Celle-ci est l'image officielle de Microsoft
+	// pour le développement C++. Elle inclut déjà GCC, Clang, CMake, Make, et gdb.
+	"image": "mcr.microsoft.com/vscode/devcontainers/cpp:latest",
+
+	// Personnalisations spécifiques à VS Code
+	"customizations": {
+		"vscode": {
+			// Paramètres par défaut pour l'éditeur
+			"settings": {
+				// Spécifie le compilateur par défaut pour l'extension C++
+				"C_Cpp.default.compilerPath": "/usr/bin/gcc"
+			},
+			
+			// Extensions VS Code à installer automatiquement dans l'environnement
+			"extensions": [
+				// Le pack d'extension C++ essentiel de Microsoft
+				"ms-vscode.cpptools-extension-pack",
+				// Outils pour les fichiers CMake
+				"ms-vscode.cmake-tools"
+			]
+		}
+	},
+
+	// Commande à exécuter après la création du conteneur.
+	// Utile pour installer des dépendances, par exemple.
+	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y liballegro5-dev"
+}
