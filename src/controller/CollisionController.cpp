@@ -2,20 +2,20 @@
 #include "../utils/Utils.hpp" // Add this include
 #include "../controller/bonuses/BonusManager.hpp"
 
-CollisionController::CollisionController(GameContext& context, Ball& ball, Paddle& paddle_, 
-    std::vector<std::shared_ptr<Block>>& blocks, std::vector<Laser>& lasers, Level& level, ScoreManager& scoreManager,
-    std::vector<std::shared_ptr<Capsule>>& capsules, BonusManager& bonusManager) :
+CollisionController::CollisionController(GameContext& context, ScoreManager& scoreManager, BonusManager& bonusManager) :
     gameContext_(context),
-    ball_(ball), paddle_(paddle_), blocks_(blocks), lasers_(lasers), level_(level) ,scoreManager_(scoreManager), capsules_(capsules), bonusManager_(bonusManager) {}
+    scoreManager_(scoreManager), bonusManager_(bonusManager) {}
 
 bool CollisionController::isBallTouchingPaddle() const{
     // Ball boundaries
+    auto& ball_ = gameContext_.ball;
     float ballLeft = ball_.getX() - ball_.getRadius();
     float ballRight = ball_.getX() + ball_.getRadius();
     float ballTop = ball_.getY() - ball_.getRadius();
     float ballBottom = ball_.getY() + ball_.getRadius();
 
     // Paddle boundaries
+    auto& paddle_ = gameContext_.paddle;
     float paddleLeft = paddle_.getX() - paddle_.getWidth() / 2;
     float paddleRight = paddle_.getX() + paddle_.getWidth() / 2;
     float paddleTop = paddle_.getY() - paddle_.getHeight() / 2;
@@ -29,19 +29,20 @@ bool CollisionController::isBallTouchingPaddle() const{
 }
 
 bool CollisionController::isBallTouchingScreenBoundary() const {
+    auto& ball_ = gameContext_.ball;
     return (ball_.getX() - ball_.getRadius() < 0 || ball_.getX() + ball_.getRadius() > CST::SCREEN_WIDTH ||
             ball_.getY() - ball_.getRadius() < 0 || ball_.getY() + ball_.getRadius() > CST::SCREEN_HEIGHT);
 }
 
 // Function to check if the ball is touching a specific block
 bool CollisionController::isBallTouchingBlock(const Block& block) const {
-    // Get block position_ and size
     float brickLeft = block.getX();
     float brickRight = brickLeft + block.getWidth();
     float brickTop = block.getY();
     float brickBottom = brickTop + block.getHeight();
 
     // Check if the ball overlaps with the block
+    auto& ball_ = gameContext_.ball;
     return (ball_.getX() + ball_.getRadius() > brickLeft &&
             ball_.getX() - ball_.getRadius() < brickRight &&
             ball_.getY() + ball_.getRadius() > brickTop &&
@@ -56,6 +57,7 @@ bool CollisionController::isCapsuleTouchingPaddle(const Capsule& capsule) const{
     float capsuleBottom = capsule.getY() + capsule.getHeight();
 
         // Paddle's bounding box
+    auto& paddle_ = gameContext_.paddle;
     Point paddlePos = paddle_.getPosition();
     Size paddleSize = paddle_.getSize();
     float paddleLeft = paddlePos.getX();
@@ -93,6 +95,9 @@ bool CollisionController::isLaserTouchingBlock(const std::shared_ptr<Block> bloc
 }
 
 void CollisionController::handleBallPaddleCollision(){
+    auto& ball_ = gameContext_.ball;
+    auto& paddle_ = gameContext_.paddle;
+
     float x = ball_.getX() - (paddle_.getX() - paddle_.getWidth() / 2);
 
     // Length L of the paddle_
@@ -149,6 +154,7 @@ void CollisionController::handleBallBlockCollision(Block& brick) {
     float brickBottom = brickTop + brick.getHeight();
 
     // Determine which side of the brick the ball is hitting
+    auto& ball_ = gameContext_.ball;
     if (ball_.getY() - ball_.getRadius() < brickBottom && ball_.getY() + ball_.getRadius() > brickTop) {
         if (ball_.getX() < brickLeft || ball_.getX() > brickRight) {
             ball_.setSpeedX(-ball_.getSpeedX()); // Reverse horizontal velocity
@@ -161,7 +167,7 @@ void CollisionController::handleBallBlockCollision(Block& brick) {
 // Dans CollisionController::handleBallBlockCollision(Block& block)
 
 void CollisionController::checkBallBlockCollisions() {
-    for (auto& block : blocks_) { // or level.getblocks
+    for (auto& block : gameContext_.blocks_) { // or level.getblocks
         if (block->isVisible() && isBallTouchingBlock(*block)) {
             handleBallBlockCollision(*block);
 
@@ -174,9 +180,7 @@ void CollisionController::checkBallBlockCollisions() {
 
                 // drop une capsule 
                 bonusManager_.onBlockDestroyed(*block); 
-        
             }
-            
             // If you want multiple collisions in a single frame, remove this break
             break;
         }
@@ -184,6 +188,7 @@ void CollisionController::checkBallBlockCollisions() {
 }
 
 void CollisionController::checkCapsulePaddleCollision(){
+    auto& capsules_ = gameContext_.capsules_;
     for (auto it = capsules_.begin(); it != capsules_.end(); ) {
         if (isCapsuleTouchingPaddle(**it)) {
             bonusManager_.onCapsuleCollected(**it);
@@ -194,11 +199,11 @@ void CollisionController::checkCapsulePaddleCollision(){
     }
 }
 
-void CollisionController::checkLaserBlockCollisions(GameContext& context){
-    lasers_ = context.lasers;
+void CollisionController::checkLaserBlockCollisions(){
+    auto& lasers_ = gameContext_.lasers;
     for (auto& laser : lasers_) {
         if (!laser.isActive()) continue;
-        for (auto& block : context.blocks_) {
+        for (auto& block : gameContext_.blocks_) {
             if (!block->isVisible()) continue;
 
             // Votre logique de détection de collision (AABB) va ici
@@ -223,6 +228,6 @@ bool CollisionController::checkAllCollision(){
     if (isBallTouchingPaddle()) { handleBallPaddleCollision(); }
     checkBallBlockCollisions();
     checkCapsulePaddleCollision();
-    checkLaserBlockCollisions(gameContext_);
+    checkLaserBlockCollisions();
     
 }
