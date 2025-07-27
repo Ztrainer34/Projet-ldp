@@ -16,6 +16,7 @@ LDFLAGS :=
 # Allegro libraries
 LDLIBS := -lallegro -lallegro_primitives -lallegro_font -lallegro_ttf -lallegro_main
 
+EXCLUDE_FILES := src/main2.cpp src/ancienmain.cpp
 
 # Source files (recursive find)
 ALL_SRCS := $(shell find src -name "*.cpp")

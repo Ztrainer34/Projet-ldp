@@ -58,7 +58,6 @@ private:
     BonusManager bonusManager_;
     GameView gameView_;
     std::vector<std::shared_ptr<Bonus>> activeBonuses_;
-    GameContext gameContext_;
     // ... Ball, Capsules, ScoreManager, etc.
 
     // --- Contrôleurs (C) ---
