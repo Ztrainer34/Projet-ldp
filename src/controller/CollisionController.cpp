@@ -109,6 +109,7 @@ void CollisionController::handleBallPaddleCollision(){
 }
 
 void CollisionController::handleBallScreenCollision() {
+    auto& ball_ = gameContext_.ball;
     // Check collision with left and right walls
     if (ball_.getX() - ball_.getRadius() < 0) {
         // Hit the left wall
@@ -133,9 +134,8 @@ void CollisionController::handleBallScreenCollision() {
     // No action needed for bottom wall in typical Arkanoid-style games, but:
     // If you want to handle bottom wall collision (e.g., lose a life):
     if (ball_.getY() + ball_.getRadius() > CST::SCREEN_HEIGHT) {
-        // The ball has hit the bottom of the screen (you can handle this as needed)
-        // For example: reset ball position_ or decrease player life
-        //todo !
+        gameContext_.lives--;
+        ball_.resetBallPosition();
     }
 }
 

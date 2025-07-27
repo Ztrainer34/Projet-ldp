@@ -36,6 +36,7 @@ public:
 
     bool IsBallMissed() const ;
     // Draw the ball
+    void resetBallPosition();
     
 };
 

@@ -56,3 +56,7 @@ void Ball::setRadius(float new_radius) {
     radius_ = new_radius;
 }
 
+void Ball::resetBallPosition(){
+    setPosition(CST::SCREEN_WIDTH / 2, 300.0f);
+    setSpeed(3.0f,3.0f);
+}
