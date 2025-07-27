@@ -4,13 +4,19 @@
 
 
 BonusEnlarge::BonusEnlarge() 
-    : Bonus() {}
+    : Bonus() { hasDuration_ = true; }
 
 void BonusEnlarge::applyEffect(GameContext& GameContext){
-        // Logique spécifique au bonus "BonusEnlarge"
-        activate(); 
-        GameContext.paddle.enlarge(20);  // agrandir
-        checkDuration();
+    // Logique spécifique au bonus "BonusEnlarge"
+        
+    activate(); 
+    GameContext.paddle.enlarge(20);  // agrandir
+    checkDuration();
 
-        // VERIFIER LA DUREE DANS CAPSULE ou MAIN 
-    }
+    // VERIFIER LA DUREE 
+}
+
+void BonusEnlarge::cancelEffect(GameContext& context){
+    deactivate();
+    context.paddle.enlarge(-20);
+}

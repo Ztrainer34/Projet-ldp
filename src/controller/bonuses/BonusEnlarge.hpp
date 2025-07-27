@@ -12,6 +12,7 @@ public:
     BonusEnlarge();
     
     void applyEffect(GameContext& gameContext) override;
+    void cancelEffect(GameContext& context) override;
 
 
     

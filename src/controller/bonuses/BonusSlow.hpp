@@ -13,9 +13,7 @@ public:
     BonusSlow();
 
     void applyEffect(GameContext& gameContext) override;
-
-
-
+    void cancelEffect(GameContext& context) override;
     
 };
 #endif // BONUS_BONUSSLOW_HPP

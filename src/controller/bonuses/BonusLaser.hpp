@@ -23,17 +23,14 @@ public:
        
 
     void applyEffect(GameContext& gameContext) override;
+    void cancelEffect(GameContext& context) override;
     // Mise à jour de la position du laser
     void update(float deltaTime);
 
-    // Vérifie si le laser est actif
-    bool isActive() const;
 
     // Récupère la position du laser
     const Point& getPosition() const;
 
-    // Désactiver le laser
-    void setInactive();
   
     //void checkDuration() override ;
 

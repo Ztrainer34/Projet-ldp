@@ -54,7 +54,22 @@ void BonusManager::onCapsuleCollected(const Capsule& capsule) {
     if (auto bonus = capsule.getBonus()) {
         bonus->applyEffect(gameContext_);
         if (bonus->hasDuration()) {
-            bonuses_.push_back(bonus);
+            bonuses_.push_back(bonus); // ajoute dans la liste des bonus actif
+        }
+    }
+}
+
+void BonusManager::updateActiveBonuses() {
+    // On parcourt la liste des bonus actifs
+    for (auto it = bonuses_.begin(); it != bonuses_.end(); ) {
+        auto& bonus = *it;
+        bonus->checkDuration(); // On vérifie le temps écoulé
+        
+        if (!bonus->isActive()) {
+            bonus->cancelEffect(gameContext_); 
+            it = bonuses_.erase(it);   // on le retire de la liste
+        } else {
+            ++it;
         }
     }
 }

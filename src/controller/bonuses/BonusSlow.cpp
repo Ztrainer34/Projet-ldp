@@ -14,7 +14,11 @@ void BonusSlow::applyEffect(GameContext& gameContext){
         activate(); 
         gameContext.ball.setSpeed(Speed(1.0, 1.0)); // ralentit la balle
         checkDuration();
-    }
+}
 
+void BonusSlow::cancelEffect(GameContext& context){
+        deactivate();
+        context.ball.setSpeed(Speed(3,3));
+}
 
 

@@ -13,7 +13,7 @@
 class BonusManager {
 private:
     GameContext& gameContext_;
-    std::vector<std::shared_ptr<Bonus>>& bonuses_;
+    std::vector<std::shared_ptr<Bonus>>& bonuses_;  // liste de bonus actifs
 
 public:
     BonusManager(GameContext& gameContext, std::vector<std::shared_ptr<Bonus>>& bonuses);
@@ -22,7 +22,8 @@ public:
 
     void onBlockDestroyed(const Block& block);
     void onCapsuleCollected(const Capsule& capsule);
-
+    // pour arkanoid game
+    void updateActiveBonuses();
 };
 
 #endif // BONUSMANAGER_HPP 

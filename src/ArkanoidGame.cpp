@@ -197,7 +197,7 @@ void ArkanoidGame::updateGame(float deltaTime) {
     ball_.updatePosition();
     movementController_.update(deltaTime); 
     collisionController_.checkAllCollision();
-    // bonusmanager update
+    bonusManager_.updateActiveBonuses();
     // ... ball_controller.update(), collision_controller.checkCollisions(), etc.
 }
 

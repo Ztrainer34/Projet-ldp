@@ -21,3 +21,10 @@ void LaserView::draw() {
         al_draw_line(x, y, x, y - laser_height, getFillColor(), 2.0f);
     }
 }
+
+/**void BonusLaser::draw() const {
+    if (active_) {
+        al_draw_filled_rectangle(position_.getX(), position_.getY(), 
+                                position_.getX() + 2, position_.getY() + 10, color_);
+    }
+}*/
