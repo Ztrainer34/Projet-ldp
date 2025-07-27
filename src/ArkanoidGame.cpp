@@ -27,7 +27,7 @@ ArkanoidGame::ArkanoidGame()
       font_(nullptr),
       gameContext_({paddle_, ball_, lasers_, lives_, level_, level_.getBlocks(), capsules_}),
       bonusManager_(capsules_, gameContext_, bonuses_),
-      collisionController_(gameContext_, ball_, paddle_, level_.getBlocks(), lasers_, level_, scoreManager_, capsules_, bonusManager_),
+      collisionController_(gameContext_, scoreManager_, bonusManager_),
       gameView_()
 {
     
