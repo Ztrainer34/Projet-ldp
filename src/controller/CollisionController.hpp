@@ -19,17 +19,9 @@ namespace CST = Constants;
 class CollisionController {
 private:
     GameContext& gameContext_;
-    Ball& ball_;
-    Paddle& paddle_;
-    std::vector<std::shared_ptr<Block>>& blocks_;
-    std::vector<Laser>& lasers_;
-    Level& level_;
-    std::vector<std::shared_ptr<Capsule>>& capsules_;
-
     ScoreManager& scoreManager_;
-    unsigned int* lives_; // Add this line
     BonusManager& bonusManager_; // Add this line
-    // BonusManager& bonus_manager_;
+
 
     bool isBallTouchingPaddle() const ; // ball touch paddle
     bool isBallTouchingBlock(const Block& block) const ; // ball touch block
@@ -43,16 +35,14 @@ private:
 
 
 public:
-    CollisionController(GameContext& context, Ball& ball, Paddle& paddle, std::vector<std::shared_ptr<Block>>& blocks, 
-        std::vector<Laser>& lasers, Level& level, ScoreManager& scoreManager,
-    std::vector<std::shared_ptr<Capsule>>& capsules, BonusManager& bonusManager); // Add bonusManager to constructor
+    CollisionController(GameContext& context, ScoreManager& scoreManager, BonusManager& bonusManager); // Add bonusManager to constructor
     // Détection passive (const)
     void checkBallBlockCollisions();
     /**
      * @brief itere sur les capsule actif
      */
     void checkCapsulePaddleCollision();
-    void checkLaserBlockCollisions(GameContext& context);
+    void checkLaserBlockCollisions();
     bool checkAllCollision();
 
 };
