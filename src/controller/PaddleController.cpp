@@ -1,7 +1,9 @@
 #include "PaddleController.hpp"
+#include <iostream>
 
 
 void PaddleController::onKeyDown(int keycode) {
+    std::cout << "KeyDown: " << keycode << std::endl;
     if (keycode == ALLEGRO_KEY_A || keycode == ALLEGRO_KEY_Q) {
         moving_left_ = true;
     }
@@ -16,6 +18,7 @@ void PaddleController::onKeyDown(int keycode) {
 }
 
 void PaddleController::onKeyUp(int keycode) {
+    std::cout << "KeyUp: " << keycode << std::endl;
     if (keycode == ALLEGRO_KEY_A || keycode == ALLEGRO_KEY_Q) {
         moving_left_ = false;
     }
@@ -36,14 +39,16 @@ void PaddleController::onMouseMove(float mouseX) {
 }
 
 void PaddleController::update(float deltaTime) {
-    // Mouvement basé sur l'état interne
     auto pos = paddle_.getPosition();
+    std::cout << "Update: posX=" << pos.getX() << ", speedX=" << paddle_.getSpeedX() << ", deltaTime=" << deltaTime << std::endl;
+    // Mouvement basé sur l'état interne
     if (moving_left_) {
         pos.setX(std::max(boundary_left_, pos.getX() - paddle_.getSpeedX() * deltaTime));
     }
     else if (moving_right_) {
         pos.setX(std::min(boundary_right_ - paddle_.getWidth(), pos.getX() + paddle_.getSpeedX() * deltaTime));
     }
+    std::cout << "New posX=" << pos.getX() << std::endl;
     paddle_.setPosition(pos);
 
     // Tir laser

@@ -1,12 +1,12 @@
-#ifndef LASER_HPP
-#define LASER_HPP
+#ifndef BONUSLASER_HPP
+#define BONUSLASER_HPP
 
 #include <allegro5/allegro.h>
 #include "../../model/Point.hpp"
 #include "../../utils/Utils.hpp"
 #include "../../model/game/Level.hpp"
 #include "Bonus.hpp"
-#include "GameContext.hpp"
+#include "../GameContext.hpp"
 
 class Capsule;
 class Block;
@@ -65,4 +65,4 @@ private:
     bool active_;
 };
 
-#endif // LASER_HPP
+#endif // BONUSLASER_HPP

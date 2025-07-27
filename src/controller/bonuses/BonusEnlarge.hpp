@@ -2,7 +2,7 @@
 #define BONUS_BONUSENLARGE_HPP
 
 #include "Bonus.hpp"
-#include "GameContext.hpp"
+#include "../GameContext.hpp"
 
 class Paddle;
 

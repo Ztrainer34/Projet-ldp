@@ -2,7 +2,7 @@
 #define BONUS_BONUSINTERRUPTION_HPP
 
 #include "Bonus.hpp"
-#include "GameContext.hpp"
+#include "../GameContext.hpp"
 
 class Ball;
 

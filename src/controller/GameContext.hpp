@@ -3,6 +3,8 @@
 #include "../model/Ball.hpp"
 #include "../model/Laser.hpp"
 #include "../model/game/Level.hpp"
+#include "../model/Block.hpp"
+#include "../model/Capsule.hpp"
 #include <vector>
 
 /**

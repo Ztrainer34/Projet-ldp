@@ -6,6 +6,7 @@
 #include <allegro5/allegro_color.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <iostream> // Added for debug print statements
 
 
 ArkanoidGame::ArkanoidGame()
@@ -14,23 +15,25 @@ ArkanoidGame::ArkanoidGame()
       // --- Initialisation des Modèles ---
       level_(Size(70, 20), Point(50, 50), Point(10, 10)),
       ball_(Point(400, 300), 20), // 20 = radius ball a supp
-      paddle_(Point(CST::SCREEN_WIDTH / 2, 550), Size(100, 20), Speed(300.0f, 0.0f), false),
+      paddle_(Point(CST::SCREEN_WIDTH / 2, 550), Size(100, 20), Speed(300.f, 0.0f), false),
       //Paddle(Point position, Size size, Speed speed, bool laser_mode);
       capsules_(),
       // --- Initialisation des Contrôleurs ---
       paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH),
-      movementController_(ball_,lasers_),
-      collisionController_(ball_, paddle_, level_.getBlocks(), lasers_, level_, scoreManager_,capsules_, &lives_, bonusManager_),
+      movementController_(ball_, lasers_, capsules_),
       scoreManager_("highscore.txt", 0, 0),
       lives_(3),
-      totalBlocks_(level_.getBlocks().size()),
+      totalBlocks_(0), // Set to 0 for now, will set after block generation
       font_(nullptr),
-      bonusManager_(capsules_),
+      gameContext_({paddle_, ball_, lasers_, lives_, level_, level_.getBlocks(), capsules_}),
+      bonusManager_(capsules_, gameContext_, bonuses_),
+      collisionController_(gameContext_, ball_, paddle_, level_.getBlocks(), lasers_, level_, scoreManager_, capsules_, bonusManager_),
       gameView_()
 {
     
  // --- SETUP DES OBJETS DE JEU ---
     level_.generateBlocks(level1_layout);
+    totalBlocks_ = level_.getBlocks().size(); // Set after blocks are generated
     colorScores_ = {
         {al_map_rgb(255,255,255), 50},
         {al_map_rgb(255,165,0), 60},
@@ -71,20 +74,26 @@ ArkanoidGame::~ArkanoidGame() {
 
 // La méthode run contient la boucle de jeu principale
 void ArkanoidGame::run() {
+    std::cout << "[DEBUG] ArkanoidGame::run() started" << std::endl;
     al_start_timer(allegroSystem_.getTimer());
     running_ = true;
     bool moveLeft = false, moveRight = false;
     while (running_) {
         ALLEGRO_EVENT ev;
         al_wait_for_event(allegroSystem_.getEventQueue(), &ev);
+        std::cout << "[DEBUG] Event type: " << ev.type << std::endl;
         if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+            std::cout << "[DEBUG] ALLEGRO_EVENT_KEY_DOWN: " << ev.keyboard.keycode << std::endl;
             paddle_controller_.onKeyDown(ev.keyboard.keycode);
             if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) running_ = false;
         } else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
+            std::cout << "[DEBUG] ALLEGRO_EVENT_KEY_UP: " << ev.keyboard.keycode << std::endl;
             paddle_controller_.onKeyUp(ev.keyboard.keycode);
         } else if (ev.type == ALLEGRO_EVENT_MOUSE_AXES) {
+            std::cout << "[DEBUG] ALLEGRO_EVENT_MOUSE_AXES: x=" << ev.mouse.x << std::endl;
             paddle_controller_.onMouseMove(ev.mouse.x);
         } else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+            std::cout << "[DEBUG] ALLEGRO_EVENT_DISPLAY_CLOSE" << std::endl;
             running_ = false;
         }
         if (ev.type == ALLEGRO_EVENT_TIMER) {
@@ -116,6 +125,8 @@ void ArkanoidGame::run() {
                 al_flip_display();
                 al_rest(2.0);
             }
+            // Debug print for ball position and radius
+            std::cout << "Ball position: " << ball_.getX() << ", " << ball_.getY() << " radius: " << ball_.getRadius() << std::endl;
             // Render
             al_clear_to_color(al_map_rgb(0, 0, 0));
             gameView_.renderAll();

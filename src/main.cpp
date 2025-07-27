@@ -4,6 +4,7 @@
 #include <iostream> // Pour std::cerr
 
 int main() {
+    std::cout << "[DEBUG] main.cpp: Program started" << std::endl;
     // Plus besoin de try/catch
     AllegroSystem allegroSystem;
 

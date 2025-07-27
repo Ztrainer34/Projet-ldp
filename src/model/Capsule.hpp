@@ -19,10 +19,12 @@ private:
     ALLEGRO_COLOR color_;       // Color of the capsule
     std::shared_ptr<Bonus> bonus_; // Composition : Capsule contient un Bonus
 public:
-    // Constructor
-    // Nouveau constructeur sans bonus
-    Capsule(Point position, Size size, bool visible, std::shared_ptr<Bonus> bonus);
-    Capsule(Point position, Size size, bool visible);
+    // Constructor with color
+    Capsule(Point position, Size size, bool visible, ALLEGRO_COLOR color, std::shared_ptr<Bonus> bonus);
+    Capsule(Point position, Size size, bool visible, ALLEGRO_COLOR color);
+    // Existing constructors (deprecated, for compatibility)
+    Capsule(Point position, Size size, bool visible, std::shared_ptr<Bonus> bonus) = delete;
+    Capsule(Point position, Size size, bool visible) = delete;
 
 
     // Updates the capsule's position

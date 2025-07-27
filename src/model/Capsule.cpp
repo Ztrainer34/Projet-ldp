@@ -7,10 +7,11 @@
 
 
 
-Capsule::Capsule(Point position, Size size, bool visible, std::shared_ptr<Bonus> bonus) :
-    Object(position, size, visible), bonus_(bonus) {}
+Capsule::Capsule(Point position, Size size, bool visible, ALLEGRO_COLOR color, std::shared_ptr<Bonus> bonus)
+    : Object(position, size, visible), color_(color), bonus_(bonus) {}
 
-Capsule::Capsule(Point position, Size size, bool visible) : Object(position, size, visible) {}
+Capsule::Capsule(Point position, Size size, bool visible, ALLEGRO_COLOR color)
+    : Object(position, size, visible), color_(color) {}
 
 
 void Capsule::updatePosition() { 

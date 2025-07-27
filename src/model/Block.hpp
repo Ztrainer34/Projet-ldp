@@ -14,7 +14,7 @@ class Block : public Object {
 protected:          
 
     //Bonus bonus_;
-    bool has_capsule_;
+    bool has_capsule_ = false;
     std::shared_ptr<Capsule> capsule_;
     int hitPoints_;
     unsigned int scoreValue_;

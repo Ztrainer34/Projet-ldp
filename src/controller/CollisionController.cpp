@@ -219,10 +219,12 @@ void CollisionController::checkLaserBlockCollisions(GameContext& context){
 }
 
 bool CollisionController::checkAllCollision(){
+    bool collision = false;
     if (isBallTouchingScreenBoundary()) { handleBallScreenCollision(); }
     if (isBallTouchingPaddle()) { handleBallPaddleCollision(); }
     checkBallBlockCollisions();
     checkCapsulePaddleCollision();
     checkLaserBlockCollisions(gameContext_);
+    return collision;
     
 }

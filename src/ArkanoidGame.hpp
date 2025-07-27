@@ -15,6 +15,7 @@
 #include "controller/CollisionController.hpp"
 #include "controller/MovementController.hpp"
 #include "controller/bonuses/BonusManager.hpp"
+#include "controller/bonuses/Bonus.hpp"
 
 #include "utils/Constants.hpp"
 #include "view/PaddleView.hpp"
@@ -46,11 +47,13 @@ private:
     Paddle paddle_; 
     std::vector<std::shared_ptr<Capsule>> capsules_;
     std::vector<Laser> lasers_;
+    std::vector<std::shared_ptr<Bonus>> bonuses_;
     ScoreManager scoreManager_;
     unsigned int lives_;
     size_t totalBlocks_;
     ALLEGRO_FONT* font_;
     std::vector<std::pair<ALLEGRO_COLOR, int>> colorScores_;
+    GameContext gameContext_;
     BonusManager bonusManager_;
     GameView gameView_;
     // ... Ball, Capsules, ScoreManager, etc.
