@@ -126,7 +126,7 @@ void CollisionController::handleBallScreenCollision() {
     else if (ball_.getX() + ball_.getRadius() > CST::SCREEN_WIDTH) {
         // Hit the right wall
         ball_.setX(CST::SCREEN_WIDTH - ball_.getRadius()); // Prevent the ball from going out of bounds
-        ball_.setSpeedY(-ball_.getSpeedY()); // Reverse horizontal velocity
+        ball_.setSpeedX(-ball_.getSpeedX()); 
     }
 
     // Check collision with top wall
