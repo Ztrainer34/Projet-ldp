@@ -4,8 +4,8 @@
 #include "BonusLaser.hpp"
 #include "../../model/game/Level.hpp"
 
-Bonus::Bonus() : type_(' '), position_(Point(0, 0)), color_(al_map_rgb(255, 255, 255)), 
-                 visible_(false), active_(false), hasDuration_(false) {}
+Bonus::Bonus() 
+    : type_('?'), visible_(true), active_(false), color_(COLOR_YELLOW) , hasDuration_(false) {} // par defaut
 
 void Bonus::checkDuration() {
     if (active_) {

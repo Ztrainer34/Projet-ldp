@@ -3,7 +3,7 @@
 
 #include "../../model/Object.hpp"
 #include "../../model/Point.hpp"
-#include "../GameContext.hpp"
+
 
 #include <allegro5/allegro_color.h>
 #include <chrono>
@@ -16,6 +16,7 @@ class Block;
 class Capsule;
 class BonusLaser; 
 class Level;
+class GameContext;
 
 class Bonus {
 protected:
@@ -35,28 +36,18 @@ public:
 
     Bonus();
     
-    virtual void applyEffect(Paddle& paddle, Ball& ball) = 0;
-    virtual void applyEffect(Ball& ball) = 0;
-    virtual void applyEffect(Paddle& paddle) = 0;
-    virtual void applyEffect(Paddle& paddle,
-                             std::vector<std::shared_ptr<BonusLaser>>& lasers,
-                             std::vector<std::shared_ptr<Block>>& blocks,
-                             std::vector<std::shared_ptr<Capsule>>& capsules,
-                             Level& level) = 0;
-    virtual void applyEffect() = 0;
 
     virtual void applyEffect(GameContext& context) = 0;
 
-    virtual void cancelEffect(Paddle& paddle, Ball& ball) = 0;
+    virtual void cancelEffect(GameContext& context){}
     // Obtenez le type de bonus
-    virtual char get_type() const { return type_; }
-    virtual void update_position() = 0;
+    char get_type() const { return type_; }
+   
 
-    virtual void activate() { active_ = true; startTime_ = std::chrono::steady_clock::now(); }
+    void activate() { active_ = true; startTime_ = std::chrono::steady_clock::now(); }
     // active et desactive le timer pour le bonus 
-    virtual void deactivate() { active_ = false; }
-    virtual void checkDuration() = 0;
-    virtual void draw() const = 0;
+    void deactivate() { active_ = false; }
+    virtual void checkDuration();
 
     virtual ~Bonus() = default;
 

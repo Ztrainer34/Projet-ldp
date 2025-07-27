@@ -2,17 +2,17 @@
 #include "../model/Ball.hpp"
 #include "../model/Laser.hpp"
 #include "../model/Capsule.hpp"
+#include "GameContext.hpp"
 
 
 
 
 class MovementController{
 private:
-    Ball& ball_; 
-    std::vector<Laser>& lasers_; // Une référence vers la liste
-    std::vector<std::shared_ptr<Capsule>>& capsules_;
+    GameContext& gameContext_;
+   
 public:
-    MovementController(Ball& ball, std::vector<Laser>& lasers, std::vector<std::shared_ptr<Capsule>>& capsule);
+    MovementController(GameContext& gameContext);
 
     void update(float delta);
 };

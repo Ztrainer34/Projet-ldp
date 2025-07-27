@@ -18,16 +18,20 @@ ArkanoidGame::ArkanoidGame()
       paddle_(Point(CST::SCREEN_WIDTH / 2, 550), Size(100, 20), Speed(300.f, 0.0f), false),
       //Paddle(Point position, Size size, Speed speed, bool laser_mode);
       capsules_(),
+      activeBonuses_(),
+    gameContext_{paddle_, ball_, lasers_, lives_, level_, level_.getBlocks(), capsules_},
+       
       // --- Initialisation des Contrôleurs ---
       paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH),
-      movementController_(ball_, lasers_, capsules_),
+      movementController_(gameContext_),
+      bonusManager_(gameContext_, activeBonuses_),
       scoreManager_("highscore.txt", 0, 0),
+      collisionController_(gameContext_, scoreManager_, bonusManager_),
+      
       lives_(3),
       totalBlocks_(0), // Set to 0 for now, will set after block generation
       font_(nullptr),
-      gameContext_({paddle_, ball_, lasers_, lives_, level_, level_.getBlocks(), capsules_}),
-      bonusManager_(capsules_, gameContext_, bonuses_),
-      collisionController_(gameContext_, scoreManager_, bonusManager_),
+      
       gameView_()
 {
     
@@ -102,7 +106,7 @@ void ArkanoidGame::run() {
             // Ball movement
             ball_.updatePosition();
             // Bonus/capsule update
-            bonusManager_.update(paddle_, ball_, lives_);
+            bonusManager_.update();
             // Collisions
             collisionController_.checkAllCollision();
             // Ball missed

@@ -1,12 +1,12 @@
 #include "MovementController.hpp"
 
-MovementController::MovementController(Ball& ball, std::vector<Laser>& lasers, std::vector<std::shared_ptr<Capsule>>& capsule) : 
-ball_(ball), lasers_(lasers), capsules_(capsule) {}
+MovementController::MovementController(GameContext& gameContext) : 
+gameContext_(gameContext) {}
 
 void MovementController::update(float delta){
-    ball_.updatePosition();
+    gameContext_.ball.updatePosition();
 
-    for (auto& capsule : capsules_) {
+    for (auto& capsule : gameContext_.capsules_) {
         if (!capsule->isVisible()) continue;
         capsule->updatePosition();
     }

@@ -4,6 +4,7 @@
 #include "../../model/Capsule.hpp"
 #include "../../model/Paddle.hpp"
 #include "../../model/game/Level.hpp"
+#include "../GameContext.hpp"
 
 // Constructeur
 BonusLaser::BonusLaser(float x, float y, float speed, ALLEGRO_COLOR color)
@@ -19,7 +20,7 @@ void BonusLaser::update(float deltaTime) {
     }
 }
 
-void BonusLaser::applyEffect(Paddle& paddle,
+/**void BonusLaser::applyEffect(Paddle& paddle,
                              std::vector<std::shared_ptr<BonusLaser>>& lasers,
                              std::vector<std::shared_ptr<Block>>& blocks,
                              std::vector<std::shared_ptr<Capsule>>& capsules,
@@ -66,6 +67,7 @@ void BonusLaser::applyEffect(Paddle& paddle,
             }
         }
     }
+*/
 
 void BonusLaser::applyEffect(GameContext& gameContext){
     gameContext.paddle.setLaserMode(true); 

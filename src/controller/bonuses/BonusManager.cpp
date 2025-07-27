@@ -2,32 +2,33 @@
 
 #include "Bonus.hpp"
 
-BonusManager::BonusManager(std::vector<std::shared_ptr<Capsule>>& capsules, GameContext& gameContext, std::vector<std::shared_ptr<Bonus>>& bonuses)
-    : capsules_(capsules), gameContext_(gameContext), bonuses_(bonuses) {}
+BonusManager::BonusManager(GameContext& gameContext, std::vector<std::shared_ptr<Bonus>>& bonuses)
+    : gameContext_(gameContext), bonuses_(bonuses) {}
 
-void BonusManager::update(Paddle& paddle, Ball& ball, unsigned int& lives) {
-    for (auto& capsule : capsules_) {
+void BonusManager::update() {
+    for (auto& capsule : gameContext_.capsules_) {
         if (!capsule->isVisible()) continue;
         capsule->updatePosition();
+        auto& paddle = gameContext_.paddle;
         if (capsule->checkCollision(paddle)) {
             auto bonus = capsule->getBonus();
             if (bonus) {
                 // Apply effect based on bonus type (example logic, adapt as needed)
                 switch (bonus->get_type()) {
                     case 'E': // Enlarge
-                        bonus->applyEffect(paddle);
+                        bonus->applyEffect(gameContext_);
                         break;
                     case 'S': // Slow
-                        bonus->applyEffect(ball);
+                        bonus->applyEffect(gameContext_);
                         break;
                     case 'C': // Catch
-                        bonus->applyEffect(paddle, ball);
+                        bonus->applyEffect(gameContext_);
                         break;
                     case 'L': // Laser
-                        bonus->applyEffect(paddle);
+                        bonus->applyEffect(gameContext_);
                         break;
                     case 'G': // Grey/Life
-                        lives++;
+                        gameContext_.lives++;
                         break;
                     // Add more cases as needed
                     default:
@@ -44,7 +45,7 @@ void BonusManager::update(Paddle& paddle, Ball& ball, unsigned int& lives) {
 
 void BonusManager::onBlockDestroyed(const Block& block){
     if (block.hasCapsule()) {
-        capsules_.push_back(block.getCapsule());
+        gameContext_.capsules_.push_back(block.getCapsule());
     }
 }
 

@@ -15,6 +15,7 @@
 #include "controller/CollisionController.hpp"
 #include "controller/MovementController.hpp"
 #include "controller/bonuses/BonusManager.hpp"
+#include "controller/GameContext.hpp"
 #include "controller/bonuses/Bonus.hpp"
 
 #include "utils/Constants.hpp"
@@ -56,6 +57,8 @@ private:
     GameContext gameContext_;
     BonusManager bonusManager_;
     GameView gameView_;
+    std::vector<std::shared_ptr<Bonus>> activeBonuses_;
+    GameContext gameContext_;
     // ... Ball, Capsules, ScoreManager, etc.
 
     // --- Contrôleurs (C) ---
