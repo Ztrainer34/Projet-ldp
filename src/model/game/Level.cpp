@@ -5,7 +5,15 @@
 #include <iostream>
 
 #include <random>
+
 #include "../../utils/Color.hpp"
+#include "../../controller/bonuses/BonusType.hpp"
+#include "../../controller/bonuses/BonusEnlarge.hpp"
+#include "../../controller/bonuses/BonusCatch.hpp"
+#include "../../controller/bonuses/BonusInterruption.hpp"
+#include "../../controller/bonuses/BonusLaser.hpp"
+#include "../../controller/bonuses/BonusSlow.hpp"
+#include "../../controller/bonuses/BonusExtraLife.hpp"
 
 /*Level::Level(float screen_width, float screen_height, float rows, float cols, float block_width, float block_height, float spacing_x, float spacing_y)
         : screen_width_(screen_width), screen_height_(screen_height), rows_(rows), cols_(cols),
@@ -36,10 +44,25 @@ void Level::generateBlocks(const std::vector<std::string>& layout) {
         {'6', {COLOR_BLUE, 100}},        
         {'7', {COLOR_MAGENTA, 110}},     
         {'8', {COLOR_YELLOW, 120}}       
-    };    
+    };   
+
+    // A mettre dans Level.cpp, au début de generateBlocks
+    std::map<BonusType, ALLEGRO_COLOR> bonus_rules = {
+        {BonusType::ENLARGE, COLOR_BLUE},
+        {BonusType::LASER, COLOR_PINK},
+        {BonusType::EXTRA_LIFE, COLOR_GREY},
+        {BonusType::CATCH, COLOR_GREEN},
+        {BonusType::SLOW_BALL, COLOR_ORANGE},
+        {BonusType::SPLIT, COLOR_YELLOW}
+    };
+
     std::vector<ALLEGRO_COLOR> capsuleColors = {
         COLOR_RED, COLOR_GREY, COLOR_GREEN, COLOR_YELLOW, COLOR_BLACK, COLOR_WHITE, COLOR_ORANGE, COLOR_CYAN, COLOR_BLUE, COLOR_MAGENTA, COLOR_PINK, COLOR_GOLD, COLOR_SILVER
     };
+
+    std::vector<BonusType> possibleBonuses = { BonusType::ENLARGE, BonusType::LASER,  BonusType::EXTRA_LIFE,  BonusType::CATCH,  BonusType::SLOW_BALL,  BonusType::SPLIT };
+    std::uniform_int_distribution<> distribBonus(0, possibleBonuses.size() - 1);
+    
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0.0, 1.0);
@@ -69,8 +92,34 @@ void Level::generateBlocks(const std::vector<std::string>& layout) {
                         auto block = std::make_shared<Block>(pos, blockSize_, true, color, 1, score);
                         // 20% chance to add a capsule
                         if (dis(gen) < 0.2) {
-                            ALLEGRO_COLOR capsuleColor = capsuleColors[colorDis(gen)];
-                            block->setCapsule(std::make_shared<Capsule>(pos, blockSize_, true, capsuleColor));
+                            BonusType randomType = possibleBonuses[distribBonus(gen)];
+                            std::shared_ptr<Bonus> bonus = nullptr;
+
+                            switch (randomType) {
+                            case BonusType::ENLARGE:
+                                bonus = std::make_shared<BonusEnlarge>();
+                                break;
+                            case BonusType::LASER:
+                                bonus = std::make_shared<BonusLaser>();
+                                break;
+                            case BonusType::CATCH:
+                                bonus = std::make_shared<BonusCatch>();
+                                break;
+                            case BonusType::SLOW_BALL:
+                                bonus = std::make_shared<BonusSlow>();
+                                break;
+                            case BonusType::SPLIT:
+                                bonus = std::make_shared<BonusInterruption>();
+                                break;
+                            case BonusType::EXTRA_LIFE:
+                                bonus = std::make_shared<BonusExtraLife>();
+                                break;
+                            
+                            }
+                            Size capsule_size(30, 15);
+                            ALLEGRO_COLOR capsuleColor = bonus_rules.at(randomType);
+                            auto capsule = std::make_shared<Capsule>(pos, capsule_size, true, capsuleColor, bonus);
+                            block->setCapsule(capsule);
                         }
                         blocks_.push_back(block);
                     }
