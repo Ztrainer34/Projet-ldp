@@ -45,7 +45,7 @@ private:
 
     // --- Modèles (M) ---
     Level level_;
-    Ball ball_;
+    std::vector<Ball> ball_; 
     Paddle paddle_; 
     std::vector<std::shared_ptr<Capsule>> capsules_;
     std::vector<Laser> lasers_;

@@ -13,7 +13,7 @@ class Laser;
  */
 struct GameContext {
     Paddle& paddle;
-    Ball& ball;
+    std::vector<Ball>& ball_;
     std::vector<Laser>& lasers;
     unsigned int& lives;
     Level& level;
