@@ -13,8 +13,10 @@ void BonusInterruption::applyEffect(GameContext& gameContext){
     Ball ball = gameContext.ball_.at(0);
     Ball ball2 = ball;
     Ball ball3 = ball;
-
-    ball2.setSpeedX(ball.getSpeedX()- 50); 
-
+    //changer orientation
+    ball2.setSpeedX(ball.getSpeedX()- 50.0f); 
+    ball3.setSpeedX(ball.getSpeedX()+ 50.0f);
+    gameContext.ball_.push_back(ball2); 
+    gameContext.ball_.push_back(ball3); 
 
 }

@@ -6,13 +6,13 @@ CollisionController::CollisionController(GameContext& context, ScoreManager& sco
     gameContext_(context),
     scoreManager_(scoreManager), bonusManager_(bonusManager) {}
 
-bool CollisionController::isBallTouchingPaddle() const{
+bool CollisionController::isBallTouchingPaddle(const Ball& ball) const{
     // Ball boundaries
-    auto& ball_ = gameContext_.ball;
-    float ballLeft = ball_.getX() - ball_.getRadius();
-    float ballRight = ball_.getX() + ball_.getRadius();
-    float ballTop = ball_.getY() - ball_.getRadius();
-    float ballBottom = ball_.getY() + ball_.getRadius();
+    
+    float ballLeft = ball.getX() - ball.getRadius();
+    float ballRight = ball.getX() + ball.getRadius();
+    float ballTop = ball.getY() - ball.getRadius();
+    float ballBottom = ball.getY() + ball.getRadius();
 
     // Paddle boundaries
     auto& paddle_ = gameContext_.paddle;
@@ -28,25 +28,25 @@ bool CollisionController::isBallTouchingPaddle() const{
            ballTop <= paddleBottom;
 }
 
-bool CollisionController::isBallTouchingScreenBoundary() const {
-    auto& ball_ = gameContext_.ball;
-    return (ball_.getX() - ball_.getRadius() < 0 || ball_.getX() + ball_.getRadius() > CST::SCREEN_WIDTH ||
-            ball_.getY() - ball_.getRadius() < 0 || ball_.getY() + ball_.getRadius() > CST::SCREEN_HEIGHT);
+bool CollisionController::isBallTouchingScreenBoundary(Ball& ball) const {
+    
+    return (ball.getX() - ball.getRadius() < 0 || ball.getX() + ball.getRadius() > CST::SCREEN_WIDTH ||
+            ball.getY() - ball.getRadius() < 0 || ball.getY() + ball.getRadius() > CST::SCREEN_HEIGHT);
 }
 
 // Function to check if the ball is touching a specific block
-bool CollisionController::isBallTouchingBlock(const Block& block) const {
+bool CollisionController::isBallTouchingBlock(const Ball& ball, const Block& block) const {
     float brickLeft = block.getX();
     float brickRight = brickLeft + block.getWidth();
     float brickTop = block.getY();
     float brickBottom = brickTop + block.getHeight();
 
     // Check if the ball overlaps with the block
-    auto& ball_ = gameContext_.ball;
-    return (ball_.getX() + ball_.getRadius() > brickLeft &&
-            ball_.getX() - ball_.getRadius() < brickRight &&
-            ball_.getY() + ball_.getRadius() > brickTop &&
-            ball_.getY() - ball_.getRadius() < brickBottom);
+    
+    return (ball.getX() + ball.getRadius() > brickLeft &&
+            ball.getX() - ball.getRadius() < brickRight &&
+            ball.getY() + ball.getRadius() > brickTop &&
+            ball.getY() - ball.getRadius() < brickBottom);
 }
 
 bool CollisionController::isCapsuleTouchingPaddle(const Capsule& capsule) const{
@@ -95,11 +95,11 @@ bool CollisionController::isLaserTouchingBlock(const std::shared_ptr<Block> bloc
     return false;
 }
 
-void CollisionController::handleBallPaddleCollision(){
-    auto& ball_ = gameContext_.ball;
+void CollisionController::handleBallPaddleCollision(Ball& ball){
+    
     auto& paddle_ = gameContext_.paddle;
 
-    float x = ball_.getX() - (paddle_.getX() - paddle_.getWidth() / 2);
+    float x = ball.getX() - (paddle_.getX() - paddle_.getWidth() / 2);
 
     // Length L of the paddle_
     float L = paddle_.getWidth();
@@ -111,41 +111,55 @@ void CollisionController::handleBallPaddleCollision(){
     float alpha_radians = alpha * ALLEGRO_PI / 180.0;
 
     // Update ball's velocity based on the new angle
-    ball_.setSpeedY(-ball_.getSpeedY());
+    ball.setSpeedY(-ball.getSpeedY());
 }
 
-void CollisionController::handleBallScreenCollision() {
-    auto& ball_ = gameContext_.ball;
+void CollisionController::handleBallScreenCollision(Ball& ball) {
+    
     // Check collision with left and right walls
-    if (ball_.getX() - ball_.getRadius() < 0) {
+    if (ball.getX() - ball.getRadius() < 0) {
         // Hit the left wall
                  // Prevent the ball from going out of bounds
-        ball_.setX(ball_.getRadius());
+        ball.setX(ball.getRadius());
          // Reverse horizontal velocity
-        ball_.setSpeedX(-ball_.getSpeedX());
+        ball.setSpeedX(-ball.getSpeedX());
     }
-    else if (ball_.getX() + ball_.getRadius() > CST::SCREEN_WIDTH) {
+    else if (ball.getX() + ball.getRadius() > CST::SCREEN_WIDTH) {
         // Hit the right wall
-        ball_.setX(CST::SCREEN_WIDTH - ball_.getRadius()); // Prevent the ball from going out of bounds
-        ball_.setSpeedX(-ball_.getSpeedX()); 
+        ball.setX(CST::SCREEN_WIDTH - ball.getRadius()); // Prevent the ball from going out of bounds
+        ball.setSpeedX(-ball.getSpeedX()); 
     }
 
     // Check collision with top wall
-    if (ball_.getY() - ball_.getRadius() < 0) {
+    if (ball.getY() - ball.getRadius() < 0) {
         // Hit the top wall
-        ball_.setY(ball_.getRadius()); // Prevent the ball from going out of bounds
-        ball_.setSpeedY(-ball_.getSpeedY()); // Reverse vertical velocity
+        ball.setY(ball.getRadius()); // Prevent the ball from going out of bounds
+        ball.setSpeedY(-ball.getSpeedY()); // Reverse vertical velocity
     }
 
     // No action needed for bottom wall in typical Arkanoid-style games, but:
     // If you want to handle bottom wall collision (e.g., lose a life):
-    if (ball_.getY() + ball_.getRadius() > CST::SCREEN_HEIGHT) {
-        gameContext_.lives--;
-        ball_.resetBallPosition();
+    // Dans CollisionController, à la place de la logique de perte de vie
+    // On doit utiliser un itérateur pour pouvoir supprimer sans bug
+    for (auto it = gameContext_.ball_.begin(); it != gameContext_.ball_.end(); ) {
+        if ((*it).getY() > Constants::SCREEN_HEIGHT) { // Si une balle sort
+            
+            if (gameContext_.ball_.size() > 1) {
+                // S'il y a plus d'une balle, on supprime juste celle-ci
+                it = gameContext_.ball_.erase(it);
+            } else {
+                // C'était la dernière balle, le joueur perd une vie
+                gameContext_.lives--;
+                (*it).resetBallPosition(); // On la réinitialise
+                ++it;
+            }
+        } else {
+            ++it;
+        }
     }
 }
 
-void CollisionController::handleBallBlockCollision(Block& brick) {
+void CollisionController::handleBallBlockCollision(Ball& ball, Block& brick) {
     if (!brick.isVisible()) return; // Skip invisible bricks
 
     // Get brick position_ and size
@@ -155,22 +169,22 @@ void CollisionController::handleBallBlockCollision(Block& brick) {
     float brickBottom = brickTop + brick.getHeight();
 
     // Determine which side of the brick the ball is hitting
-    auto& ball_ = gameContext_.ball;
-    if (ball_.getY() - ball_.getRadius() < brickBottom && ball_.getY() + ball_.getRadius() > brickTop) {
-        if (ball_.getX() < brickLeft || ball_.getX() > brickRight) {
-            ball_.setSpeedX(-ball_.getSpeedX()); // Reverse horizontal velocity
+    
+    if (ball.getY() - ball.getRadius() < brickBottom && ball.getY() + ball.getRadius() > brickTop) {
+        if (ball.getX() < brickLeft || ball.getX() > brickRight) {
+            ball.setSpeedX(-ball.getSpeedX()); // Reverse horizontal velocity
         } else {
-            ball_.setSpeedY(-ball_.getSpeedY()); // Reverse vertical velocity
+            ball.setSpeedY(-ball.getSpeedY()); // Reverse vertical velocity
         }
     }
 }
 
 // Dans CollisionController::handleBallBlockCollision(Block& block)
 
-void CollisionController::checkBallBlockCollisions() {
+void CollisionController::checkBallBlockCollisions(Ball& ball) {
     for (auto& block : gameContext_.blocks_) { // or level.getblocks
-        if (block->isVisible() && isBallTouchingBlock(*block)) {
-            handleBallBlockCollision(*block);
+        if (block->isVisible() && isBallTouchingBlock(ball,*block)) {
+            handleBallBlockCollision(ball, *block);
 
             // Le contrôleur notifie la brique qu'elle a été touchée
             block->onHit();
@@ -226,9 +240,12 @@ void CollisionController::checkLaserBlockCollisions(){
 
 bool CollisionController::checkAllCollision(){
     bool collision = false;
-    if (isBallTouchingScreenBoundary()) { handleBallScreenCollision(); }
-    if (isBallTouchingPaddle()) { handleBallPaddleCollision(); }
-    checkBallBlockCollisions();
+    for (auto& ball: gameContext_.ball_){
+        if (isBallTouchingScreenBoundary(ball)) { handleBallScreenCollision(ball); }
+        if (isBallTouchingPaddle(ball)) { handleBallPaddleCollision(ball); }
+        checkBallBlockCollisions(ball);
+    }
+   
     checkCapsulePaddleCollision();
     checkLaserBlockCollisions();
     return collision;
