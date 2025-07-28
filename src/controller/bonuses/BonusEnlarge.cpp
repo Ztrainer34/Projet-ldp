@@ -11,7 +11,7 @@ void BonusEnlarge::applyEffect(GameContext& GameContext){
         
     activate(); 
     GameContext.paddle.enlarge(50);  // agrandir
-    checkDuration();
+    
 
     // VERIFIER LA DUREE 
 }

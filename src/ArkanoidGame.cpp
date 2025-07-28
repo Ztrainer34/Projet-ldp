@@ -14,7 +14,7 @@ ArkanoidGame::ArkanoidGame()
     : allegroSystem_(),
       // --- Initialisation des Modèles ---
       level_(Size(70, 20), Point(50, 50), Point(10, 10)),
-      ball_(Point(400, 300), 20), // 20 = radius ball a supp
+      ball_({Ball(Point(400, 300), 20)}), // 20 = radius ball a supp
       paddle_(Point(CST::SCREEN_WIDTH / 2, 550), Size(100, 20), Speed(300.f, 0.0f), false),
       //Paddle(Point position, Size size, Speed speed, bool laser_mode);
       capsules_(),
@@ -104,7 +104,9 @@ void ArkanoidGame::run() {
             // Paddle movement
             paddle_controller_.update(1.0 / 60.0f);
             // Ball movement
-            ball_.updatePosition();
+            for(auto& ball : gameContext_.ball_){
+                ball.updatePosition();          
+            }
             // Laser movement
             for (auto& laser : lasers_) {
                 if (laser.isActive()) {
@@ -116,10 +118,15 @@ void ArkanoidGame::run() {
             // Collisions
             collisionController_.checkAllCollision();
             // Ball missed
-            if (ball_.getY() > CST::SCREEN_HEIGHT) {
-                lives_--;
-                ball_.setPosition({400, 300});
+            for(auto& ball : gameContext_.ball_){
+                if (ball.getY() > CST::SCREEN_HEIGHT) {
+                    if(gameContext_.ball_.size()<1){
+                        lives_--;
+                    }
+                    ball.setPosition({400, 300});
+                }
             }
+            
             // Win/lose
             if (totalBlocks_ == 0) {
                 running_ = false;
@@ -136,7 +143,7 @@ void ArkanoidGame::run() {
                 al_rest(2.0);
             }
             // Debug print for ball position and radius
-            std::cout << "Ball position: " << ball_.getX() << ", " << ball_.getY() << " radius: " << ball_.getRadius() << std::endl;
+            //std::cout << "Ball position: " << ball_.getX() << ", " << ball_.getY() << " radius: " << ball_.getRadius() << std::endl;
             // Render
             al_clear_to_color(al_map_rgb(0, 0, 0));
             gameView_.renderAll();
@@ -207,7 +214,10 @@ void ArkanoidGame::processEvents() {
 void ArkanoidGame::updateGame(float deltaTime) {
     // Mettez ici toute la logique de mise à jour
     paddle_controller_.update(deltaTime);
-    ball_.updatePosition();
+    
+    for(auto& ball : gameContext_.ball_){
+        ball.updatePosition();          
+    }
     movementController_.update(deltaTime); 
     collisionController_.checkAllCollision();
     bonusManager_.updateActiveBonuses();

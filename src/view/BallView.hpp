@@ -6,10 +6,9 @@
 
 class BallView : public Drawable {
 private:
-    const Ball& ball;
-
+    const std::vector<Ball>& balls_;
 public:
-    BallView(const Ball& b, ALLEGRO_COLOR frame, ALLEGRO_COLOR fill) : Drawable(frame, fill), ball(b) {}
+    BallView(const std::vector<Ball>& balls, ALLEGRO_COLOR frame, ALLEGRO_COLOR fill) : Drawable(frame, fill), balls_(balls) {}
 
     void draw() override;
 };

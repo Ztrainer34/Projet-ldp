@@ -12,8 +12,7 @@ BonusCatch::BonusCatch() : Bonus() {hasDuration_ = false;}
 void BonusCatch::applyEffect(GameContext& gameContext) {
     activate(); // Activer le bonus
     Point paddleCenter = gameContext.paddle.getPosition(); // Obtenir la position centrale de la raquette
+    gameContext.ball_.at(0).setPosition(paddleCenter); // Positionner la balle originale au centre de la raquette
     
-    gameContext.ball.setPosition(paddleCenter); // Positionner la balle au centre de la raquette
-    checkDuration();
     // TODO: Ajouter la vérification de la durée dans une capsule de temps
 }
