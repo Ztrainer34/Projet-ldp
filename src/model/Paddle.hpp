@@ -20,7 +20,7 @@ public:
     // Constructor
     Paddle(Point position, Size size, Speed speed, bool laser_mode);
 
-    void enlarge(float amount) { setWidth(amount); }
+    void enlarge(float amount) { setWidth(getWidth() + amount); }
     bool isLaserModeEnabled() const { return laser_mode_; }
     void setLaserMode(bool enabled) { laser_mode_ = enabled; }
 

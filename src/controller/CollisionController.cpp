@@ -92,6 +92,7 @@ bool CollisionController::isLaserTouchingBlock(const std::shared_ptr<Block> bloc
         laserY + laserHeight > blockY && laserY < blockY + blockHeight){
             return true;
         }
+    return false;
 }
 
 void CollisionController::handleBallPaddleCollision(){

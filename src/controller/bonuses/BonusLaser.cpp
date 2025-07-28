@@ -5,6 +5,7 @@
 #include "../../model/Paddle.hpp"
 #include "../../model/game/Level.hpp"
 #include "../GameContext.hpp"
+#include <iostream>
 
 // Constructeur
 BonusLaser::BonusLaser(float x, float y, float speed, ALLEGRO_COLOR color)
@@ -70,6 +71,7 @@ void BonusLaser::update(float deltaTime) {
 */
 
 void BonusLaser::applyEffect(GameContext& gameContext){
+    std::cout << "[DEBUG] BonusLaser applied! Laser mode enabled." << std::endl;
     activate();
     gameContext.paddle.setLaserMode(true); 
     checkDuration();

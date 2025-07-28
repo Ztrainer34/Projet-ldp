@@ -24,6 +24,7 @@
 #include "view/BlockView.hpp"
 #include "view/CapsuleView.hpp"
 #include "view/GameView.hpp"
+#include "view/LaserView.hpp"
 #include "utils/Color.hpp"
 
 

@@ -8,7 +8,7 @@ Laser::Laser(Point position, Speed speed) :
 // Mise à jour de la position du laser
 void Laser::updatePosition(float delta) {
     // Calcul du déplacement vertical
-    float newY = getY() - getSpeedY() * delta;
+    float newY = getY() + getSpeedY() * delta;
     setY(newY);
 
     // Vérifie si le laser est encore visible

@@ -105,6 +105,12 @@ void ArkanoidGame::run() {
             paddle_controller_.update(1.0 / 60.0f);
             // Ball movement
             ball_.updatePosition();
+            // Laser movement
+            for (auto& laser : lasers_) {
+                if (laser.isActive()) {
+                    laser.updatePosition(1.0 / 60.0f);
+                }
+            }
             // Bonus/capsule update
             bonusManager_.update();
             // Collisions
@@ -150,6 +156,13 @@ void ArkanoidGame::run() {
                 if (capsule->isVisible()) {
                     CapsuleView capsuleView(*capsule, capsule->getColor());
                     capsuleView.draw();
+                }
+            }
+            // Draw lasers
+            for (const auto& laser : lasers_) {
+                if (laser.isActive()) {
+                    LaserView laserView(laser, COLOR_RED);
+                    laserView.draw();
                 }
             }
             al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());

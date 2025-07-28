@@ -53,6 +53,7 @@ void PaddleController::update(float deltaTime) {
 
     // Tir laser
     if (shoot_requested_ && paddle_.isLaserModeEnabled()) {
+        std::cout << "[DEBUG] Shooting laser!" << std::endl;
         Point start_pos = {paddle_.getX() + paddle_.getWidth() / 2, paddle_.getY()};
         Speed laser_speed = {0, -400};
         lasers_.emplace_back(start_pos, laser_speed);

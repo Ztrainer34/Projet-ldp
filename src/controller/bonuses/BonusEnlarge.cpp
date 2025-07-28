@@ -10,7 +10,7 @@ void BonusEnlarge::applyEffect(GameContext& GameContext){
     // Logique spécifique au bonus "BonusEnlarge"
         
     activate(); 
-    GameContext.paddle.enlarge(20);  // agrandir
+    GameContext.paddle.enlarge(50);  // agrandir
     checkDuration();
 
     // VERIFIER LA DUREE 
@@ -18,5 +18,5 @@ void BonusEnlarge::applyEffect(GameContext& GameContext){
 
 void BonusEnlarge::cancelEffect(GameContext& context){
     deactivate();
-    context.paddle.enlarge(-20);
+    context.paddle.enlarge(-50); // Subtract the same amount that was added
 }
