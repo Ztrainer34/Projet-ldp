@@ -19,6 +19,7 @@ void BonusSlow::applyEffect(GameContext& gameContext){
 }
 
 void BonusSlow::cancelEffect(GameContext& context){
+        deactivate();
         for(auto& ball : context.ball_){
                 ball.setSpeed(Speed(3.0f, 3.0f));
         }

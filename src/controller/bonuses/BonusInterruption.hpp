@@ -14,7 +14,6 @@ public:
 
 
     void applyEffect(GameContext& gameContext) override;
-
 };
 
 #endif // BONUS_BONUSINTERRUPTION_HPP

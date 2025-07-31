@@ -35,7 +35,7 @@ public:
 
     virtual void applyEffect(GameContext& context) = 0;
 
-    virtual void cancelEffect(GameContext& context){}
+    virtual void cancelEffect(GameContext& context){ deactivate(); }
     // Obtenez le type de bonus
     char get_type() const { return type_; }
    

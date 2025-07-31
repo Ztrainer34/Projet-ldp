@@ -60,7 +60,7 @@ void BonusManager::onCapsuleCollected(const Capsule& capsule) {
     }
 
     // 1. S'il y avait déjà un bonus actif, on annule son effet.
-    if (currentBonus) {
+    if (currentBonus->isActive()) {
         currentBonus->cancelEffect(gameContext_);
     }
 
