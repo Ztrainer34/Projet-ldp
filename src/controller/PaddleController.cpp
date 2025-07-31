@@ -23,16 +23,15 @@ void PaddleController::onKeyDown(int keycode) {
                 balls[0].launchBall();
                 
                 // Reset the catch bonus
-                for (auto& bonus : bonusManager_.getActiveBonuses()) {
-                    if (auto catchBonus = std::dynamic_pointer_cast<BonusCatch>(bonus)) {
-                        if (catchBonus->isCatchActive()) {
-                            std::cout << "[DEBUG] Resetting catch bonus" << std::endl;
-                            catchBonus->cancelEffect(bonusManager_.getGameContext());
-                            break;
-                        }
+                auto& bonus = bonusManager_.getCurrentBonus();
+                if (auto catchBonus = std::dynamic_pointer_cast<BonusCatch>(bonus)) {
+                    if (catchBonus->isCatchActive()) {
+                        std::cout << "[DEBUG] Resetting catch bonus" << std::endl;
+                        catchBonus->cancelEffect(bonusManager_.getGameContext());
                     }
                 }
-            } else {
+            }
+            else {
                 std::cout << "[DEBUG] Ball is not caught, setting launch_requested_ = true" << std::endl;
                 launch_requested_ = true;
             }
@@ -107,24 +106,24 @@ void PaddleController::activateLaserBonus() {
 void PaddleController::launchBall() {
     std::cout << "[DEBUG] launchBall() called" << std::endl;
     // Check if any active bonus is a catch bonus
-    for (auto& bonus : bonusManager_.getActiveBonuses()) {
-        std::cout << "[DEBUG] Checking bonus type: " << bonus->get_type() << std::endl;
-        if (auto catchBonus = std::dynamic_pointer_cast<BonusCatch>(bonus)) {
-            std::cout << "[DEBUG] Found catch bonus, isCatchActive: " << catchBonus->isCatchActive() << std::endl;
-            if (catchBonus->isCatchActive()) {
-                // Check if ball is currently caught
-                auto& balls = bonusManager_.getGameContext().ball_;
-                if (!balls.empty()) {
-                    std::cout << "[DEBUG] Ball is caught: " << balls[0].isCaught() << std::endl;
-                    if (balls[0].isCaught()) {
-                        // Launch the ball
-                        std::cout << "[DEBUG] Launching ball!" << std::endl;
-                        balls[0].launchBall();
-                        return;
-                    }
+    auto& bonus = bonusManager_.getCurrentBonus();
+    std::cout << "[DEBUG] Checking bonus type: " << bonus->get_type() << std::endl;
+    if (auto catchBonus = std::dynamic_pointer_cast<BonusCatch>(bonus)) {
+        std::cout << "[DEBUG] Found catch bonus, isCatchActive: " << catchBonus->isCatchActive() << std::endl;
+        if (catchBonus->isCatchActive()) {
+            // Check if ball is currently caught
+            auto& balls = bonusManager_.getGameContext().ball_;
+            if (!balls.empty()) {
+                std::cout << "[DEBUG] Ball is caught: " << balls[0].isCaught() << std::endl;
+                if (balls[0].isCaught()) {
+                    // Launch the ball
+                    std::cout << "[DEBUG] Launching ball!" << std::endl;
+                    balls[0].launchBall();
+                    return;
                 }
             }
         }
-        std::cout << "[DEBUG] No active catch bonus found for launch" << std::endl;
+        
+    std::cout << "[DEBUG] No active catch bonus found for launch" << std::endl;
     }
 }
