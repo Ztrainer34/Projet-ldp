@@ -101,15 +101,15 @@ void CollisionController::handleBallPaddleCollision(Ball& ball){
     auto& paddle_ = gameContext_.paddle;
 
     // Check if catch bonus is active
-    for (auto& bonus : bonusManager_.getActiveBonuses()) {
-        if (auto catchBonus = std::dynamic_pointer_cast<BonusCatch>(bonus)) {
-            if (catchBonus->isCatchActive() && !ball.isCaught()) {
-                std::cout << "[DEBUG] Catch bonus active, catching ball!" << std::endl;
-                ball.catchBall(paddle_);
-                return; // Exit early, don't bounce the ball
-            }
+    const auto& bonus = bonusManager_.getCurrentBonus();
+    if (auto catchBonus = std::dynamic_pointer_cast<BonusCatch>(bonus)) {
+        if (catchBonus->isCatchActive() && !ball.isCaught()) {
+            std::cout << "[DEBUG] Catch bonus active, catching ball!" << std::endl;
+            ball.catchBall(paddle_);
+            return; // Exit early, don't bounce the ball
         }
     }
+    
 
     // Normal ball bouncing logic (only if not caught)
     if (!ball.isCaught()) {

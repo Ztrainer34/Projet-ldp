@@ -25,10 +25,6 @@ protected:
     ALLEGRO_COLOR color_;
     bool visible_;
     bool active_; // effet actif ou pas 
-    bool hasDuration_;
-    std::chrono::time_point<std::chrono::steady_clock> startTime_; 
-    // Représente une horloge monotone qui ne peut pas reculer.
-    const std::chrono::seconds effectDuration_ = std::chrono::seconds(6);
 
 public:
     Bonus(Point position, char type, ALLEGRO_COLOR color)
@@ -44,10 +40,10 @@ public:
     char get_type() const { return type_; }
    
 
-    void activate() { active_ = true; startTime_ = std::chrono::steady_clock::now(); }
-    // active et desactive le timer pour le bonus 
+    void activate() { active_ = true; }
+    // active et desactive le bonus 
     void deactivate() { active_ = false; }
-    virtual void checkDuration();
+    
 
     virtual ~Bonus() = default;
 
@@ -57,7 +53,6 @@ public:
     void set_visible(bool visible) { visible_ = visible; }
     bool isActive() const { return active_; }
 
-    bool hasDuration() const { return hasDuration_; }
 };
 
 

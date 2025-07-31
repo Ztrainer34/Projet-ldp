@@ -11,7 +11,7 @@
 BonusLaser::BonusLaser(float x, float y, float speed, ALLEGRO_COLOR color)
     : Bonus(Point(x, y),'L', color), position_(x, y), speed_(speed), color_(color), active_(true) {}
 
-BonusLaser::BonusLaser() : Bonus() { hasDuration_ = true; }
+BonusLaser::BonusLaser() : Bonus() { }
 // Mise à jour de la position du bonuslaser
 void BonusLaser::update(float deltaTime) {
     //position_.y -= speed_ * deltaTime; // Le bonuslaser monte vers le haut

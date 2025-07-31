@@ -7,7 +7,7 @@
 BonusSlow::BonusSlow(const Point& position,char type, ALLEGRO_COLOR color)
         : Bonus(position, type, color) {}
 
-BonusSlow::BonusSlow() : Bonus() {hasDuration_ = true;}
+BonusSlow::BonusSlow() : Bonus() {}
 
 void BonusSlow::applyEffect(GameContext& gameContext){
         // Logique spécifique au bonus "BonusSlow"

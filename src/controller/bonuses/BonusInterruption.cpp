@@ -4,7 +4,7 @@
 BonusInterruption::BonusInterruption(const Point& position, char type, ALLEGRO_COLOR color)
     : Bonus(position, type, color) {}
 
-BonusInterruption::BonusInterruption() : Bonus() {hasDuration_ = false;}
+BonusInterruption::BonusInterruption() : Bonus() {}
 
 void BonusInterruption::applyEffect(GameContext& gameContext){
     // diviser la ball en 3 et aucun capsule ne peut tomber

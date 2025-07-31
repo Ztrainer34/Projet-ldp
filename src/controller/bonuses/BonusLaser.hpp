@@ -31,9 +31,6 @@ public:
     // Récupère la position du laser
     const Point& getPosition() const;
 
-  
-    //void checkDuration() override ;
-
 
 private:
     Point position_;

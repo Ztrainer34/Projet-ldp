@@ -2,8 +2,8 @@
 
 #include "Bonus.hpp"
 
-BonusManager::BonusManager(GameContext& gameContext, std::vector<std::shared_ptr<Bonus>>& bonuses)
-    : gameContext_(gameContext), bonuses_(bonuses) {}
+BonusManager::BonusManager(GameContext& gameContext)
+    : gameContext_(gameContext) {}
 
 void BonusManager::update() {
     for (auto& capsule : gameContext_.capsules_) {
@@ -53,26 +53,21 @@ void BonusManager::onBlockDestroyed(const Block& block){
 }
 
 void BonusManager::onCapsuleCollected(const Capsule& capsule) {
-    // Appliquer l'effet du bonus.
-    if (auto bonus = capsule.getBonus()) {
-        bonus->applyEffect(gameContext_);
-        if (bonus->hasDuration()) {
-            bonuses_.push_back(bonus);
-        }
+    // On récupère le NOUVEAU bonus que contient la capsule
+    std::shared_ptr<Bonus> newBonus = capsule.getBonus();
+    if (!newBonus) {
+        return; // Si la capsule est vide, on ne fait rien
     }
+
+    // 1. S'il y avait déjà un bonus actif, on annule son effet.
+    if (currentBonus) {
+        currentBonus->cancelEffect(gameContext_);
+    }
+
+    // 2. On définit le nouveau bonus comme étant le bonus actif.
+    currentBonus = newBonus;
+
+    // 3. On applique l'effet du nouveau bonus.
+    currentBonus->applyEffect(gameContext_);
 }
 
-void BonusManager::updateActiveBonuses() {
-    // Update active bonuses and remove expired ones
-    auto it = bonuses_.begin();
-    while (it != bonuses_.end()) {
-        (*it)->checkDuration();
-        if (!(*it)->isActive()) {
-            // Cancel effect when bonus expires
-            (*it)->cancelEffect(gameContext_);
-            it = bonuses_.erase(it);
-        } else {
-            ++it;
-        }
-    }
-}

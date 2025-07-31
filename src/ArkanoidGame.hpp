@@ -59,7 +59,7 @@ private:
     GameContext gameContext_;
     BonusManager bonusManager_;
     GameView gameView_;
-    std::vector<std::shared_ptr<Bonus>> activeBonuses_;
+    
 
     // ... Ball, Capsules, ScoreManager, etc.
 

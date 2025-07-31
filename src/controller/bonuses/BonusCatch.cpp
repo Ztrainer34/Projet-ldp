@@ -6,11 +6,10 @@
 
 BonusCatch::BonusCatch(const Point& position, char type, ALLEGRO_COLOR color)
     : Bonus(position, type, color), catchActive_(false) {
-    hasDuration_ = true; // Catch bonus should have a duration
+   
 }
 
 BonusCatch::BonusCatch() : Bonus(), catchActive_(false) {
-    hasDuration_ = true; // Catch bonus should have a duration
     type_ = 'C'; // Set the correct type for catch bonus
 }
 
@@ -25,7 +24,7 @@ void BonusCatch::applyEffect(GameContext& gameContext) {
     // Don't immediately catch the ball - just enable the catch ability
     // The ball will be caught when it collides with the paddle
     
-    checkDuration();
+
 }
 
 void BonusCatch::cancelEffect(GameContext& gameContext) {

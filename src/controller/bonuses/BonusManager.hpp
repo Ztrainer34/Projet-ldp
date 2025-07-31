@@ -13,20 +13,20 @@
 class BonusManager {
 private:
     GameContext& gameContext_;
-    std::vector<std::shared_ptr<Bonus>>& bonuses_;  // liste de bonus actifs
+    std::shared_ptr<Bonus> currentBonus; 
 
 public:
-    BonusManager(GameContext& gameContext, std::vector<std::shared_ptr<Bonus>>& bonuses);
+    BonusManager(GameContext& gameContext);
     // Update all capsules: move, check collision, apply effect, remove if needed
     void update();
 
     void onBlockDestroyed(const Block& block);
     void onCapsuleCollected(const Capsule& capsule);
     // pour arkanoid game
-    void updateActiveBonuses();
+ 
     
     // Getter methods
-    const std::vector<std::shared_ptr<Bonus>>& getActiveBonuses() const { return bonuses_; }
+    const std::shared_ptr<Bonus> getCurrentBonus() const { return currentBonus; }
     GameContext& getGameContext() { return gameContext_; }
 };
 
