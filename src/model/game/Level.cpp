@@ -118,7 +118,7 @@ void Level::generateBlocks(const std::vector<std::string>& layout) {
                             }
                             Size capsule_size(30, 15);
                             ALLEGRO_COLOR capsuleColor = bonus_rules.at(randomType);
-                            auto capsule = std::make_shared<Capsule>(pos, capsule_size, true, capsuleColor, bonus);
+                            auto capsule = std::make_shared<Capsule>(pos, capsule_size, true, capsuleColor,std::make_shared<BonusCatch>() );
                             block->setCapsule(capsule);
                         }
                         blocks_.push_back(block);

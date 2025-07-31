@@ -4,20 +4,24 @@
 
 #include <allegro5/allegro_primitives.h>
 #include <cmath>
+#include <iostream> // Added for debug output
 
 
 Ball::Ball(Point position, float radius) 
-        : Object(position, Size(radius, radius), Speed(3.0, 3.0)), radius_(radius) {}
+        : Object(position, Size(radius, radius), Speed(3.0, 3.0)), radius_(radius), isCaught_(false) {}
 
 Ball::Ball(Point position, Speed speed, float radius)
-    : Object(position, Size(radius, radius), speed), radius_(radius) {}
+    : Object(position, Size(radius, radius), speed), radius_(radius), isCaught_(false) {}
 
 void Ball::updatePosition() {
-    // Update the ball's position_ based on speed
-    position_.setPosition(
-        getX() + getSpeedX(),
-        getY() + getSpeedY()
-    );
+    // Only update position if ball is not caught
+    if (!isCaught_) {
+        // Update the ball's position_ based on speed
+        position_.setPosition(
+            getX() + getSpeedX(),
+            getY() + getSpeedY()
+        );
+    }
 }
 
 std::vector<Ball> Ball::split() {
@@ -59,4 +63,29 @@ void Ball::setRadius(float new_radius) {
 void Ball::resetBallPosition(){
     setPosition(CST::SCREEN_WIDTH / 2, 300.0f);
     setSpeed(3.0f,3.0f);
+}
+
+void Ball::catchBall(const Paddle& paddle) {
+    std::cout << "[DEBUG] Ball::catchBall() called!" << std::endl;
+    isCaught_ = true;
+    // Position ball in the middle of the paddle
+    float paddleCenterX = paddle.getX() + paddle.getWidth() / 2;
+    float ballY = paddle.getY() - getRadius(); // Position ball just above the paddle
+    setPosition(paddleCenterX, ballY);
+    std::cout << "[DEBUG] Ball caught! Position: (" << paddleCenterX << ", " << ballY << ")" << std::endl;
+}
+
+void Ball::launchBall() {
+    isCaught_ = false;
+    // Set a normal launch speed when the ball is released
+    setSpeed(3.0f, -3.0f); // Normal speed, launching upward
+}
+
+void Ball::updateCaughtPosition(const Paddle& paddle) {
+    if (isCaught_) {
+        // Update ball position to stay in the middle of the paddle
+        float paddleCenterX = paddle.getX() + paddle.getWidth() / 2;
+        float ballY = paddle.getY() - getRadius(); // Position ball just above the paddle
+        setPosition(paddleCenterX, ballY);
+    }
 }

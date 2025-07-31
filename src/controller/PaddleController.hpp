@@ -2,7 +2,7 @@
 #include <algorithm> // pour std::max/min
 #include <allegro5/allegro.h> 
 #include "../model/Paddle.hpp"
-
+#include "bonuses/BonusManager.hpp"
 
 class PaddleController {
 private:
@@ -10,17 +10,18 @@ private:
     std::vector<Laser>& lasers_;
     float boundary_left_;
     float boundary_right_;
+    BonusManager& bonusManager_;
 
     bool moving_left_ = false;
     bool moving_right_ = false;
     bool shoot_requested_ = false;
-
+    bool launch_requested_ = false;
 
 public:
     PaddleController(Paddle& p, std::vector<Laser>& l,
-                     float left, float right)
+                     float left, float right, BonusManager& bm)
       : paddle_(p), lasers_(l),
-        boundary_left_(left), boundary_right_(right) {}
+        boundary_left_(left), boundary_right_(right), bonusManager_(bm) {}
 
     // Méthodes pour que la boucle main nous informe des événements
     void onKeyDown(int keycode);
@@ -29,4 +30,5 @@ public:
     void update(float deltaTime);
 
     void activateLaserBonus();
+    void launchBall();
 };

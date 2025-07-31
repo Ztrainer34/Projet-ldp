@@ -1,5 +1,6 @@
 #include "CollisionController.hpp"
-#include "../utils/Utils.hpp" // Add this include
+#include "bonuses/BonusCatch.hpp"
+#include "../utils/Utils.hpp"
 #include "../controller/bonuses/BonusManager.hpp"
 
 CollisionController::CollisionController(GameContext& context, ScoreManager& scoreManager, BonusManager& bonusManager) :
@@ -99,6 +100,34 @@ void CollisionController::handleBallPaddleCollision(){
     auto& ball_ = gameContext_.ball;
     auto& paddle_ = gameContext_.paddle;
 
+    std::cout << "[DEBUG] Ball-Paddle collision detected!" << std::endl;
+
+    // Check if catch bonus is active
+    bool catchBonusActive = false;
+    for (auto& bonus : bonusManager_.getActiveBonuses()) {
+        std::cout << "[DEBUG] Checking bonus type: " << bonus->get_type() << std::endl;
+        if (bonus->get_type() == 'C') { // Catch bonus type
+            if (auto catchBonus = std::dynamic_pointer_cast<BonusCatch>(bonus)) {
+                std::cout << "[DEBUG] Found catch bonus, isCatchActive: " << catchBonus->isCatchActive() << std::endl;
+                if (catchBonus->isCatchActive()) {
+                    catchBonusActive = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    std::cout << "[DEBUG] catchBonusActive: " << catchBonusActive << ", ball.isCaught(): " << ball_.isCaught() << std::endl;
+
+    if (catchBonusActive && !ball_.isCaught()) {
+        // Catch the ball if catch bonus is active and ball is not already caught
+        std::cout << "[DEBUG] Catching the ball!" << std::endl;
+        ball_.catchBall(paddle_);
+        return; // Don't do normal paddle collision
+    }
+
+    std::cout << "[DEBUG] Doing normal paddle collision" << std::endl;
+    // Normal paddle collision behavior
     float x = ball_.getX() - (paddle_.getX() - paddle_.getWidth() / 2);
 
     // Length L of the paddle_

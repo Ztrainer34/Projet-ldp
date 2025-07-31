@@ -24,6 +24,10 @@ public:
     void onCapsuleCollected(const Capsule& capsule);
     // pour arkanoid game
     void updateActiveBonuses();
+    
+    // Getter methods
+    const std::vector<std::shared_ptr<Bonus>>& getActiveBonuses() const { return bonuses_; }
+    GameContext& getGameContext() { return gameContext_; }
 };
 
 #endif // BONUSMANAGER_HPP 

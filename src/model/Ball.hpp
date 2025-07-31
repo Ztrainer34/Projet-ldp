@@ -15,6 +15,7 @@ class Block;
 class Ball : public Object {
 private:
     float radius_;             // Radius of the ball
+    bool isCaught_;           // Flag to track if ball is caught by paddle
 
 public:
     // Constructor
@@ -29,6 +30,12 @@ public:
 
     std::vector<Ball> split();
 
+    // Ball catch functionality
+    bool isCaught() const { return isCaught_; }
+    void setCaught(bool caught) { isCaught_ = caught; }
+    void catchBall(const Paddle& paddle);
+    void launchBall();
+    void updateCaughtPosition(const Paddle& paddle);
 
     // Getter and Setter for radius
     float getRadius() const;

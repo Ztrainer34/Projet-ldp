@@ -1,4 +1,5 @@
 #include "PaddleController.hpp"
+#include "bonuses/BonusCatch.hpp"
 #include <iostream>
 
 
@@ -11,9 +12,33 @@ void PaddleController::onKeyDown(int keycode) {
         moving_right_ = true;
     }
     if (keycode == ALLEGRO_KEY_SPACE) {
+        std::cout << "[DEBUG] Spacebar keycode detected!" << std::endl;
         if(paddle_.isLaserModeEnabled()){
             shoot_requested_ = true;
+        } else {
+            // Check if ball is caught and launch it
+            auto& ball = bonusManager_.getGameContext().ball;
+            if (ball.isCaught()) {
+                std::cout << "[DEBUG] Ball is caught, launching it!" << std::endl;
+                ball.launchBall();
+                
+                // Reset the catch bonus
+                for (auto& bonus : bonusManager_.getActiveBonuses()) {
+                    if (auto catchBonus = std::dynamic_pointer_cast<BonusCatch>(bonus)) {
+                        if (catchBonus->isCatchActive()) {
+                            std::cout << "[DEBUG] Resetting catch bonus" << std::endl;
+                            catchBonus->cancelEffect(bonusManager_.getGameContext());
+                            break;
+                        }
+                    }
+                }
+            } else {
+                std::cout << "[DEBUG] Ball is not caught, setting launch_requested_ = true" << std::endl;
+                launch_requested_ = true;
+            }
         }
+    } else {
+        std::cout << "[DEBUG] Key pressed but not spacebar: " << keycode << " (ALLEGRO_KEY_SPACE = " << ALLEGRO_KEY_SPACE << ")" << std::endl;
     }
 }
 
@@ -40,7 +65,6 @@ void PaddleController::onMouseMove(float mouseX) {
 
 void PaddleController::update(float deltaTime) {
     auto pos = paddle_.getPosition();
-    std::cout << "Update: posX=" << pos.getX() << ", speedX=" << paddle_.getSpeedX() << ", deltaTime=" << deltaTime << std::endl;
     // Mouvement basé sur l'état interne
     if (moving_left_) {
         pos.setX(std::max(boundary_left_, pos.getX() - paddle_.getSpeedX() * deltaTime));
@@ -48,21 +72,52 @@ void PaddleController::update(float deltaTime) {
     else if (moving_right_) {
         pos.setX(std::min(boundary_right_ - paddle_.getWidth(), pos.getX() + paddle_.getSpeedX() * deltaTime));
     }
-    std::cout << "New posX=" << pos.getX() << std::endl;
     paddle_.setPosition(pos);
+
+    // Update ball position if it's caught
+    bonusManager_.getGameContext().ball.updateCaughtPosition(paddle_);
 
     // Tir laser
     if (shoot_requested_ && paddle_.isLaserModeEnabled()) {
-        std::cout << "[DEBUG] Shooting laser!" << std::endl;
         Point start_pos = {paddle_.getX() + paddle_.getWidth() / 2, paddle_.getY()};
         Speed laser_speed = {0, -400};
         lasers_.emplace_back(start_pos, laser_speed);
     }
     
+    // Launch ball if catch bonus is active
+    if (launch_requested_) {
+        std::cout << "[DEBUG] Processing launch_requested_" << std::endl;
+        launchBall();
+    }
+    
     // IMPORTANT : On "consomme" la demande de tir pour qu'il ne se répète pas
     shoot_requested_ = false; 
+    launch_requested_ = false;
 }
 
 void PaddleController::activateLaserBonus() {
     paddle_.setLaserMode(true);
+}
+
+void PaddleController::launchBall() {
+    std::cout << "[DEBUG] launchBall() called" << std::endl;
+    // Check if any active bonus is a catch bonus
+    for (auto& bonus : bonusManager_.getActiveBonuses()) {
+        std::cout << "[DEBUG] Checking bonus type: " << bonus->get_type() << std::endl;
+        if (auto catchBonus = std::dynamic_pointer_cast<BonusCatch>(bonus)) {
+            std::cout << "[DEBUG] Found catch bonus, isCatchActive: " << catchBonus->isCatchActive() << std::endl;
+            if (catchBonus->isCatchActive()) {
+                // Check if ball is currently caught
+                auto& ball = bonusManager_.getGameContext().ball;
+                std::cout << "[DEBUG] Ball is caught: " << ball.isCaught() << std::endl;
+                if (ball.isCaught()) {
+                    // Launch the ball
+                    std::cout << "[DEBUG] Launching ball!" << std::endl;
+                    ball.launchBall();
+                    return;
+                }
+            }
+        }
+    }
+    std::cout << "[DEBUG] No active catch bonus found for launch" << std::endl;
 }

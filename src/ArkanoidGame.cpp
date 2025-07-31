@@ -22,9 +22,9 @@ ArkanoidGame::ArkanoidGame()
     gameContext_{paddle_, ball_, lasers_, lives_, level_, level_.getBlocks(), capsules_},
        
       // --- Initialisation des Contrôleurs ---
-      paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH),
-      movementController_(gameContext_),
       bonusManager_(gameContext_, activeBonuses_),
+      paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH, bonusManager_),
+      movementController_(gameContext_),
       scoreManager_("highscore.txt", 0, 0),
       collisionController_(gameContext_, scoreManager_, bonusManager_),
       
@@ -85,7 +85,7 @@ void ArkanoidGame::run() {
     while (running_) {
         ALLEGRO_EVENT ev;
         al_wait_for_event(allegroSystem_.getEventQueue(), &ev);
-        std::cout << "[DEBUG] Event type: " << ev.type << std::endl;
+
         if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
             std::cout << "[DEBUG] ALLEGRO_EVENT_KEY_DOWN: " << ev.keyboard.keycode << std::endl;
             paddle_controller_.onKeyDown(ev.keyboard.keycode);
@@ -94,10 +94,10 @@ void ArkanoidGame::run() {
             std::cout << "[DEBUG] ALLEGRO_EVENT_KEY_UP: " << ev.keyboard.keycode << std::endl;
             paddle_controller_.onKeyUp(ev.keyboard.keycode);
         } else if (ev.type == ALLEGRO_EVENT_MOUSE_AXES) {
-            std::cout << "[DEBUG] ALLEGRO_EVENT_MOUSE_AXES: x=" << ev.mouse.x << std::endl;
+            //std::cout << "[DEBUG] ALLEGRO_EVENT_MOUSE_AXES: x=" << ev.mouse.x << std::endl;
             paddle_controller_.onMouseMove(ev.mouse.x);
         } else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-            std::cout << "[DEBUG] ALLEGRO_EVENT_DISPLAY_CLOSE" << std::endl;
+            //std::cout << "[DEBUG] ALLEGRO_EVENT_DISPLAY_CLOSE" << std::endl;
             running_ = false;
         }
         if (ev.type == ALLEGRO_EVENT_TIMER) {
@@ -136,7 +136,7 @@ void ArkanoidGame::run() {
                 al_rest(2.0);
             }
             // Debug print for ball position and radius
-            std::cout << "Ball position: " << ball_.getX() << ", " << ball_.getY() << " radius: " << ball_.getRadius() << std::endl;
+
             // Render
             al_clear_to_color(al_map_rgb(0, 0, 0));
             gameView_.renderAll();
