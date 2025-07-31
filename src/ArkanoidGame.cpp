@@ -108,6 +108,47 @@ void ArkanoidGame::run() {
             std::cout << "[DEBUG] ALLEGRO_EVENT_KEY_DOWN: " << ev.keyboard.keycode << std::endl;
             paddle_controller_.onKeyDown(ev.keyboard.keycode);
             if (ev.keyboard.keycode == ALLEGRO_KEY_ESCAPE) running_ = false;
+            
+            // Level switching shortcuts
+            if (ev.keyboard.keycode == ALLEGRO_KEY_1) {
+                switchToLevel(0);
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_2) {
+                switchToLevel(1);
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_3) {
+                switchToLevel(2);
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_4) {
+                switchToLevel(3);
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_5) {
+                switchToLevel(4);
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_6) {
+                switchToLevel(5);
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_7) {
+                switchToLevel(6);
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_8) {
+                switchToLevel(7);
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_9) {
+                switchToLevel(8);
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_0) {
+                switchToLevel(9);
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_RIGHT) {
+                // Next level
+                if (levelManager_->hasNextLevel()) {
+                    switchToLevel(levelManager_->getCurrentLevelIndex() + 1);
+                }
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_LEFT) {
+                // Previous level
+                if (levelManager_->getCurrentLevelIndex() > 0) {
+                    switchToLevel(levelManager_->getCurrentLevelIndex() - 1);
+                }
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_HOME) {
+                // First level
+                switchToLevel(0);
+            } else if (ev.keyboard.keycode == ALLEGRO_KEY_END) {
+                // Last level
+                if (levelManager_->getTotalLevels() > 0) {
+                    switchToLevel(levelManager_->getTotalLevels() - 1);
+                }
+            }
         } else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
             std::cout << "[DEBUG] ALLEGRO_EVENT_KEY_UP: " << ev.keyboard.keycode << std::endl;
             paddle_controller_.onKeyUp(ev.keyboard.keycode);
@@ -187,6 +228,10 @@ void ArkanoidGame::run() {
             al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());
             al_draw_textf(font_, al_map_rgb(255,255,255), 10, 30, 0, "Lives: %u", lives_);
             al_draw_textf(font_, al_map_rgb(255,255,255), 20, 10, 0, "Highscore: %u", scoreManager_.getHighscore());
+            al_draw_textf(font_, al_map_rgb(255,255,255), 10, 50, 0, "Level: %zu/%zu", levelManager_->getCurrentLevelIndex() + 1, levelManager_->getTotalLevels());
+            
+            // Display level switching shortcuts
+            al_draw_text(font_, al_map_rgb(255,255,255), 10, 70, 0, "Level shortcuts: 1-9,0 | Arrow keys | Home/End");
             al_flip_display();
         }
     }
@@ -243,8 +288,10 @@ void ArkanoidGame::renderGame() {
     gameView_.renderAll();
     al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());
     al_draw_textf(font_, al_map_rgb(255,255,255), 10, 30, 0, "Lives: %u", lives_);
-    al_draw_textf(font_, al_map_rgb(255,255,255), 10, 50, 0, "Level: %zu", levelManager_->getCurrentLevelIndex() + 1);
     al_draw_textf(font_, al_map_rgb(255,255,255), 20, 10, 0, "Highscore: %u", scoreManager_.getHighscore());
+    
+    // Display level switching shortcuts
+
     al_flip_display();
 }
 
@@ -325,5 +372,57 @@ void ArkanoidGame::loadNextLevel() {
         al_draw_text(font_, al_map_rgb(255,255,255), CST::SCREEN_WIDTH/2, CST::SCREEN_HEIGHT/2, ALLEGRO_ALIGN_CENTER, "FELICITATIONS! Vous avez terminé tous les niveaux!");
         al_flip_display();
         al_rest(3.0);
+    }
+}
+
+void ArkanoidGame::switchToLevel(size_t levelIndex) {
+    if (levelIndex < levelManager_->getTotalLevels()) {
+        // Charger le niveau spécifié
+        if (levelManager_->loadLevel(levelIndex)) {
+            std::cout << "Niveau " << levelIndex + 1 << " chargé avec succès!" << std::endl;
+            
+            // Mettre à jour le contexte de jeu
+            gameContext_.level = levelManager_->getCurrentLevel().get();
+            gameContext_.blocks_ = levelManager_->getCurrentLevel()->getBlocks();
+            
+            // Mettre à jour le total de blocs destructibles
+            size_t destructibleBlocks = 0;
+            for (const auto& block : levelManager_->getCurrentLevel()->getBlocks()) {
+                if (block->isVisible()) {
+                    auto goldBlock = std::dynamic_pointer_cast<GoldBlock>(block);
+                    if (!goldBlock) {
+                        destructibleBlocks++;
+                    }
+                }
+            }
+            totalBlocks_ = destructibleBlocks;
+            
+            // Réinitialiser les vues pour les nouveaux blocs
+            gameView_.clearRenderables();
+            
+            // Redessiner la balle et la raquette
+            gameView_.addRenderable(std::make_unique<BallView>(ball_, COLOR_BLUE, COLOR_RED));
+            gameView_.addRenderable(std::make_unique<PaddleView>(paddle_, COLOR_RED, COLOR_BLUE));
+            
+            // Ajouter les vues pour les nouvelles briques
+            for (const auto& block : levelManager_->getCurrentLevel()->getBlocks()) {
+                ALLEGRO_COLOR blockColor = block->getColor();
+                auto block_view = std::make_unique<BlockView>(*block, blockColor, blockColor);
+                gameView_.addRenderable(std::move(block_view));
+            }
+            
+            // Réinitialiser la position de la balle
+            for (auto& ball : ball_) {
+                ball.setPosition({400, 300});
+            }
+            
+            // Afficher un message de transition
+            al_clear_to_color(al_map_rgb(0, 0, 0));
+            al_draw_textf(font_, al_map_rgb(255,255,255), CST::SCREEN_WIDTH/2, CST::SCREEN_HEIGHT/2 - 20, ALLEGRO_ALIGN_CENTER, "Niveau %zu!", levelManager_->getCurrentLevelIndex() + 1);
+            al_flip_display();
+            al_rest(1.0);
+        }
+    } else {
+        std::cout << "Niveau " << levelIndex + 1 << " n'existe pas!" << std::endl;
     }
 }

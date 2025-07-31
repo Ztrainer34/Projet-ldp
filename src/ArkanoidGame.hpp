@@ -81,6 +81,7 @@ private:
     void renderGame();
     void checkLevelCompletion();
     void loadNextLevel();
+    void switchToLevel(size_t levelIndex);
 
 public:
     // Le constructeur fera l'initialisation
