@@ -17,10 +17,10 @@ void PaddleController::onKeyDown(int keycode) {
             shoot_requested_ = true;
         } else {
             // Check if ball is caught and launch it
-            auto& ball = bonusManager_.getGameContext().ball;
-            if (ball.isCaught()) {
+            auto& balls = bonusManager_.getGameContext().ball_;
+            if (!balls.empty() && balls[0].isCaught()) {
                 std::cout << "[DEBUG] Ball is caught, launching it!" << std::endl;
-                ball.launchBall();
+                balls[0].launchBall();
                 
                 // Reset the catch bonus
                 for (auto& bonus : bonusManager_.getActiveBonuses()) {
@@ -75,7 +75,12 @@ void PaddleController::update(float deltaTime) {
     paddle_.setPosition(pos);
 
     // Update ball position if it's caught
-    bonusManager_.getGameContext().ball.updateCaughtPosition(paddle_);
+    auto& balls = bonusManager_.getGameContext().ball_;
+    for (auto& ball : balls) {
+        if (ball.isCaught()) {
+            ball.updateCaughtPosition(paddle_);
+        }
+    }
 
     // Tir laser
     if (shoot_requested_ && paddle_.isLaserModeEnabled()) {
@@ -108,16 +113,18 @@ void PaddleController::launchBall() {
             std::cout << "[DEBUG] Found catch bonus, isCatchActive: " << catchBonus->isCatchActive() << std::endl;
             if (catchBonus->isCatchActive()) {
                 // Check if ball is currently caught
-                auto& ball = bonusManager_.getGameContext().ball;
-                std::cout << "[DEBUG] Ball is caught: " << ball.isCaught() << std::endl;
-                if (ball.isCaught()) {
-                    // Launch the ball
-                    std::cout << "[DEBUG] Launching ball!" << std::endl;
-                    ball.launchBall();
-                    return;
+                auto& balls = bonusManager_.getGameContext().ball_;
+                if (!balls.empty()) {
+                    std::cout << "[DEBUG] Ball is caught: " << balls[0].isCaught() << std::endl;
+                    if (balls[0].isCaught()) {
+                        // Launch the ball
+                        std::cout << "[DEBUG] Launching ball!" << std::endl;
+                        balls[0].launchBall();
+                        return;
+                    }
                 }
             }
         }
+        std::cout << "[DEBUG] No active catch bonus found for launch" << std::endl;
     }
-    std::cout << "[DEBUG] No active catch bonus found for launch" << std::endl;
 }

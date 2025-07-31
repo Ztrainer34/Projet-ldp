@@ -1,6 +1,7 @@
 #include "CollisionController.hpp"
 #include "../utils/Utils.hpp" // Add this include
 #include "../controller/bonuses/BonusManager.hpp"
+#include "../controller/bonuses/BonusCatch.hpp"
 
 CollisionController::CollisionController(GameContext& context, ScoreManager& scoreManager, BonusManager& bonusManager) :
     gameContext_(context),
@@ -99,19 +100,30 @@ void CollisionController::handleBallPaddleCollision(Ball& ball){
     
     auto& paddle_ = gameContext_.paddle;
 
-    float x = ball.getX() - (paddle_.getX() - paddle_.getWidth() / 2);
+    // Check if catch bonus is active
+    for (auto& bonus : bonusManager_.getActiveBonuses()) {
+        if (auto catchBonus = std::dynamic_pointer_cast<BonusCatch>(bonus)) {
+            if (catchBonus->isCatchActive() && !ball.isCaught()) {
+                std::cout << "[DEBUG] Catch bonus active, catching ball!" << std::endl;
+                ball.catchBall(paddle_);
+                return; // Exit early, don't bounce the ball
+            }
+        }
+    }
 
-    // Length L of the paddle_
-    float L = paddle_.getWidth();
+    // Normal ball bouncing logic (only if not caught)
+    if (!ball.isCaught()) {
+        float x = ball.getX() - (paddle_.getX() - paddle_.getWidth() / 2);
 
-    // Calculate angle alpha (in degrees)
-    float alpha = 30 + 120 * (1 - x / L);
+        // Length L of the paddle_
+        float L = paddle_.getWidth();
 
-    // Convert alpha to radians
-    float alpha_radians = alpha * ALLEGRO_PI / 180.0;
+        // Calculate angle alpha (in degrees)
+        float alpha = 30 + 120 * (1 - x / L);
 
-    // Update ball's velocity based on the new angle
-    ball.setSpeedY(-ball.getSpeedY());
+        // Update ball's velocity based on the new angle
+        ball.setSpeedY(-ball.getSpeedY());
+    }
 }
 
 void CollisionController::handleBallScreenCollision(Ball& ball) {

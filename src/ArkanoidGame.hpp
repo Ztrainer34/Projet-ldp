@@ -8,6 +8,7 @@
 #include "model/Block.hpp"
 #include "model/Capsule.hpp"
 #include "model/game/Level.hpp"
+#include "model/game/LevelManager.hpp"
 #include "model/game/Score.hpp"
 
 
@@ -44,7 +45,7 @@ private:
     bool running_ = true;
 
     // --- Modèles (M) ---
-    Level level_;
+    std::shared_ptr<LevelManager> levelManager_;
     std::vector<Ball> ball_; 
     Paddle paddle_; 
     std::vector<std::shared_ptr<Capsule>> capsules_;
@@ -78,6 +79,8 @@ private:
     void processEvents();
     void updateGame(float deltaTime);
     void renderGame();
+    void checkLevelCompletion();
+    void loadNextLevel();
 
 public:
     // Le constructeur fera l'initialisation

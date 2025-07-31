@@ -1,0 +1,10 @@
+# Niveau de test - Blocs dorés et destructibles
+# '-' = Espace vide
+# 'G' = Brique dorée (indestructible) - NE COMPTE PAS pour la victoire
+# 'S' = Brique argentée (2 coups)
+# '1' à '8' = Briques standard de différentes couleurs
+
+G-G-G-G-G-G-G-
+S-S-S-S-S-S-S-
+11223344556677
+88776655443322 

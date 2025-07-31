@@ -16,7 +16,7 @@ struct GameContext {
     std::vector<Ball>& ball_;
     std::vector<Laser>& lasers;
     unsigned int& lives;
-    Level& level;
+    Level* level;
     std::vector<std::shared_ptr<Block>>& blocks_;
     std::vector<std::shared_ptr<Capsule>>& capsules_;
     

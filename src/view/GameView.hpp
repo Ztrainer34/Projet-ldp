@@ -16,4 +16,8 @@ public:
             d->draw();
         }
     }
+    
+    void clearRenderables() {
+        drawables.clear();
+    }
 };

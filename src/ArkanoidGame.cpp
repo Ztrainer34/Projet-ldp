@@ -7,24 +7,25 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include <iostream> // Added for debug print statements
+#include "model/GoldBlock.hpp" // Pour détecter les blocs dorés
 
 
 ArkanoidGame::ArkanoidGame()
     // On utilise la liste d'initialisation pour construire les membres
     : allegroSystem_(),
       // --- Initialisation des Modèles ---
-      level_(Size(70, 20), Point(50, 50), Point(10, 10)),
+      levelManager_(std::make_shared<LevelManager>(Size(70, 20), Point(50, 50), Point(10, 10))),
       ball_({Ball(Point(400, 300), 20)}), // 20 = radius ball a supp
       paddle_(Point(CST::SCREEN_WIDTH / 2, 550), Size(100, 20), Speed(300.f, 0.0f), false),
       //Paddle(Point position, Size size, Speed speed, bool laser_mode);
       capsules_(),
       activeBonuses_(),
-    gameContext_{paddle_, ball_, lasers_, lives_, level_, level_.getBlocks(), capsules_},
+    gameContext_{paddle_, ball_, lasers_, lives_, levelManager_->getCurrentLevel().get(), levelManager_->getCurrentLevel()->getBlocks(), capsules_},
        
       // --- Initialisation des Contrôleurs ---
-      paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH),
-      movementController_(gameContext_),
       bonusManager_(gameContext_, activeBonuses_),
+      paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH, bonusManager_),
+      movementController_(gameContext_),
       scoreManager_("highscore.txt", 0, 0),
       collisionController_(gameContext_, scoreManager_, bonusManager_),
       
@@ -36,8 +37,25 @@ ArkanoidGame::ArkanoidGame()
 {
     
  // --- SETUP DES OBJETS DE JEU ---
-    level_.generateBlocks(level1_layout);
-    totalBlocks_ = level_.getBlocks().size(); // Set after blocks are generated
+    // Charger les niveaux depuis le répertoire
+    levelManager_->loadLevelFilesFromDirectory("levels");
+    
+    // S'assurer qu'un niveau est chargé
+    if (levelManager_->getTotalLevels() == 0) {
+        std::cout << "Aucun niveau trouvé, création d'un niveau par défaut" << std::endl;
+    }
+    
+    // Compter les blocs destructibles (excluant les blocs dorés)
+    size_t destructibleBlocks = 0;
+    for (const auto& block : levelManager_->getCurrentLevel()->getBlocks()) {
+        if (block->isVisible()) {
+            auto goldBlock = std::dynamic_pointer_cast<GoldBlock>(block);
+            if (!goldBlock) {
+                destructibleBlocks++;
+            }
+        }
+    }
+    totalBlocks_ = destructibleBlocks; // Set after blocks are generated
     colorScores_ = {
         {al_map_rgb(255,255,255), 50},
         {al_map_rgb(255,165,0), 60},
@@ -58,7 +76,7 @@ ArkanoidGame::ArkanoidGame()
     gameView_.addRenderable(std::make_unique<PaddleView>(paddle_, COLOR_RED, COLOR_BLUE));
 
     // 2. Ajouter les vues pour TOUTES les briques
-    for (const auto& block : level_.getBlocks()) {
+    for (const auto& block : levelManager_->getCurrentLevel()->getBlocks()) {
         // On crée une vue unique pour chaque modèle de brique
         ALLEGRO_COLOR blockColor = block->getColor();
         auto block_view = std::make_unique<BlockView>(*block, blockColor, blockColor);
@@ -127,14 +145,8 @@ void ArkanoidGame::run() {
                 }
             }
             
-            // Win/lose
-            if (totalBlocks_ == 0) {
-                running_ = false;
-                al_clear_to_color(al_map_rgb(0, 0, 0));
-                al_draw_text(font_, al_map_rgb(255,255,255), 400, 300, ALLEGRO_ALIGN_CENTER, "YOU WIN!");
-                al_flip_display();
-                al_rest(2.0);
-            }
+            // Vérifier la completion du niveau
+            checkLevelCompletion();
             if (lives_ == 0) {
                 running_ = false;
                 al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -148,7 +160,7 @@ void ArkanoidGame::run() {
             al_clear_to_color(al_map_rgb(0, 0, 0));
             gameView_.renderAll();
             // Draw blocks (they might need individual views)
-            for (const auto& block : level_.getBlocks()) {
+            for (const auto& block : levelManager_->getCurrentLevel()->getBlocks()) {
                 if (block->isVisible()) {
                     BlockView blockView(*block, block->getColor(), block->getColor());
                     blockView.draw();
@@ -231,6 +243,87 @@ void ArkanoidGame::renderGame() {
     gameView_.renderAll();
     al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());
     al_draw_textf(font_, al_map_rgb(255,255,255), 10, 30, 0, "Lives: %u", lives_);
+    al_draw_textf(font_, al_map_rgb(255,255,255), 10, 50, 0, "Level: %zu", levelManager_->getCurrentLevelIndex() + 1);
     al_draw_textf(font_, al_map_rgb(255,255,255), 20, 10, 0, "Highscore: %u", scoreManager_.getHighscore());
     al_flip_display();
+}
+
+void ArkanoidGame::checkLevelCompletion() {
+    // Compter seulement les blocs destructibles (excluant les blocs dorés)
+    size_t destructibleBlocks = 0;
+    for (const auto& block : levelManager_->getCurrentLevel()->getBlocks()) {
+        if (block->isVisible()) {
+            // Vérifier si c'est un bloc doré (indestructible)
+            auto goldBlock = std::dynamic_pointer_cast<GoldBlock>(block);
+            if (!goldBlock) {
+                // Ce n'est pas un bloc doré, donc c'est destructible
+                destructibleBlocks++;
+            }
+        }
+    }
+    
+    // Mettre à jour le total de blocs destructibles
+    totalBlocks_ = destructibleBlocks;
+    
+    // Si tous les blocs destructibles sont détruits, passer au niveau suivant
+    if (totalBlocks_ == 0) {
+        loadNextLevel();
+    }
+}
+
+void ArkanoidGame::loadNextLevel() {
+    if (levelManager_->hasNextLevel()) {
+        // Charger le niveau suivant
+        if (levelManager_->loadNextLevel()) {
+            std::cout << "Niveau " << levelManager_->getCurrentLevelIndex() << " chargé avec succès!" << std::endl;
+            
+            // Mettre à jour le contexte de jeu
+            gameContext_.level = levelManager_->getCurrentLevel().get();
+            gameContext_.blocks_ = levelManager_->getCurrentLevel()->getBlocks();
+            
+            // Mettre à jour le total de blocs destructibles
+            size_t destructibleBlocks = 0;
+            for (const auto& block : levelManager_->getCurrentLevel()->getBlocks()) {
+                if (block->isVisible()) {
+                    auto goldBlock = std::dynamic_pointer_cast<GoldBlock>(block);
+                    if (!goldBlock) {
+                        destructibleBlocks++;
+                    }
+                }
+            }
+            totalBlocks_ = destructibleBlocks;
+            
+            // Réinitialiser les vues pour les nouveaux blocs
+            gameView_.clearRenderables();
+            
+            // Redessiner la balle et la raquette
+            gameView_.addRenderable(std::make_unique<BallView>(ball_, COLOR_BLUE, COLOR_RED));
+            gameView_.addRenderable(std::make_unique<PaddleView>(paddle_, COLOR_RED, COLOR_BLUE));
+            
+            // Ajouter les vues pour les nouvelles briques
+            for (const auto& block : levelManager_->getCurrentLevel()->getBlocks()) {
+                ALLEGRO_COLOR blockColor = block->getColor();
+                auto block_view = std::make_unique<BlockView>(*block, blockColor, blockColor);
+                gameView_.addRenderable(std::move(block_view));
+            }
+            
+            // Réinitialiser la position de la balle
+            for (auto& ball : ball_) {
+                ball.setPosition({400, 300});
+            }
+            
+            // Afficher un message de transition
+            al_clear_to_color(al_map_rgb(0, 0, 0));
+            al_draw_textf(font_, al_map_rgb(255,255,255), CST::SCREEN_WIDTH/2, CST::SCREEN_HEIGHT/2 - 20, ALLEGRO_ALIGN_CENTER, "Niveau %zu!", levelManager_->getCurrentLevelIndex() + 1);
+            al_flip_display();
+            al_rest(2.0);
+        }
+    } else {
+        // Plus de niveaux disponibles - victoire finale
+        running_ = false;
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        al_draw_text(font_, al_map_rgb(255,255,255), CST::SCREEN_WIDTH/2, CST::SCREEN_HEIGHT/2, ALLEGRO_ALIGN_CENTER, "FELICITATIONS! Vous avez terminé tous les niveaux!");
+        al_flip_display();
+        al_rest(3.0);
+    }
 }

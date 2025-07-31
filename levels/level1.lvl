@@ -1,0 +1,10 @@
+# Niveau 1 - Introduction
+# '-' = Espace vide
+# 'G' = Brique dorée (indestructible)
+# 'S' = Brique argentée (2 coups)
+# '1' à '8' = Briques standard de différentes couleurs
+
+GGGGGGGGGGGGGG
+S-S-S-S-S-S-S-
+11223344556677
+88776655443322 
