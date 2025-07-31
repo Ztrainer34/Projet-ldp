@@ -14,7 +14,7 @@ ArkanoidGame::ArkanoidGame()
     : allegroSystem_(),
       // --- Initialisation des Modèles ---
       level_(Size(70, 20), Point(50, 50), Point(10, 10)),
-      ball_(Point(400, 300), 20), // 20 = radius ball a supp
+      ball_({Ball(Point(400, 300), 20)}), // 20 = radius ball a supp
       paddle_(Point(CST::SCREEN_WIDTH / 2, 550), Size(100, 20), Speed(300.f, 0.0f), false),
       //Paddle(Point position, Size size, Speed speed, bool laser_mode);
       capsules_(),
@@ -22,9 +22,9 @@ ArkanoidGame::ArkanoidGame()
     gameContext_{paddle_, ball_, lasers_, lives_, level_, level_.getBlocks(), capsules_},
        
       // --- Initialisation des Contrôleurs ---
-      bonusManager_(gameContext_, activeBonuses_),
-      paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH, bonusManager_),
+      paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH),
       movementController_(gameContext_),
+      bonusManager_(gameContext_, activeBonuses_),
       scoreManager_("highscore.txt", 0, 0),
       collisionController_(gameContext_, scoreManager_, bonusManager_),
       
@@ -85,7 +85,7 @@ void ArkanoidGame::run() {
     while (running_) {
         ALLEGRO_EVENT ev;
         al_wait_for_event(allegroSystem_.getEventQueue(), &ev);
-
+        std::cout << "[DEBUG] Event type: " << ev.type << std::endl;
         if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
             std::cout << "[DEBUG] ALLEGRO_EVENT_KEY_DOWN: " << ev.keyboard.keycode << std::endl;
             paddle_controller_.onKeyDown(ev.keyboard.keycode);
@@ -94,17 +94,19 @@ void ArkanoidGame::run() {
             std::cout << "[DEBUG] ALLEGRO_EVENT_KEY_UP: " << ev.keyboard.keycode << std::endl;
             paddle_controller_.onKeyUp(ev.keyboard.keycode);
         } else if (ev.type == ALLEGRO_EVENT_MOUSE_AXES) {
-            //std::cout << "[DEBUG] ALLEGRO_EVENT_MOUSE_AXES: x=" << ev.mouse.x << std::endl;
+            std::cout << "[DEBUG] ALLEGRO_EVENT_MOUSE_AXES: x=" << ev.mouse.x << std::endl;
             paddle_controller_.onMouseMove(ev.mouse.x);
         } else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-            //std::cout << "[DEBUG] ALLEGRO_EVENT_DISPLAY_CLOSE" << std::endl;
+            std::cout << "[DEBUG] ALLEGRO_EVENT_DISPLAY_CLOSE" << std::endl;
             running_ = false;
         }
         if (ev.type == ALLEGRO_EVENT_TIMER) {
             // Paddle movement
             paddle_controller_.update(1.0 / 60.0f);
             // Ball movement
-            ball_.updatePosition();
+            for(auto& ball : gameContext_.ball_){
+                ball.updatePosition();          
+            }
             // Laser movement
             for (auto& laser : lasers_) {
                 if (laser.isActive()) {
@@ -116,10 +118,15 @@ void ArkanoidGame::run() {
             // Collisions
             collisionController_.checkAllCollision();
             // Ball missed
-            if (ball_.getY() > CST::SCREEN_HEIGHT) {
-                lives_--;
-                ball_.setPosition({400, 300});
+            for(auto& ball : gameContext_.ball_){
+                if (ball.getY() > CST::SCREEN_HEIGHT) {
+                    if(gameContext_.ball_.size()<1){
+                        lives_--;
+                    }
+                    ball.setPosition({400, 300});
+                }
             }
+            
             // Win/lose
             if (totalBlocks_ == 0) {
                 running_ = false;
@@ -136,7 +143,7 @@ void ArkanoidGame::run() {
                 al_rest(2.0);
             }
             // Debug print for ball position and radius
-
+            //std::cout << "Ball position: " << ball_.getX() << ", " << ball_.getY() << " radius: " << ball_.getRadius() << std::endl;
             // Render
             al_clear_to_color(al_map_rgb(0, 0, 0));
             gameView_.renderAll();
@@ -207,7 +214,10 @@ void ArkanoidGame::processEvents() {
 void ArkanoidGame::updateGame(float deltaTime) {
     // Mettez ici toute la logique de mise à jour
     paddle_controller_.update(deltaTime);
-    ball_.updatePosition();
+    
+    for(auto& ball : gameContext_.ball_){
+        ball.updatePosition();          
+    }
     movementController_.update(deltaTime); 
     collisionController_.checkAllCollision();
     bonusManager_.updateActiveBonuses();

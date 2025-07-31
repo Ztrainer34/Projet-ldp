@@ -23,21 +23,21 @@ private:
     BonusManager& bonusManager_; // Add this line
 
 
-    bool isBallTouchingPaddle() const ; // ball touch paddle
-    bool isBallTouchingBlock(const Block& block) const ; // ball touch block
-    bool isBallTouchingScreenBoundary() const; // ball touch screen
+    bool isBallTouchingPaddle(const Ball& ball) const ; // ball touch paddle
+    bool isBallTouchingBlock(const Ball& ball, const Block& block) const ; // ball touch block
+    bool isBallTouchingScreenBoundary(Ball& ball) const; // ball touch screen
     bool isCapsuleTouchingPaddle(const Capsule& capsule) const;
     bool isLaserTouchingBlock(const std::shared_ptr<Block> block, const Laser& laser) const;
 
-    void handleBallPaddleCollision(); // collision entre la balle et la raquette
-    void handleBallBlockCollision(Block& brick); // collision entre la balle et une brique
-    void handleBallScreenCollision(); // collision entre la balle et les bords de l'écran
+    void handleBallPaddleCollision(Ball& ball); // collision entre la balle et la raquette
+    void handleBallBlockCollision(Ball& ball, Block& brick); // collision entre la balle et une brique
+    void handleBallScreenCollision(Ball& ball); // collision entre la balle et les bords de l'écran
 
 
 public:
     CollisionController(GameContext& context, ScoreManager& scoreManager, BonusManager& bonusManager); // Add bonusManager to constructor
     // Détection passive (const)
-    void checkBallBlockCollisions();
+    void checkBallBlockCollisions(Ball& ball);
     /**
      * @brief itere sur les capsule actif
      */

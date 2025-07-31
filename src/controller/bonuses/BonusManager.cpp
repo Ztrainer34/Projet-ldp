@@ -44,6 +44,9 @@ void BonusManager::update() {
 } 
 
 void BonusManager::onBlockDestroyed(const Block& block){
+    if (gameContext_.ball_.size() > 1) {
+        return;
+    }
     if (block.hasCapsule()) {
         gameContext_.capsules_.push_back(block.getCapsule());
     }

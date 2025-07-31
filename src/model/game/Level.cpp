@@ -53,7 +53,7 @@ void Level::generateBlocks(const std::vector<std::string>& layout) {
         {BonusType::EXTRA_LIFE, COLOR_GREY},
         {BonusType::CATCH, COLOR_GREEN},
         {BonusType::SLOW_BALL, COLOR_ORANGE},
-        {BonusType::SPLIT, COLOR_YELLOW}
+        {BonusType::SPLIT, COLOR_CYAN}
     };
 
     std::vector<ALLEGRO_COLOR> capsuleColors = {

@@ -12,13 +12,16 @@ BonusSlow::BonusSlow() : Bonus() {hasDuration_ = true;}
 void BonusSlow::applyEffect(GameContext& gameContext){
         // Logique spécifique au bonus "BonusSlow"
         activate(); 
-        gameContext.ball.setSpeed(Speed(1.0, 1.0)); // ralentit la balle
-        checkDuration();
+
+        for(auto& ball : gameContext.ball_){
+                ball.setSpeed(Speed(1.0f, 1.0f));
+        }
 }
 
 void BonusSlow::cancelEffect(GameContext& context){
-        deactivate();
-        context.ball.setSpeed(Speed(3,3));
+        for(auto& ball : context.ball_){
+                ball.setSpeed(Speed(3.0f, 3.0f));
+        }
 }
 
 

@@ -74,7 +74,6 @@ void BonusLaser::applyEffect(GameContext& gameContext){
     std::cout << "[DEBUG] BonusLaser applied! Laser mode enabled." << std::endl;
     activate();
     gameContext.paddle.setLaserMode(true); 
-    checkDuration();
 }
 
 void BonusLaser::cancelEffect(GameContext& context){
