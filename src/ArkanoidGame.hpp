@@ -51,14 +51,14 @@ private:
     std::vector<std::shared_ptr<Capsule>> capsules_;
     std::vector<Laser> lasers_;
     std::vector<std::shared_ptr<Bonus>> bonuses_;
-    ScoreManager scoreManager_;
     unsigned int lives_;
     size_t totalBlocks_;
-    ALLEGRO_FONT* font_;
+    
     std::vector<std::pair<ALLEGRO_COLOR, int>> colorScores_;
     GameContext gameContext_;
+    ScoreManager scoreManager_;
     BonusManager bonusManager_;
-    GameView gameView_;
+    
     
 
     // ... Ball, Capsules, ScoreManager, etc.
@@ -71,11 +71,13 @@ private:
     // ... BallController, CollisionController, etc.
 
     // --- Vues (V) ---
+    ALLEGRO_FONT* font_;
+    GameView gameView_;
     // Vous ajouterez vos objets vues ici
     // PaddleView paddle_view_;
 
     // --- Méthodes privées pour organiser la boucle de jeu ---
-    void initGameObject();
+    
     void processEvents();
     void updateGame(float deltaTime);
     void renderGame();
@@ -92,6 +94,7 @@ public:
 
     // La méthode publique pour lancer le jeu
     void run();
+    void run2();
 };
 
 #endif // ARKANOIDGAME_HPP

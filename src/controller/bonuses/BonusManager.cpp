@@ -3,7 +3,7 @@
 #include "Bonus.hpp"
 
 BonusManager::BonusManager(GameContext& gameContext)
-    : gameContext_(gameContext) {}
+    : gameContext_(gameContext), currentBonus(nullptr) {}
 
 void BonusManager::update() {
     for (auto& capsule : gameContext_.capsules_) {
@@ -60,7 +60,7 @@ void BonusManager::onCapsuleCollected(const Capsule& capsule) {
     }
 
     // 1. S'il y avait déjà un bonus actif, on annule son effet.
-    if (currentBonus->isActive()) {
+    if (currentBonus && currentBonus->isActive() )  {
         currentBonus->cancelEffect(gameContext_);
     }
 

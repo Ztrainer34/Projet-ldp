@@ -28,7 +28,7 @@ protected:
 
 public:
     Bonus(Point position, char type, ALLEGRO_COLOR color)
-        : position_{position}, type_{type}, color_{color}, visible_{true} {}
+        : position_{position}, type_{type}, color_{color}, visible_{true}, active_{false} {}
 
     Bonus();
     

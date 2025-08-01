@@ -218,6 +218,7 @@ void CollisionController::checkCapsulePaddleCollision(){
     auto& capsules_ = gameContext_.capsules_;
     for (auto it = capsules_.begin(); it != capsules_.end(); ) {
         if (isCapsuleTouchingPaddle(**it)) {
+            std::cout<<"[CAPSULE COLLECTED]"<<std::endl;
             bonusManager_.onCapsuleCollected(**it);
             it = capsules_.erase(it); // On supprime la capsule de l'écran
         } else {

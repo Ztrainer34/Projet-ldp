@@ -8,7 +8,6 @@ void MovementController::update(float delta){
         ball.updatePosition();
     }
     
-
     for (auto& capsule : gameContext_.capsules_) {
         if (!capsule->isVisible()) continue;
         capsule->updatePosition();

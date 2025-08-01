@@ -19,18 +19,24 @@ ArkanoidGame::ArkanoidGame()
       paddle_(Point(CST::SCREEN_WIDTH / 2, 550), Size(100, 20), Speed(300.f, 0.0f), false),
       //Paddle(Point position, Size size, Speed speed, bool laser_mode);
       capsules_(),
+      lasers_(),
+      bonuses_(),
       
-    gameContext_{paddle_, ball_, lasers_, lives_, levelManager_->getCurrentLevel().get(), levelManager_->getCurrentLevel()->getBlocks(), capsules_},
-       
+    
+        lives_(3),
+        totalBlocks_(0), // Set to 0 for now, will set after block generation
+        colorScores_(),
+        gameContext_{paddle_, ball_, lasers_, lives_, levelManager_->getCurrentLevel().get(), levelManager_->getCurrentLevel()->getBlocks(), capsules_},
       // --- Initialisation des Contrôleurs ---
+      scoreManager_("highscore.txt", 0, 0),
       bonusManager_(gameContext_),
       paddle_controller_(paddle_, lasers_, 0, CST::SCREEN_WIDTH, bonusManager_),
       movementController_(gameContext_),
-      scoreManager_("highscore.txt", 0, 0),
+      
       collisionController_(gameContext_, scoreManager_, bonusManager_),
       
-      lives_(3),
-      totalBlocks_(0), // Set to 0 for now, will set after block generation
+      
+      
       font_(nullptr),
       
       gameView_()
@@ -236,8 +242,14 @@ void ArkanoidGame::run() {
         }
     }
 }
-void ArkanoidGame::initGameObject(){
+void ArkanoidGame::run2() {
+    al_start_timer(allegroSystem_.getTimer());
+    running_ = true;
 
+    while (running_) {
+        // La boucle principale ne fait plus qu'une seule chose : traiter les événements.
+        processEvents();
+    }
 }
 
 void ArkanoidGame::processEvents() {
@@ -271,14 +283,22 @@ void ArkanoidGame::processEvents() {
 void ArkanoidGame::updateGame(float deltaTime) {
     // Mettez ici toute la logique de mise à jour
     paddle_controller_.update(deltaTime);
-    
-    for(auto& ball : gameContext_.ball_){
-        ball.updatePosition();          
-    }
+
     movementController_.update(deltaTime); 
     collisionController_.checkAllCollision();
-
-    // ... ball_controller.update(), collision_controller.checkCollisions(), etc.
+    if (ball_.empty()) { // Si la dernière balle est perdue
+        lives_--;
+        if (lives_ > 0) {
+            // Remettre une balle en jeu
+            ball_.push_back(Ball(Point(400, 300), 20));
+        }
+    }
+    
+    checkLevelCompletion();
+    if (lives_ == 0) {
+        running_ = false;
+        // On pourrait gérer l'affichage de "Game Over" dans un état de jeu séparé
+    }
 }
 
 void ArkanoidGame::renderGame() {
@@ -286,6 +306,30 @@ void ArkanoidGame::renderGame() {
     al_clear_to_color(al_map_rgb(0, 0, 0));
     // ... paddle_view_.draw(), ball_view_.draw(), etc.
     gameView_.renderAll();
+    for (const auto& block : levelManager_->getCurrentLevel()->getBlocks()) {
+                if (block->isVisible()) {
+                    BlockView blockView(*block, block->getColor(), block->getColor());
+                    blockView.draw();
+                    if (block->hasCapsule()) {
+                        CapsuleView capsuleView(*block->getCapsule(), block->getCapsule()->getColor());
+                        capsuleView.draw();
+                    }
+                }
+            }
+            // Draw capsules (falling bonuses)
+            for (const auto& capsule : capsules_) {
+                if (capsule->isVisible()) {
+                    CapsuleView capsuleView(*capsule, capsule->getColor());
+                    capsuleView.draw();
+                }
+            }
+            // Draw lasers
+            for (const auto& laser : lasers_) {
+                if (laser.isActive()) {
+                    LaserView laserView(laser, COLOR_RED);
+                    laserView.draw();
+                }
+            }
     al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());
     al_draw_textf(font_, al_map_rgb(255,255,255), 10, 30, 0, "Lives: %u", lives_);
     al_draw_textf(font_, al_map_rgb(255,255,255), 20, 10, 0, "Highscore: %u", scoreManager_.getHighscore());

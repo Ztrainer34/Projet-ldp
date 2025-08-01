@@ -8,7 +8,7 @@
 
 
 Ball::Ball(Point position, float radius) 
-        : Object(position, Size(radius, radius), Speed(3.0, 3.0)), radius_(radius), isCaught_(false) {}
+        : Object(position, Size(radius, radius), Speed(3.0f, 3.0f)), radius_(radius), isCaught_(false) {}
 
 Ball::Ball(Point position, Speed speed, float radius)
     : Object(position, Size(radius, radius), speed), radius_(radius), isCaught_(false) {}
