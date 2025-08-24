@@ -233,7 +233,6 @@ void ArkanoidGame::run() {
             }
             al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());
             al_draw_textf(font_, al_map_rgb(255,255,255), 10, 30, 0, "Lives: %u", lives_);
-            al_draw_textf(font_, al_map_rgb(255,255,255), 20, 10, 0, "Highscore: %u", scoreManager_.getHighscore());
             al_draw_textf(font_, al_map_rgb(255,255,255), 10, 50, 0, "Level: %zu/%zu", levelManager_->getCurrentLevelIndex() + 1, levelManager_->getTotalLevels());
             
             // Display level switching shortcuts
@@ -332,7 +331,6 @@ void ArkanoidGame::renderGame() {
             }
     al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());
     al_draw_textf(font_, al_map_rgb(255,255,255), 10, 30, 0, "Lives: %u", lives_);
-    al_draw_textf(font_, al_map_rgb(255,255,255), 20, 10, 0, "Highscore: %u", scoreManager_.getHighscore());
     
     // Display level switching shortcuts
 
@@ -367,6 +365,9 @@ void ArkanoidGame::loadNextLevel() {
         // Charger le niveau suivant
         if (levelManager_->loadNextLevel()) {
             std::cout << "Niveau " << levelManager_->getCurrentLevelIndex() << " chargé avec succès!" << std::endl;
+            
+            // Reset full game state on level change
+            resetGameState();
             
             // Mettre à jour le contexte de jeu
             gameContext_.level = levelManager_->getCurrentLevel().get();
@@ -425,6 +426,9 @@ void ArkanoidGame::switchToLevel(size_t levelIndex) {
         if (levelManager_->loadLevel(levelIndex)) {
             std::cout << "Niveau " << levelIndex + 1 << " chargé avec succès!" << std::endl;
             
+            // Reset full game state on level change
+            resetGameState();
+            
             // Mettre à jour le contexte de jeu
             gameContext_.level = levelManager_->getCurrentLevel().get();
             gameContext_.blocks_ = levelManager_->getCurrentLevel()->getBlocks();
@@ -469,4 +473,29 @@ void ArkanoidGame::switchToLevel(size_t levelIndex) {
     } else {
         std::cout << "Niveau " << levelIndex + 1 << " n'existe pas!" << std::endl;
     }
+}
+
+void ArkanoidGame::resetGameState() {
+    // Reset lives and score
+    lives_ = 3;
+    scoreManager_.resetScore();
+
+    // Reset paddle
+    paddle_.setPosition({CST::SCREEN_WIDTH / 2, 550});
+    paddle_.setSize(Size(100, 20));
+    paddle_.setSpeed(Speed(300.f, 0.0f));
+    paddle_.setLaserMode(false);
+
+    // Reset balls
+    ball_.clear();
+    ball_.push_back(Ball(Point(400, 300), 20));
+
+    // Clear projectiles and capsules
+    lasers_.clear();
+    capsules_.clear();
+
+    // Ensure game context references are consistent
+    gameContext_.ball_ = ball_;
+    gameContext_.lasers = lasers_;
+    gameContext_.capsules_ = capsules_;
 }

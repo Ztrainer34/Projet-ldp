@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Constants{
-    inline constexpr float SCREEN_WIDTH = 1200.0f;
+    inline constexpr float SCREEN_WIDTH = 1150.0f;
     inline constexpr float SCREEN_HEIGHT = 600.0f;
     
     inline constexpr float FALL_SPEED = 1.0f;

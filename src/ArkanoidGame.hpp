@@ -84,6 +84,7 @@ private:
     void checkLevelCompletion();
     void loadNextLevel();
     void switchToLevel(size_t levelIndex);
+    void resetGameState();
 
 public:
     // Le constructeur fera l'initialisation
