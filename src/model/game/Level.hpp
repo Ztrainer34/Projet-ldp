@@ -1,3 +1,7 @@
+/**
+ * @file Level.hpp
+ * @brief Déclare le modèle de niveau: grille de briques et capsules.
+ */
 #ifndef LEVEL_HPP
 #define LEVEL_HPP
 
@@ -29,6 +33,10 @@ const std::vector<std::string> level1_layout = {
     "88776655443322"
 };
 
+/**
+ * @class Level
+ * @brief Contient la configuration d'un niveau et gère la génération des briques.
+ */
 class Level {
 private:
     Size screenSize_;      // Screen size
@@ -49,21 +57,26 @@ public:
 
     
     // La méthode "usine" qui lit un layout et crée les modèles de briques
+    /** Génère les briques depuis un layout de caractères. */
     void generateBlocks(const std::vector<std::string>& layout);
 
 
     // Set a new level configuration
 
     // Get a reference to the current blocks
+    /** Accès modifiable au conteneur de briques. */
     std::vector<std::shared_ptr<Block>>& getBlocks()  { return blocks_; }
     
+    /** Réinitialise le niveau aux briques par défaut. */
     void resetBlocks();
 
      // Get a reference to the current blocks
+    /** Retourne les capsules actuelles. */
     std::vector<std::shared_ptr<Capsule>> getCapsules() const {
         return capsules_;
     }
 
+    /** Accès const aux briques. */
     const std::vector<std::shared_ptr<Block>>& get_blocks() const;
 
 };

@@ -1,3 +1,7 @@
+/**
+ * @file Bonus.hpp
+ * @brief Déclare la classe de base abstraite pour tous les bonus.
+ */
 #ifndef BONUS_HPP
 #define BONUS_HPP
 
@@ -18,6 +22,10 @@ class BonusLaser;
 class Level;
 class GameContext;
 
+/**
+ * @class Bonus
+ * @brief Interface de base pour les bonus. Fournit activation, annulation et type.
+ */
 class Bonus {
 protected:
     char type_;         // Le type de bonus (ex : 'S' pour Slow, 'F' pour Fast)
@@ -27,21 +35,34 @@ protected:
     bool active_; // effet actif ou pas 
 
 public:
+    /**
+     * @brief Construit un bonus générique.
+     * @param position Position initiale.
+     * @param type Code du type (ex: 'S', 'E', 'L', 'C').
+     * @param color Couleur associée.
+     */
     Bonus(Point position, char type, ALLEGRO_COLOR color)
         : position_{position}, type_{type}, color_{color}, visible_{true}, active_{false} {}
 
     Bonus();
     
 
+    /**
+     * @brief Applique l'effet du bonus au contexte de jeu.
+     */
     virtual void applyEffect(GameContext& context) = 0;
 
+    /**
+     * @brief Annule l'effet (par défaut: désactive le bonus).
+     */
     virtual void cancelEffect(GameContext& context){ deactivate(); }
-    // Obtenez le type de bonus
+    /** @brief Type de bonus. */
     char get_type() const { return type_; }
    
 
+    /** Active le bonus. */
     void activate() { active_ = true; }
-    // active et desactive le bonus 
+    /** Active/désactive le bonus. */
     void deactivate() { active_ = false; }
     
 
@@ -49,8 +70,11 @@ public:
 
     //Point get_position() const { return position_; }
     //void set_position(const Point& new_position) { position_ = new_position; }
+    /** Indique si l'entité associée est visible. */
     bool is_visible() const { return visible_; }
+    /** Modifie la visibilité. */
     void set_visible(bool visible) { visible_ = visible; }
+    /** Indique si l'effet est actif. */
     bool isActive() const { return active_; }
 
 };

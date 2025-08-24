@@ -1,3 +1,7 @@
+/**
+ * @file Capsule.cpp
+ * @brief Implémentation de la capsule (chute, collision, bonus associé).
+ */
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include "Capsule.hpp"
@@ -13,14 +17,18 @@ Capsule::Capsule(Point position, Size size, bool visible, ALLEGRO_COLOR color, s
 Capsule::Capsule(Point position, Size size, bool visible, ALLEGRO_COLOR color)
     : Object(position, size, visible), color_(color) {}
 
-
+/**
+ * @brief Fait tomber la capsule selon la constante C::FALL_SPEED.
+ */
 void Capsule::updatePosition() { 
     setY(getY() + C::FALL_SPEED);
 }
     
 std::shared_ptr<Bonus> Capsule::getBonus() const { return bonus_ ; }
 
-
+/**
+ * @brief Teste la collision avec la raquette via AABB.
+ */
 bool Capsule::checkCollision(Paddle& paddle) const{
         // Capsule's bounding box
         float capsuleLeft = getX();

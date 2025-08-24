@@ -1,3 +1,7 @@
+/**
+ * @file Block.cpp
+ * @brief Implémentation des briques (construction, capsule, destruction).
+ */
 #include "Block.hpp"
 #include "Capsule.hpp"
 #include <iostream>
@@ -11,6 +15,7 @@ Block::Block(Point position, Size size, bool visible, ALLEGRO_COLOR color, int h
 Block::Block(Point position, Size size, bool visible,  int hitPoints)
     : Object(position, size, visible), hitPoints_(hitPoints) {}
 
+/** Active/désactive un état booléen générique. */
 void Block::setbonus(bool bonus) {
     active = bonus;
 }
@@ -19,6 +24,9 @@ void Block::setCapsule(std::shared_ptr<Capsule> capsule) { capsule_ = capsule; h
 std::shared_ptr<Capsule> Block::getCapsule() const { return capsule_; }
 bool Block::hasCapsule() const { return has_capsule_; }
 
+/**
+ * @brief Cache la brique si ses HP sont épuisés, et ajoute sa capsule à la liste fournie.
+ */
 void Block::destroy(std::vector<std::shared_ptr<Capsule>>& capsules) {
     if (hitPoints_ <= 0) {
         setVisibility(false);

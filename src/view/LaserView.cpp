@@ -1,3 +1,7 @@
+/**
+ * @file LaserView.cpp
+ * @brief Implémentation du rendu d'un laser.
+ */
 #include "LaserView.hpp"
 
 

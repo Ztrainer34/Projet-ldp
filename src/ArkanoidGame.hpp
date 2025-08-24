@@ -1,3 +1,7 @@
+/**
+ * @file ArkanoidGame.hpp
+ * @brief Déclare la classe principale du jeu Arkanoid (initialisation, boucle, rendu).
+ */
 #ifndef ARKANOIDGAME_HPP
 #define ARKANOIDGAME_HPP
 
@@ -38,11 +42,15 @@
 
 namespace CST = Constants;
 
+/**
+ * @class ArkanoidGame
+ * @brief Point d'entrée du jeu: initialise les sous-systèmes, orchestre modèle/contrôleurs/vues.
+ */
 class ArkanoidGame {
 private:
     // --- État du jeu et de la fenêtre ---
     AllegroSystem allegroSystem_;
-    bool running_ = true;
+    bool running_ = true;                  ///< Boucle principale en cours
 
     // --- Modèles (M) ---
     std::shared_ptr<LevelManager> levelManager_;
@@ -54,8 +62,8 @@ private:
     unsigned int lives_;
     size_t totalBlocks_;
     
-    std::vector<std::pair<ALLEGRO_COLOR, int>> colorScores_;
-    GameContext gameContext_;
+    std::vector<std::pair<ALLEGRO_COLOR, int>> colorScores_; ///< Table couleur->score
+    GameContext gameContext_;                                 ///< Contexte partagé contrôleurs
     ScoreManager scoreManager_;
     BonusManager bonusManager_;
     
@@ -78,12 +86,19 @@ private:
 
     // --- Méthodes privées pour organiser la boucle de jeu ---
     
+    /** Traite les événements Allegro (clavier, souris, timer, fermeture). */
     void processEvents();
+    /** Met à jour la logique de jeu (mouvements, collisions, états). */
     void updateGame(float deltaTime);
+    /** Réalise le rendu d'une frame complète. */
     void renderGame();
+    /** Vérifie si le niveau courant est terminé. */
     void checkLevelCompletion();
+    /** Charge le niveau suivant si disponible. */
     void loadNextLevel();
+    /** Bascule vers un niveau par index. */
     void switchToLevel(size_t levelIndex);
+    /** Réinitialise l'état global du jeu (vies, score, entités). */
     void resetGameState();
 
 public:
@@ -94,7 +109,9 @@ public:
     ~ArkanoidGame();
 
     // La méthode publique pour lancer le jeu
+    /** Lance la boucle de jeu principale (mode 1). */
     void run();
+    /** Variante de boucle de jeu (mode 2) avec séparation update/render. */
     void run2();
 };
 

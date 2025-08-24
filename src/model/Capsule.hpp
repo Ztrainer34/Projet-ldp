@@ -1,3 +1,7 @@
+/**
+ * @file Capsule.hpp
+ * @brief Déclare la capsule qui tombe et transporte un bonus.
+ */
 #ifndef CAPSULE_HPP
 #define CAPSULE_HPP
 
@@ -13,7 +17,10 @@ namespace C = Constants;
 class Paddle;
 class Bonus;
 
-
+/**
+ * @class Capsule
+ * @brief Entité qui tombe depuis une brique et peut être collectée par la raquette.
+ */
 class Capsule : public Object {
 private:
     ALLEGRO_COLOR color_;       // Color of the capsule
@@ -28,9 +35,12 @@ public:
 
 
     // Updates the capsule's position
+    /** Fait tomber la capsule selon une vitesse constante. */
     void updatePosition() override;
+    /** Retourne le bonus transporté (peut être nul). */
     std::shared_ptr<Bonus> getBonus() const;
     ALLEGRO_COLOR getColor() const {return color_;};
+    /** Détecte la collision avec la raquette. */
     bool checkCollision(Paddle& paddle) const;
 
 };

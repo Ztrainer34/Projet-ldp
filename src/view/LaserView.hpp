@@ -1,3 +1,7 @@
+/**
+ * @file LaserView.hpp
+ * @brief Vue responsable du dessin d'un laser.
+ */
 #ifndef LASERVIEW_HPP
 #define LASERVIEW_HPP
 
@@ -5,6 +9,10 @@
 #include "Drawable.hpp"         // Chemin vers ton interface Drawable
 
 
+/**
+ * @class LaserView
+ * @brief Dessine un laser (ligne verticale) lorsque celui-ci est actif.
+ */
 class LaserView : public Drawable {
 private:
     // Référence vers le modèle de données (le laser)

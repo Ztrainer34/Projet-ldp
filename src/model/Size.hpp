@@ -1,3 +1,7 @@
+/**
+ * @file Size.hpp
+ * @brief Encapsule largeur et hauteur avec accesseurs/mutateurs simples.
+ */
 #ifndef SIZE_H
 #define SIZE_H
 

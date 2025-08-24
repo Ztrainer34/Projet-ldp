@@ -1,8 +1,14 @@
+/**
+ * @file PaddleController.cpp
+ * @brief Implémentation du contrôleur de la raquette (entrées et actions).
+ */
 #include "PaddleController.hpp"
 #include "bonuses/BonusCatch.hpp"
 #include <iostream>
 
-
+/**
+ * @brief Traite l'appui clavier pour piloter la raquette et les actions.
+ */
 void PaddleController::onKeyDown(int keycode) {
     std::cout << "KeyDown: " << keycode << std::endl;
     if (keycode == ALLEGRO_KEY_A || keycode == ALLEGRO_KEY_Q) {
@@ -41,6 +47,9 @@ void PaddleController::onKeyDown(int keycode) {
     }
 }
 
+/**
+ * @brief Traite le relâchement des touches de direction.
+ */
 void PaddleController::onKeyUp(int keycode) {
     std::cout << "KeyUp: " << keycode << std::endl;
     if (keycode == ALLEGRO_KEY_A || keycode == ALLEGRO_KEY_Q) {
@@ -51,6 +60,9 @@ void PaddleController::onKeyUp(int keycode) {
     }
 }
 
+/**
+ * @brief Déplace la raquette avec la souris en respectant les limites.
+ */
 void PaddleController::onMouseMove(float mouseX) {
     float newX = mouseX - paddle_.getWidth() / 2; // Centrer
 
@@ -62,6 +74,9 @@ void PaddleController::onMouseMove(float mouseX) {
     paddle_.setPosition({newX, currentPos.getY()});
 }
 
+/**
+ * @brief Met à jour la position de la raquette, les balles capturées et déclenche les actions demandées.
+ */
 void PaddleController::update(float deltaTime) {
     auto pos = paddle_.getPosition();
     // Mouvement basé sur l'état interne
@@ -99,10 +114,16 @@ void PaddleController::update(float deltaTime) {
     launch_requested_ = false;
 }
 
+/**
+ * @brief Active le mode laser sur la raquette.
+ */
 void PaddleController::activateLaserBonus() {
     paddle_.setLaserMode(true);
 }
 
+/**
+ * @brief Lance la balle lorsque le bonus Catch est actif et que la balle est capturée.
+ */
 void PaddleController::launchBall() {
     std::cout << "[DEBUG] launchBall() called" << std::endl;
     // Check if any active bonus is a catch bonus

@@ -1,3 +1,7 @@
+/**
+ * @file BonusSlow.cpp
+ * @brief Implémentation du bonus de ralentissement des balles.
+ */
 
 #include "BonusSlow.hpp"
 
@@ -9,6 +13,9 @@ BonusSlow::BonusSlow(const Point& position,char type, ALLEGRO_COLOR color)
 
 BonusSlow::BonusSlow() : Bonus() {}
 
+/**
+ * @brief Réduit temporairement la vitesse de toutes les balles.
+ */
 void BonusSlow::applyEffect(GameContext& gameContext){
         // Logique spécifique au bonus "BonusSlow"
         activate(); 
@@ -18,6 +25,9 @@ void BonusSlow::applyEffect(GameContext& gameContext){
         }
 }
 
+/**
+ * @brief Restaure la vitesse par défaut des balles.
+ */
 void BonusSlow::cancelEffect(GameContext& context){
         deactivate();
         for(auto& ball : context.ball_){

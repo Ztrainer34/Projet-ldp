@@ -1,5 +1,12 @@
+/**
+ * @file PaddleView.cpp
+ * @brief Implémentation du rendu de la raquette.
+ */
 #include "PaddleView.hpp"
 
+/**
+ * @brief Dessine un rectangle représentant la raquette (remplissage + contour).
+ */
 void PaddleView::draw() {
     float x1 = paddle.getX() - paddle.getWidth() / 2;  // left edge
     float y1 = paddle.getY() - paddle.getHeight() / 2; // top edge

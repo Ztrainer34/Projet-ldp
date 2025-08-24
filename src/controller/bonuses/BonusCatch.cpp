@@ -1,3 +1,7 @@
+/**
+ * @file BonusCatch.cpp
+ * @brief Implémentation du bonus de capture de balle.
+ */
 // BonusCatch.cpp
 #include "BonusCatch.hpp"
 #include "../../model/Paddle.hpp"
@@ -13,6 +17,9 @@ BonusCatch::BonusCatch() : Bonus(), catchActive_(false) {
     type_ = 'C'; // Set the correct type for catch bonus
 }
 
+/**
+ * @brief Active la capacité de capture sur la raquette (sans attraper immédiatement).
+ */
 // Appliquer l'effet spécifique au bonus "BonusCatch"
 void BonusCatch::applyEffect(GameContext& gameContext) {
     std::cout << "[DEBUG] BonusCatch::applyEffect() called!" << std::endl;
@@ -27,6 +34,9 @@ void BonusCatch::applyEffect(GameContext& gameContext) {
 
 }
 
+/**
+ * @brief Désactive la capacité de capture et annule l'effet.
+ */
 void BonusCatch::cancelEffect(GameContext& gameContext) {
     std::cout << "[DEBUG] BonusCatch::cancelEffect() called!" << std::endl;
     catchActive_ = false;
@@ -34,6 +44,9 @@ void BonusCatch::cancelEffect(GameContext& gameContext) {
     // The ball will continue its normal movement when the bonus expires
 }
 
+/**
+ * @brief Indique si la capture est actuellement active.
+ */
 bool BonusCatch::isCatchActive() const {
     return catchActive_;
 }

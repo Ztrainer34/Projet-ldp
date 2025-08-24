@@ -1,3 +1,7 @@
+/**
+ * @file LevelManager.cpp
+ * @brief Implémentation du gestionnaire de niveaux (fichiers, navigation).
+ */
 #include "LevelManager.hpp"
 #include <fstream>
 #include <iostream>
@@ -9,6 +13,9 @@ LevelManager::LevelManager(Size blockSize, Point startPos, Point spacing)
     currentLevel_ = std::make_shared<Level>(blockSize, startPos, spacing);
 }
 
+/**
+ * @brief Charge un niveau à partir d'un fichier.
+ */
 bool LevelManager::loadLevelFromFile(const std::string& filename) {
     try {
         std::vector<std::string> layout = parseLevelFile(filename);
@@ -22,6 +29,9 @@ bool LevelManager::loadLevelFromFile(const std::string& filename) {
     return false;
 }
 
+/**
+ * @brief Passe au niveau suivant s'il existe.
+ */
 bool LevelManager::loadNextLevel() {
     if (hasNextLevel()) {
         currentLevelIndex_++;
@@ -30,6 +40,9 @@ bool LevelManager::loadNextLevel() {
     return false;
 }
 
+/**
+ * @brief Charge un niveau par index dans la liste.
+ */
 bool LevelManager::loadLevel(size_t levelIndex) {
     if (levelIndex < levelFiles_.size()) {
         currentLevelIndex_ = levelIndex;
@@ -61,6 +74,9 @@ void LevelManager::resetToFirstLevel() {
     }
 }
 
+/**
+ * @brief Recherche et charge les fichiers .lvl d'un répertoire.
+ */
 void LevelManager::loadLevelFilesFromDirectory(const std::string& directory) {
     levelFiles_.clear();
     
@@ -117,6 +133,9 @@ void LevelManager::loadLevelFilesFromDirectory(const std::string& directory) {
     }
 }
 
+/**
+ * @brief Parse un fichier .lvl et retourne le layout.
+ */
 std::vector<std::string> LevelManager::parseLevelFile(const std::string& filename) {
     std::vector<std::string> layout;
     std::ifstream file(filename);
@@ -142,6 +161,9 @@ std::vector<std::string> LevelManager::parseLevelFile(const std::string& filenam
     return layout;
 }
 
+/**
+ * @brief Crée un niveau par défaut si aucun fichier n'est trouvé.
+ */
 void LevelManager::createDefaultLevel() {
     // Créer un niveau par défaut simple
     std::vector<std::string> defaultLayout = {

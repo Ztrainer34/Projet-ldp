@@ -1,3 +1,7 @@
+/**
+ * @file Speed.hpp
+ * @brief Contient un vecteur vitesse (speedX, speedY) et opérateurs utilitaires.
+ */
 #pragma once
 
 
@@ -17,6 +21,7 @@ public:
     // Setters (mutateurs)
     void setSpeedX(float newSpeedX) { speedX = newSpeedX; }
     void setSpeedY(float newSpeedY) { speedY = newSpeedY; }
+    /** Définit les deux composantes d'un coup. */
     void setSpeed(float newSpeedX, float newSpeedY) { // Pour modifier les deux en une opération
         speedX = newSpeedX;
         speedY = newSpeedY;

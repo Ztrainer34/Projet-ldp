@@ -1,10 +1,20 @@
+/**
+ * @file BonusManager.cpp
+ * @brief Implémentation du gestionnaire de bonus et de la collecte de capsules.
+ */
 #include "BonusManager.hpp"
 
 #include "Bonus.hpp"
 
+/**
+ * @brief Construit le gestionnaire de bonus associé au contexte.
+ */
 BonusManager::BonusManager(GameContext& gameContext)
     : gameContext_(gameContext), currentBonus(nullptr) {}
 
+/**
+ * @brief Met à jour la position des capsules et applique leur effet si collectées.
+ */
 void BonusManager::update() {
     for (auto& capsule : gameContext_.capsules_) {
         if (!capsule->isVisible()) continue;
@@ -43,6 +53,9 @@ void BonusManager::update() {
     }
 } 
 
+/**
+ * @brief À appeler lorsque qu'un bloc est détruit: peut dropper une capsule.
+ */
 void BonusManager::onBlockDestroyed(const Block& block){
     if (gameContext_.ball_.size() > 1) {
         return;
@@ -52,6 +65,9 @@ void BonusManager::onBlockDestroyed(const Block& block){
     }
 }
 
+/**
+ * @brief Applique le bonus d'une capsule collectée et annule le précédent si actif.
+ */
 void BonusManager::onCapsuleCollected(const Capsule& capsule) {
     // On récupère le NOUVEAU bonus que contient la capsule
     std::shared_ptr<Bonus> newBonus = capsule.getBonus();

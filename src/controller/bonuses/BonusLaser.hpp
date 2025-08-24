@@ -1,3 +1,7 @@
+/**
+ * @file BonusLaser.hpp
+ * @brief Déclare le bonus activant le mode laser de la raquette.
+ */
 #ifndef BONUSLASER_HPP
 #define BONUSLASER_HPP
 
@@ -14,6 +18,10 @@ class Level;
 class Paddle;
 class GameContext;
 
+/**
+ * @class BonusLaser
+ * @brief Active le tir laser via la raquette tant que le bonus est actif.
+ */
 class BonusLaser : public Bonus {
 public:
     // Constructeur
@@ -22,7 +30,9 @@ public:
     BonusLaser();
        
 
+    /** Active le mode laser dans le contexte de jeu. */
     void applyEffect(GameContext& gameContext) override;
+    /** Désactive le mode laser. */
     void cancelEffect(GameContext& context) override;
     // Mise à jour de la position du laser
     void update(float deltaTime);

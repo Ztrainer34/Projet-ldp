@@ -1,3 +1,7 @@
+/**
+ * @file Score.cpp
+ * @brief Implémentation du gestionnaire de score et highscore.
+ */
 #include "Score.hpp"
 #include "../Block.hpp"
 
@@ -17,6 +21,9 @@ ScoreManager::~ScoreManager() {
     saveHighscore(); // sauvegarde dans le file le highscore actuel a la fin de la partie
 }
 
+/**
+ * @brief Lit le highscore depuis le fichier.
+ */
 void ScoreManager::loadHighscore() {
     std::ifstream infile(highscoreFile_);
     if (infile) {
@@ -26,6 +33,9 @@ void ScoreManager::loadHighscore() {
     }
 }
 
+/**
+ * @brief Écrit le highscore courant dans le fichier.
+ */
 void ScoreManager::saveHighscore() {
     std::ofstream outfile(highscoreFile_);
     if (outfile) {
@@ -35,6 +45,9 @@ void ScoreManager::saveHighscore() {
     }
 }
 
+/**
+ * @brief Incrémente le score et ajuste le highscore si besoin.
+ */
 void ScoreManager::updateScore(unsigned int pts){
     score_ += pts;
     if(score_ > highscore_){

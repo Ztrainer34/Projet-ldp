@@ -1,3 +1,7 @@
+/**
+ * @file SilverBlock.cpp
+ * @brief Implémentation du constructeur de la brique argentée.
+ */
 #include "SilverBlock.hpp"
 #include "../utils/Color.hpp"
 

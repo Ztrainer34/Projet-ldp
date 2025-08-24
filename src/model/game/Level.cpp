@@ -1,3 +1,7 @@
+/**
+ * @file Level.cpp
+ * @brief Implémentation du modèle de niveau et de la génération des briques.
+ */
 #include "Level.hpp"
 
 #include <fstream>
@@ -31,7 +35,9 @@ Level::Level(Size blockSize, Point startPos, Point spacing)
       spacing_x_(spacing.getX()), 
       spacing_y_(spacing.getY()) {}
 
-
+/**
+ * @brief Génère les briques du niveau en fonction d'un layout de caractères.
+ */
 void Level::generateBlocks(const std::vector<std::string>& layout) {
     blocks_.clear(); // vide les bloc du lvl précédent
     // Pour lier les caractères '1', '2', etc., à des propriétés
@@ -129,12 +135,17 @@ void Level::generateBlocks(const std::vector<std::string>& layout) {
     }    
 }
 
-
+/**
+ * @brief Réinitialise les briques avec le layout par défaut.
+ */
 void Level::resetBlocks() {
     blocks_.clear();     // Clear all existing blocks
     generateBlocks(level1_layout);   // Regenerate blocks
 }
 
+/**
+ * @brief Accès const aux briques du niveau.
+ */
 const std::vector<std::shared_ptr<Block>>& Level::get_blocks() const {
     return blocks_;
 }

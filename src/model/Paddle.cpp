@@ -1,3 +1,7 @@
+/**
+ * @file Paddle.cpp
+ * @brief Implémentation de la raquette (construction et dépendances).
+ */
 #include "Paddle.hpp"
 #include <allegro5/allegro_primitives.h>
 #include "algorithm"

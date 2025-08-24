@@ -1,3 +1,7 @@
+/**
+ * @file CapsuleView.hpp
+ * @brief Vue responsable du dessin d'une capsule.
+ */
 #ifndef CAPSULEVIEW_HPP
 #define CAPSULEVIEW_HPP
 
@@ -5,6 +9,10 @@
 #include "Drawable.hpp"         
 
 
+/**
+ * @class CapsuleView
+ * @brief Dessine une capsule comme un petit rectangle.
+ */
 class CapsuleView : public Drawable {
 private:
     // Référence vers le modèle de données (le Capsule)

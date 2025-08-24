@@ -1,3 +1,7 @@
+/**
+ * @file ArkanoidGame.cpp
+ * @brief Implémentation de la classe principale ArkanoidGame (setup, boucle, rendu).
+ */
 
 // setup les bail dans constru
 
@@ -9,7 +13,9 @@
 #include <iostream> // Added for debug print statements
 #include "model/GoldBlock.hpp" // Pour détecter les blocs dorés
 
-
+/**
+ * @brief Construit le jeu, charge les niveaux, initialise modèles, contrôleurs et vues.
+ */
 ArkanoidGame::ArkanoidGame()
     // On utilise la liste d'initialisation pour construire les membres
     : allegroSystem_(),
@@ -96,11 +102,17 @@ ArkanoidGame::ArkanoidGame()
     // CapsuleView et l'ajouterez à gameView_.
 }
 
+/**
+ * @brief Libère les ressources de police et autres si nécessaire.
+ */
 ArkanoidGame::~ArkanoidGame() {
     if (font_) al_destroy_font(font_);
 }
 
 // La méthode run contient la boucle de jeu principale
+/**
+ * @brief Boucle principale: traite les événements, met à jour, gère collisions et rendu.
+ */
 void ArkanoidGame::run() {
     std::cout << "[DEBUG] ArkanoidGame::run() started" << std::endl;
     al_start_timer(allegroSystem_.getTimer());
@@ -241,6 +253,10 @@ void ArkanoidGame::run() {
         }
     }
 }
+
+/**
+ * @brief Variante de boucle: la boucle principale ne fait que dépiler les événements.
+ */
 void ArkanoidGame::run2() {
     al_start_timer(allegroSystem_.getTimer());
     running_ = true;
@@ -251,6 +267,9 @@ void ArkanoidGame::run2() {
     }
 }
 
+/**
+ * @brief Lit un événement Allegro et redirige vers les handlers update/render.
+ */
 void ArkanoidGame::processEvents() {
     ALLEGRO_EVENT ev;
     al_wait_for_event(allegroSystem_.getEventQueue(), &ev);
@@ -279,6 +298,9 @@ void ArkanoidGame::processEvents() {
     }
 }
 
+/**
+ * @brief Met à jour la logique de jeu (mouvements, collisions, états, vies).
+ */
 void ArkanoidGame::updateGame(float deltaTime) {
     // Mettez ici toute la logique de mise à jour
     paddle_controller_.update(deltaTime);
@@ -300,6 +322,9 @@ void ArkanoidGame::updateGame(float deltaTime) {
     }
 }
 
+/**
+ * @brief Réalise le rendu complet d'une frame: fond, vues, UI.
+ */
 void ArkanoidGame::renderGame() {
     // Mettez ici toute la logique d'affichage
     al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -337,6 +362,9 @@ void ArkanoidGame::renderGame() {
     al_flip_display();
 }
 
+/**
+ * @brief Vérifie si toutes les briques destructibles sont détruites; passe au niveau suivant sinon.
+ */
 void ArkanoidGame::checkLevelCompletion() {
     // Compter seulement les blocs destructibles (excluant les blocs dorés)
     size_t destructibleBlocks = 0;
@@ -360,6 +388,9 @@ void ArkanoidGame::checkLevelCompletion() {
     }
 }
 
+/**
+ * @brief Charge le niveau suivant et réinitialise l'état et les vues en conséquence.
+ */
 void ArkanoidGame::loadNextLevel() {
     if (levelManager_->hasNextLevel()) {
         // Charger le niveau suivant
@@ -420,6 +451,9 @@ void ArkanoidGame::loadNextLevel() {
     }
 }
 
+/**
+ * @brief Bascule vers le niveau demandé et remet l'état et les vues en phase.
+ */
 void ArkanoidGame::switchToLevel(size_t levelIndex) {
     if (levelIndex < levelManager_->getTotalLevels()) {
         // Charger le niveau spécifié
@@ -475,6 +509,9 @@ void ArkanoidGame::switchToLevel(size_t levelIndex) {
     }
 }
 
+/**
+ * @brief Réinitialise vies, score, paddle, balles, projectiles, capsules et contexte.
+ */
 void ArkanoidGame::resetGameState() {
     // Reset lives and score
     lives_ = 3;

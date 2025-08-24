@@ -1,3 +1,7 @@
+/**
+ * @file Ball.cpp
+ * @brief Implémentation des comportements de la balle (mouvement, split, catch/launch).
+ */
 #include "Ball.hpp"
 #include "Paddle.hpp"
 #include "Block.hpp"
@@ -13,6 +17,9 @@ Ball::Ball(Point position, float radius)
 Ball::Ball(Point position, Speed speed, float radius)
     : Object(position, Size(radius, radius), speed), radius_(radius), isCaught_(false) {}
 
+/**
+ * @brief Met à jour la position si la balle n'est pas capturée.
+ */
 void Ball::updatePosition() {
     // Only update position if ball is not caught
     if (!isCaught_) {
@@ -24,6 +31,9 @@ void Ball::updatePosition() {
     }
 }
 
+/**
+ * @brief Crée trois balles à partir de la courante (variations d'angle). 
+ */
 std::vector<Ball> Ball::split() {
     std::vector<Ball> newBalls;
 
@@ -65,6 +75,9 @@ void Ball::resetBallPosition(){
     setSpeed(3.0f,3.0f);
 }
 
+/**
+ * @brief Met la balle en mode capturée et l'aligne au centre de la raquette.
+ */
 void Ball::catchBall(const Paddle& paddle) {
     std::cout << "[DEBUG] Ball::catchBall() called!" << std::endl;
     isCaught_ = true;
@@ -75,12 +88,18 @@ void Ball::catchBall(const Paddle& paddle) {
     std::cout << "[DEBUG] Ball caught! Position: (" << paddleCenterX << ", " << ballY << ")" << std::endl;
 }
 
+/**
+ * @brief Relâche la balle et lui donne une vitesse ascendante standard.
+ */
 void Ball::launchBall() {
     isCaught_ = false;
     // Set a normal launch speed when the ball is released
     setSpeed(3.0f, -3.0f); // Normal speed, launching upward
 }
 
+/**
+ * @brief Maintient la balle capturée alignée sur la raquette.
+ */
 void Ball::updateCaughtPosition(const Paddle& paddle) {
     if (isCaught_) {
         // Update ball position to stay in the middle of the paddle

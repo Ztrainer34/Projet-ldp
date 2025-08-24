@@ -1,12 +1,22 @@
+/**
+ * @file CollisionController.cpp
+ * @brief Implémentation du contrôleur des collisions du jeu.
+ */
 #include "CollisionController.hpp"
 #include "../utils/Utils.hpp" // Add this include
 #include "../controller/bonuses/BonusManager.hpp"
 #include "../controller/bonuses/BonusCatch.hpp"
 
+/**
+ * @brief Construit un contrôleur de collisions avec son contexte et gestionnaires.
+ */
 CollisionController::CollisionController(GameContext& context, ScoreManager& scoreManager, BonusManager& bonusManager) :
     gameContext_(context),
     scoreManager_(scoreManager), bonusManager_(bonusManager) {}
 
+/**
+ * @brief Détection AABB entre la balle et la raquette.
+ */
 bool CollisionController::isBallTouchingPaddle(const Ball& ball) const{
     // Ball boundaries
     
@@ -29,12 +39,18 @@ bool CollisionController::isBallTouchingPaddle(const Ball& ball) const{
            ballTop <= paddleBottom;
 }
 
+/**
+ * @brief Vérifie si la balle touche les bords de l'écran.
+ */
 bool CollisionController::isBallTouchingScreenBoundary(Ball& ball) const {
     
     return (ball.getX() - ball.getRadius() < 0 || ball.getX() + ball.getRadius() > CST::SCREEN_WIDTH ||
             ball.getY() - ball.getRadius() < 0 || ball.getY() + ball.getRadius() > CST::SCREEN_HEIGHT);
 }
 
+/**
+ * @brief Détection AABB entre la balle et une brique.
+ */
 // Function to check if the ball is touching a specific block
 bool CollisionController::isBallTouchingBlock(const Ball& ball, const Block& block) const {
     float brickLeft = block.getX();
@@ -50,6 +66,9 @@ bool CollisionController::isBallTouchingBlock(const Ball& ball, const Block& blo
             ball.getY() - ball.getRadius() < brickBottom);
 }
 
+/**
+ * @brief Détection AABB entre capsule et raquette.
+ */
 bool CollisionController::isCapsuleTouchingPaddle(const Capsule& capsule) const{
     // Capsule's bounding box
     float capsuleLeft = capsule.getX();
@@ -77,6 +96,9 @@ bool CollisionController::isCapsuleTouchingPaddle(const Capsule& capsule) const{
     return false;   
 }
 
+/**
+ * @brief Détection AABB entre un laser et une brique.
+ */
 bool CollisionController::isLaserTouchingBlock(const std::shared_ptr<Block> block, const Laser& laser) const{
     float laserX = laser.getX();
     float laserY = laser.getY();
@@ -96,6 +118,9 @@ bool CollisionController::isLaserTouchingBlock(const std::shared_ptr<Block> bloc
     return false;
 }
 
+/**
+ * @brief Gestion de collision balle/raquette (rebond ou catch si actif).
+ */
 void CollisionController::handleBallPaddleCollision(Ball& ball){
     
     auto& paddle_ = gameContext_.paddle;
@@ -126,6 +151,9 @@ void CollisionController::handleBallPaddleCollision(Ball& ball){
     }
 }
 
+/**
+ * @brief Gestion des collisions de la balle avec les bords de l'écran.
+ */
 void CollisionController::handleBallScreenCollision(Ball& ball) {
     
     // Check collision with left and right walls
@@ -171,6 +199,9 @@ void CollisionController::handleBallScreenCollision(Ball& ball) {
     }
 }
 
+/**
+ * @brief Gestion de la collision balle/brique (détermination du côté et rebond).
+ */
 void CollisionController::handleBallBlockCollision(Ball& ball, Block& brick) {
     if (!brick.isVisible()) return; // Skip invisible bricks
 
@@ -193,6 +224,9 @@ void CollisionController::handleBallBlockCollision(Ball& ball, Block& brick) {
 
 // Dans CollisionController::handleBallBlockCollision(Block& block)
 
+/**
+ * @brief Vérifie et applique la collision d'une balle avec les briques visibles.
+ */
 void CollisionController::checkBallBlockCollisions(Ball& ball) {
     for (auto& block : gameContext_.blocks_) { // or level.getblocks
         if (block->isVisible() && isBallTouchingBlock(ball,*block)) {
@@ -214,6 +248,9 @@ void CollisionController::checkBallBlockCollisions(Ball& ball) {
     }
 }
 
+/**
+ * @brief Vérifie et applique la collecte de capsules par la raquette.
+ */
 void CollisionController::checkCapsulePaddleCollision(){
     auto& capsules_ = gameContext_.capsules_;
     for (auto it = capsules_.begin(); it != capsules_.end(); ) {
@@ -227,6 +264,9 @@ void CollisionController::checkCapsulePaddleCollision(){
     }
 }
 
+/**
+ * @brief Vérifie et applique les collisions laser/brique pour tous les lasers actifs.
+ */
 void CollisionController::checkLaserBlockCollisions(){
     auto& lasers_ = gameContext_.lasers;
     for (auto& laser : lasers_) {
@@ -251,6 +291,10 @@ void CollisionController::checkLaserBlockCollisions(){
     }
 }
 
+/**
+ * @brief Lance l'ensemble des tests de collision du frame courant.
+ * @return true si une collision notable est détectée (non utilisé actuellement).
+ */
 bool CollisionController::checkAllCollision(){
     bool collision = false;
     for (auto& ball: gameContext_.ball_){

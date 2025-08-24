@@ -1,3 +1,7 @@
+/**
+ * @file CapsuleView.cpp
+ * @brief Implémentation du rendu des capsules.
+ */
 #include "CapsuleView.hpp"
 
 

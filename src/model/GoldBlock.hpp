@@ -1,7 +1,15 @@
+/**
+ * @file GoldBlock.hpp
+ * @brief Déclare une brique dorée indestructible.
+ */
 #pragma once
 
 #include "Block.hpp"
 #include "../utils/Color.hpp"
+/**
+ * @class GoldBlock
+ * @brief Brique indestructible (HP très élevés), ne donne pas de points.
+ */
 class GoldBlock : public Block {
 public:
     GoldBlock(Point pos, Size size, bool visible) 

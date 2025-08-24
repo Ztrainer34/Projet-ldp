@@ -1,3 +1,7 @@
+/**
+ * @file Laser.cpp
+ * @brief Implémentation du projectile laser.
+ */
 #include "Laser.hpp"
 #include <allegro5/allegro_primitives.h>
 
@@ -6,6 +10,9 @@ Laser::Laser(Point position, Speed speed) :
     Object(position, speed), active_(true) {}
 
 // Mise à jour de la position du laser
+/**
+ * @brief Déplace le laser vers le haut et le désactive s'il sort de l'écran.
+ */
 void Laser::updatePosition(float delta) {
     // Calcul du déplacement vertical
     float newY = getY() + getSpeedY() * delta;

@@ -1,3 +1,7 @@
+/**
+ * @file BonusInterruption.cpp
+ * @brief Implémentation du bonus qui duplique la balle en trois.
+ */
 #include "BonusInterruption.hpp"
 #include "../../model/Ball.hpp"
 #include <cmath>
@@ -7,6 +11,9 @@ BonusInterruption::BonusInterruption(const Point& position, char type, ALLEGRO_C
 
 BonusInterruption::BonusInterruption() : Bonus() {}
 
+/**
+ * @brief Duplique la balle principale en deux supplémentaires en normalisant leur vitesse.
+ */
 void BonusInterruption::applyEffect(GameContext& gameContext){
     // diviser la ball en 3 et aucun capsule ne peut tomber
     // si ce bonus activé dans le main et visible false pr tte les capsule  pdt le laps de temps
