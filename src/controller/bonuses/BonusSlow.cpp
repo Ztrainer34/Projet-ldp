@@ -21,7 +21,7 @@ void BonusSlow::applyEffect(GameContext& gameContext){
         activate(); 
 
         for(auto& ball : gameContext.ball_){
-                ball.setSpeed(Speed(1.0f, 1.0f));
+                ball.setSpeed(Speed(2.0f, 2.0f));
         }
 }
 

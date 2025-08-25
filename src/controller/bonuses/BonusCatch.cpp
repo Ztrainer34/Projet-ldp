@@ -21,7 +21,7 @@ BonusCatch::BonusCatch() : Bonus(), catchActive_(false) {
  * @brief Active la capacité de capture sur la raquette (sans attraper immédiatement).
  */
 // Appliquer l'effet spécifique au bonus "BonusCatch"
-void BonusCatch::applyEffect(GameContext& gameContext) {
+void BonusCatch::applyEffect([[maybe_unused]] GameContext& gameContext) {
     std::cout << "[DEBUG] BonusCatch::applyEffect() called!" << std::endl;
     activate(); // Activer le bonus
     catchActive_ = true;
@@ -37,7 +37,7 @@ void BonusCatch::applyEffect(GameContext& gameContext) {
 /**
  * @brief Désactive la capacité de capture et annule l'effet.
  */
-void BonusCatch::cancelEffect(GameContext& gameContext) {
+void BonusCatch::cancelEffect([[maybe_unused]] GameContext& gameContext) {
     std::cout << "[DEBUG] BonusCatch::cancelEffect() called!" << std::endl;
     catchActive_ = false;
     deactivate(); // Deactivate the bonus

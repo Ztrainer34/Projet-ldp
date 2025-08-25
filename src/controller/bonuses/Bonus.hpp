@@ -42,7 +42,7 @@ public:
      * @param color Couleur associée.
      */
     Bonus(Point position, char type, ALLEGRO_COLOR color)
-        : position_{position}, type_{type}, color_{color}, visible_{true}, active_{false} {}
+        : type_{type}, position_{position}, color_{color}, visible_{true}, active_{false} {}
 
     Bonus();
     
@@ -55,7 +55,7 @@ public:
     /**
      * @brief Annule l'effet (par défaut: désactive le bonus).
      */
-    virtual void cancelEffect(GameContext& context){ deactivate(); }
+    virtual void cancelEffect([[maybe_unused]] GameContext& context){ deactivate(); }
     /** @brief Type de bonus. */
     char get_type() const { return type_; }
    

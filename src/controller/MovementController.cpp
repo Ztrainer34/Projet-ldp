@@ -13,7 +13,7 @@ gameContext_(gameContext) {}
 /**
  * @brief Met à jour les positions des balles et des capsules visibles.
  */
-void MovementController::update(float delta){
+void MovementController::update(){
     for (auto& ball : gameContext_.ball_){
         ball.updatePosition();
     }

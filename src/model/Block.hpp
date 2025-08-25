@@ -23,10 +23,10 @@ protected:
 
     //Bonus bonus_
     bool has_capsule_ = false;              ///< Indique si une capsule est associée
+    ALLEGRO_COLOR color_;                   ///< Couleur de la brique
     std::shared_ptr<Capsule> capsule_;      ///< Capsule éventuellement contenue
     int hitPoints_;                         ///< Points de vie restants
     unsigned int scoreValue_;               ///< Score donné à la destruction
-    ALLEGRO_COLOR color_;                   ///< Couleur de la brique
     bool active = true; 
 
 public:

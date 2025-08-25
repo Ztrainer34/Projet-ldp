@@ -138,15 +138,6 @@ void CollisionController::handleBallPaddleCollision(Ball& ball){
 
     // Normal ball bouncing logic (only if not caught)
     if (!ball.isCaught()) {
-        float x = ball.getX() - (paddle_.getX() - paddle_.getWidth() / 2);
-
-        // Length L of the paddle_
-        float L = paddle_.getWidth();
-
-        // Calculate angle alpha (in degrees)
-        float alpha = 30 + 120 * (1 - x / L);
-
-        // Update ball's velocity based on the new angle
         ball.setSpeedY(-ball.getSpeedY());
     }
 }

@@ -5,5 +5,5 @@
 #include "../../model/game/Level.hpp"
 
 Bonus::Bonus() 
-    : type_('?'), visible_(true), active_(false), color_(COLOR_YELLOW)  {} // par defaut
+    : type_('?'), color_(COLOR_YELLOW), visible_(true), active_(false)  {} // par defaut
 

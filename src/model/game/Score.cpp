@@ -13,7 +13,7 @@
 #include "../../utils/Color.hpp"
 
 ScoreManager::ScoreManager(const std::string& file, unsigned int score, unsigned int highscore) : 
-highscoreFile_{file}, score_{score}, highscore_(highscore) {
+ score_{score}, highscore_(highscore), highscoreFile_{file} {
     loadHighscore(); // charge et met a jour le highscore pendant l'initialisation à partir du fichier
 }
 

@@ -19,7 +19,6 @@
 #include <map>
 
 
-// On peut le mettre dans un fichier dédié, par exemple "layouts/LevelData.hpp"
 
 // '-' = Espace vide
 // 'G' = Brique dorée

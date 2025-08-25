@@ -84,7 +84,7 @@ public:
     virtual void updatePosition() { }
 
     /** Hook générique de mise à jour (avec delta). */
-    virtual void updatePosition(float delta) { } 
+    virtual void updatePosition([[maybe_unused]] float delta) { } 
 
     /** Visibilité/activité. */
     bool isVisible() const { return visible_; };

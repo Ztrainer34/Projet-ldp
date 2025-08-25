@@ -27,9 +27,9 @@ public:
     BonusCatch();
         
     /** Applique l'effet Catch au contexte (active le mode capture). */
-    void applyEffect(GameContext& gameContext) override;
+    void applyEffect([[maybe_unused]] GameContext& gameContext) override;
     /** Annule l'effet Catch (désactive le mode capture). */
-    void cancelEffect(GameContext& gameContext) override;
+    void cancelEffect([[maybe_unused]] GameContext& gameContext) override;
 
     /** Indique si le mode capture est actif. */
     bool isCatchActive() const;

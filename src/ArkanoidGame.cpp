@@ -117,7 +117,7 @@ void ArkanoidGame::run() {
     std::cout << "[DEBUG] ArkanoidGame::run() started" << std::endl;
     al_start_timer(allegroSystem_.getTimer());
     running_ = true;
-    bool moveLeft = false, moveRight = false;
+    
     while (running_) {
         ALLEGRO_EVENT ev;
         al_wait_for_event(allegroSystem_.getEventQueue(), &ev);
@@ -172,14 +172,14 @@ void ArkanoidGame::run() {
             paddle_controller_.onKeyUp(ev.keyboard.keycode);
         } else if (ev.type == ALLEGRO_EVENT_MOUSE_AXES) {
             std::cout << "[DEBUG] ALLEGRO_EVENT_MOUSE_AXES: x=" << ev.mouse.x << std::endl;
-            paddle_controller_.onMouseMove(ev.mouse.x);
+            paddle_controller_.onMouseMove(static_cast<float>(ev.mouse.x));
         } else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
             std::cout << "[DEBUG] ALLEGRO_EVENT_DISPLAY_CLOSE" << std::endl;
             running_ = false;
         }
         if (ev.type == ALLEGRO_EVENT_TIMER) {
             // Paddle movement
-            paddle_controller_.update(1.0 / 60.0f);
+            paddle_controller_.update(1.0f / 60.0f);
             // Ball movement
             for(auto& ball : gameContext_.ball_){
                 ball.updatePosition();          
@@ -187,7 +187,7 @@ void ArkanoidGame::run() {
             // Laser movement
             for (auto& laser : lasers_) {
                 if (laser.isActive()) {
-                    laser.updatePosition(1.0 / 60.0f);
+                    laser.updatePosition(1.0f/ 60.0f);
                 }
             }
             // Bonus/capsule update
@@ -285,11 +285,11 @@ void ArkanoidGame::processEvents() {
         paddle_controller_.onKeyUp(ev.keyboard.keycode);
     }
     else if (ev.type == ALLEGRO_EVENT_MOUSE_AXES) {
-        paddle_controller_.onMouseMove(ev.mouse.x);
+        paddle_controller_.onMouseMove(static_cast<float>(ev.mouse.x));
     }
     // ... autres événements ...
     else if (ev.type == ALLEGRO_EVENT_TIMER) {
-        updateGame(1.0 / 60.0); // Mettre à jour la logique
+        updateGame(1.0f / 60.0f); // Mettre à jour la logique
 
         renderGame();           // Dessiner le jeu
     }
@@ -305,7 +305,7 @@ void ArkanoidGame::updateGame(float deltaTime) {
     // Mettez ici toute la logique de mise à jour
     paddle_controller_.update(deltaTime);
 
-    movementController_.update(deltaTime); 
+    movementController_.update(); 
     collisionController_.checkAllCollision();
     if (ball_.empty()) { // Si la dernière balle est perdue
         lives_--;

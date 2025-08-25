@@ -31,5 +31,5 @@ public:
      * @brief Met à jour les positions des entités mobiles pour le frame courant.
      * @param delta Temps écoulé depuis la dernière mise à jour (secondes).
      */
-    void update(float delta);
+    void update();
 };

@@ -30,10 +30,10 @@ Level::Level(Size screenSize, size_t rows, size_t cols, Size blockSize, float sp
 
 Level::Level(Size blockSize, Point startPos, Point spacing)
     : blockSize_(blockSize), 
-      start_x_(startPos.getX()), 
-      start_y_(startPos.getY()),
       spacing_x_(spacing.getX()), 
-      spacing_y_(spacing.getY()) {}
+      spacing_y_(spacing.getY()),
+      start_x_(startPos.getX()), 
+      start_y_(startPos.getY()) {}
 
 /**
  * @brief Génère les briques du niveau en fonction d'un layout de caractères.
@@ -67,20 +67,20 @@ void Level::generateBlocks(const std::vector<std::string>& layout) {
     };
 
     std::vector<BonusType> possibleBonuses = { BonusType::ENLARGE, BonusType::LASER,  BonusType::EXTRA_LIFE,  BonusType::CATCH,  BonusType::SLOW_BALL,  BonusType::SPLIT };
-    std::uniform_int_distribution<> distribBonus(0, possibleBonuses.size() - 1);
+    std::uniform_int_distribution<> distribBonus(0, static_cast<int>(possibleBonuses.size() - 1));
     
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0.0, 1.0);
-    std::uniform_int_distribution<> colorDis(0, capsuleColors.size() - 1);
+    std::uniform_int_distribution<> colorDis(0, static_cast<int>(capsuleColors.size() - 1));
     for (size_t j = 0; j < layout.size(); ++j) {
         for (size_t i = 0; i < layout[j].length(); ++i) {
             
             char blockType = layout[j][i];
             if (blockType == '-') continue; // On ignore les espaces vides
 
-            Point pos(start_x_ + i * (blockSize_.getWidth() + spacing_x_),
-                    start_y_ + j * (blockSize_.getHeight() + spacing_y_));
+            Point pos(start_x_ + static_cast<float>(i) * (blockSize_.getWidth() + spacing_x_),
+                    start_y_ + static_cast<float>(j) * (blockSize_.getHeight() + spacing_y_));
             
             switch (blockType) {
                 case 'G':
