@@ -245,6 +245,7 @@ void ArkanoidGame::run() {
             }
             al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());
             al_draw_textf(font_, al_map_rgb(255,255,255), 10, 30, 0, "Lives: %u", lives_);
+            al_draw_textf(font_, al_map_rgb(255,255,255), 20, 20, 0, "Highscore: %u", scoreManager_.getHighscore());
             al_draw_textf(font_, al_map_rgb(255,255,255), 10, 50, 0, "Level: %zu/%zu", levelManager_->getCurrentLevelIndex() + 1, levelManager_->getTotalLevels());
             
             // Display level switching shortcuts
