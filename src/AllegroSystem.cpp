@@ -15,7 +15,7 @@ AllegroSystem::AllegroSystem() {
         return;
     }
 
-    timer_ = al_create_timer(1.0 / 60.0);
+    timer_ = al_create_timer(1.0 / CST::FPS);
     if (!timer_) {
         al_destroy_display(display_);
         std::cerr << "Erreur création timer.";

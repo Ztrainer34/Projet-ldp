@@ -6,7 +6,7 @@
 #include "BonusSlow.hpp"
 
 #include "../../model/Ball.hpp"
-
+#include "../../utils/Constants.hpp"
 
 BonusSlow::BonusSlow(const Point& position,char type, ALLEGRO_COLOR color)
         : Bonus(position, type, color) {}
@@ -21,7 +21,7 @@ void BonusSlow::applyEffect(GameContext& gameContext){
         activate(); 
 
         for(auto& ball : gameContext.ball_){
-                ball.setSpeed(Speed(2.0f, 2.0f));
+                ball.setSpeed(Speed(Constants::BALL_SPEED_SLOW, Constants::BALL_SPEED_SLOW));
         }
 }
 
@@ -31,7 +31,7 @@ void BonusSlow::applyEffect(GameContext& gameContext){
 void BonusSlow::cancelEffect(GameContext& context){
         deactivate();
         for(auto& ball : context.ball_){
-                ball.setSpeed(Speed(3.0f, 3.0f));
+                ball.setSpeed(Speed(Constants::BALL_SPEED_DEFAULT, Constants::BALL_SPEED_DEFAULT));
         }
 }
 

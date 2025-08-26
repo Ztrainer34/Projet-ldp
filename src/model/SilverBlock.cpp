@@ -6,4 +6,4 @@
 #include "../utils/Color.hpp"
 
 SilverBlock::SilverBlock(Point pos, Size size, bool visible) : 
-    Block(pos, size, visible, COLOR_SILVER, 2, 200) {}
+    Block(pos, size, visible, COLOR_SILVER, HIT_POINTS, SCORE_VALUE) {}

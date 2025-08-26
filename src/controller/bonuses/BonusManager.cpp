@@ -5,6 +5,7 @@
 #include "BonusManager.hpp"
 
 #include "Bonus.hpp"
+#include "../../utils/Constants.hpp"
 
 /**
  * @brief Construit le gestionnaire de bonus associé au contexte.
@@ -47,7 +48,7 @@ void BonusManager::update() {
             }
             capsule->setVisibility(false);
         }
-        if (capsule->getY() > 600) { // Assuming screen height
+        if (capsule->getY() > Constants::SCREEN_HEIGHT) { // Assuming screen height
             capsule->setVisibility(false);
         }
     }

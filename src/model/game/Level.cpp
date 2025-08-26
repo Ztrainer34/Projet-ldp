@@ -40,7 +40,7 @@ Level::Level(Size blockSize, Point startPos, Point spacing)
  */
 void Level::generateBlocks(const std::vector<std::string>& layout) {
     blocks_.clear(); // vide les bloc du lvl précédent
-    // Pour lier les caractères '1', '2', etc., à des propriétés
+    // Pour lier les caractères '1', '2', etc., à des couleurs et leurs scores
     std::map<char, std::pair<ALLEGRO_COLOR, int>> blockRules = {
         {'1', {COLOR_WHITE, 50}},    
         {'2', {COLOR_ORANGE, 60}},      

@@ -5,7 +5,7 @@
 
 #include "BonusEnlarge.hpp"
 #include "../../model/Paddle.hpp"
-
+#include "../../utils/Constants.hpp"
 
 BonusEnlarge::BonusEnlarge() 
     : Bonus() { }
@@ -16,7 +16,7 @@ BonusEnlarge::BonusEnlarge()
 void BonusEnlarge::applyEffect(GameContext& GameContext){
     // Logique spécifique au bonus "BonusEnlarge"
     activate(); 
-    GameContext.paddle.enlarge(50);  // agrandir
+    GameContext.paddle.enlarge(Constants::PADDLE_FACTOR_ENLARGE);  // agrandir
 }
 
 /**
@@ -24,5 +24,5 @@ void BonusEnlarge::applyEffect(GameContext& GameContext){
  */
 void BonusEnlarge::cancelEffect(GameContext& context){
     deactivate();
-    context.paddle.enlarge(-50); // Subtract the same amount that was added
+    context.paddle.enlarge(-Constants::PADDLE_FACTOR_ENLARGE); // Subtract the same amount that was added
 }

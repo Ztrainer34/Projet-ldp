@@ -20,9 +20,10 @@ ArkanoidGame::ArkanoidGame()
     // On utilise la liste d'initialisation pour construire les membres
     : allegroSystem_(),
       // --- Initialisation des Modèles ---
-      levelManager_(std::make_shared<LevelManager>(Size(70, 20), Point(50, 50), Point(10, 10))),
-      ball_({Ball(Point(400, 300), 20)}), // 20 = radius ball a supp
-      paddle_(Point(CST::SCREEN_WIDTH / 2, 550), Size(100, 20), Speed(300.f, 0.0f), false),
+      levelManager_(std::make_shared<LevelManager>(
+        Size(CST::BLOCK_SIZE_X, CST::BLOCK_SIZE_Y), Point(CST::START_POS, CST::START_POS), Point(CST::SPACING, CST::SPACING))),
+      ball_({Ball(Point(CST::BALL_SPAWN_X, CST::BALL_SPAWN_Y), CST::BALL_RADIUS)}), 
+      paddle_(Point(CST::SCREEN_WIDTH / 2, CST::PADDLE_SPAWN_Y), Size(CST::PADDLE_SIZE_X, CST::PADDLE_SIZE_Y), Speed(CST::PADDLE_SPEED, 0.0f), false),
       //Paddle(Point position, Size size, Speed speed, bool laser_mode);
       capsules_(),
       lasers_(),
@@ -179,7 +180,7 @@ void ArkanoidGame::run() {
         }
         if (ev.type == ALLEGRO_EVENT_TIMER) {
             // Paddle movement
-            paddle_controller_.update(1.0f / 60.0f);
+            paddle_controller_.update(1.0f /CST::FPS);
             // Ball movement
             for(auto& ball : gameContext_.ball_){
                 ball.updatePosition();          
@@ -187,7 +188,7 @@ void ArkanoidGame::run() {
             // Laser movement
             for (auto& laser : lasers_) {
                 if (laser.isActive()) {
-                    laser.updatePosition(1.0f/ 60.0f);
+                    laser.updatePosition(1.0f/ CST::FPS);
                 }
             }
             // Bonus/capsule update
@@ -200,7 +201,7 @@ void ArkanoidGame::run() {
                     if(gameContext_.ball_.size()<1){
                         lives_--;
                     }
-                    ball.setPosition({400, 300});
+                    ball.setPosition({CST::BALL_SPAWN_X, CST::BALL_RESPAWN_Y});
                 }
             }
             
@@ -243,13 +244,13 @@ void ArkanoidGame::run() {
                     laserView.draw();
                 }
             }
-            al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());
-            al_draw_textf(font_, al_map_rgb(255,255,255), 10, 30, 0, "Lives: %u", lives_);
-            al_draw_textf(font_, al_map_rgb(255,255,255), 20, 20, 0, "Highscore: %u", scoreManager_.getHighscore());
-            al_draw_textf(font_, al_map_rgb(255,255,255), 10, 50, 0, "Level: %zu/%zu", levelManager_->getCurrentLevelIndex() + 1, levelManager_->getTotalLevels());
+            al_draw_textf(font_, COLOR_WHITE, CST::UI_MARGIN_X, CST::UI_SCORE_Y, 0, "Score: %u", scoreManager_.getScore());
+            al_draw_textf(font_, COLOR_WHITE, CST::UI_MARGIN_X, CST::UI_LIVES_Y, 0, "Lives: %u", lives_);
+            al_draw_textf(font_, COLOR_WHITE, CST::UI_HIGHSCORE_X, CST::UI_HIGHSCORE_Y, 0, "Highscore: %u", scoreManager_.getHighscore());
+            al_draw_textf(font_, COLOR_WHITE, CST::UI_MARGIN_X, CST::UI_LEVEL_Y, 0, "Level: %zu/%zu", levelManager_->getCurrentLevelIndex() + 1, levelManager_->getTotalLevels());
             
             // Display level switching shortcuts
-            al_draw_text(font_, al_map_rgb(255,255,255), 10, 70, 0, "Level shortcuts: 1-9,0 | Arrow keys | Home/End");
+            al_draw_text(font_, COLOR_WHITE, 10, 70, 0, "Level shortcuts: 1-9,0 | Arrow keys | Home/End");
             al_flip_display();
         }
     }
@@ -290,7 +291,7 @@ void ArkanoidGame::processEvents() {
     }
     // ... autres événements ...
     else if (ev.type == ALLEGRO_EVENT_TIMER) {
-        updateGame(1.0f / 60.0f); // Mettre à jour la logique
+        updateGame(1.0f / CST::FPS); // Mettre à jour la logique
 
         renderGame();           // Dessiner le jeu
     }
@@ -312,7 +313,7 @@ void ArkanoidGame::updateGame(float deltaTime) {
         lives_--;
         if (lives_ > 0) {
             // Remettre une balle en jeu
-            ball_.push_back(Ball(Point(400, 300), 20));
+            ball_.push_back(Ball(Point(CST::BALL_SPAWN_X, CST::BALL_SPAWN_Y), CST::BALL_RADIUS));
         }
     }
     
@@ -355,8 +356,8 @@ void ArkanoidGame::renderGame() {
                     laserView.draw();
                 }
             }
-    al_draw_textf(font_, al_map_rgb(255,255,255), 10, 10, 0, "Score: %u", scoreManager_.getScore());
-    al_draw_textf(font_, al_map_rgb(255,255,255), 10, 30, 0, "Lives: %u", lives_);
+    al_draw_textf(font_, COLOR_WHITE, CST::UI_MARGIN_X, CST::UI_SCORE_Y, 0, "Score: %u", scoreManager_.getScore());
+    al_draw_textf(font_, COLOR_WHITE, CST::UI_MARGIN_X, CST::UI_LIVES_Y, 0, "Lives: %u", lives_);
     
     // Display level switching shortcuts
 
@@ -433,12 +434,12 @@ void ArkanoidGame::loadNextLevel() {
             
             // Réinitialiser la position de la balle
             for (auto& ball : ball_) {
-                ball.setPosition({400, 300});
+                ball.setPosition({CST::BALL_SPAWN_X, CST::BALL_RESPAWN_Y});
             }
             
             // Afficher un message de transition
             al_clear_to_color(al_map_rgb(0, 0, 0));
-            al_draw_textf(font_, al_map_rgb(255,255,255), CST::SCREEN_WIDTH/2, CST::SCREEN_HEIGHT/2 - 20, ALLEGRO_ALIGN_CENTER, "Niveau %zu!", levelManager_->getCurrentLevelIndex() + 1);
+            al_draw_textf(font_, COLOR_WHITE, CST::SCREEN_WIDTH/2, CST::SCREEN_HEIGHT/2 - 20, ALLEGRO_ALIGN_CENTER, "Niveau %zu!", levelManager_->getCurrentLevelIndex() + 1);
             al_flip_display();
             al_rest(2.0);
         }
@@ -446,7 +447,7 @@ void ArkanoidGame::loadNextLevel() {
         // Plus de niveaux disponibles - victoire finale
         running_ = false;
         al_clear_to_color(al_map_rgb(0, 0, 0));
-        al_draw_text(font_, al_map_rgb(255,255,255), CST::SCREEN_WIDTH/2, CST::SCREEN_HEIGHT/2, ALLEGRO_ALIGN_CENTER, "FELICITATIONS! Vous avez terminé tous les niveaux!");
+        al_draw_text(font_, COLOR_WHITE, CST::SCREEN_WIDTH/2, CST::SCREEN_HEIGHT/2, ALLEGRO_ALIGN_CENTER, "FELICITATIONS! Vous avez terminé tous les niveaux!");
         al_flip_display();
         al_rest(3.0);
     }
@@ -496,12 +497,12 @@ void ArkanoidGame::switchToLevel(size_t levelIndex) {
             
             // Réinitialiser la position de la balle
             for (auto& ball : ball_) {
-                ball.setPosition({400, 300});
+                ball.setPosition({CST::BALL_SPAWN_X, CST::BALL_RESPAWN_Y});
             }
             
             // Afficher un message de transition
             al_clear_to_color(al_map_rgb(0, 0, 0));
-            al_draw_textf(font_, al_map_rgb(255,255,255), CST::SCREEN_WIDTH/2, CST::SCREEN_HEIGHT/2 - 20, ALLEGRO_ALIGN_CENTER, "Niveau %zu!", levelManager_->getCurrentLevelIndex() + 1);
+            al_draw_textf(font_, COLOR_WHITE, CST::SCREEN_WIDTH/2, CST::SCREEN_HEIGHT/2 - 20, ALLEGRO_ALIGN_CENTER, "Niveau %zu!", levelManager_->getCurrentLevelIndex() + 1);
             al_flip_display();
             al_rest(1.0);
         }
@@ -519,14 +520,14 @@ void ArkanoidGame::resetGameState() {
     scoreManager_.resetScore();
 
     // Reset paddle
-    paddle_.setPosition({CST::SCREEN_WIDTH / 2, 550});
-    paddle_.setSize(Size(100, 20));
-    paddle_.setSpeed(Speed(300.f, 0.0f));
+    paddle_.setPosition({CST::SCREEN_WIDTH / 2, CST::PADDLE_SPAWN_Y});
+    paddle_.setSize(Size(CST::PADDLE_SIZE_X, CST::PADDLE_SIZE_Y));
+    paddle_.setSpeed(Speed(CST::PADDLE_SPEED, 0.0f));
     paddle_.setLaserMode(false);
 
     // Reset balls
     ball_.clear();
-    ball_.push_back(Ball(Point(400, 300), 20));
+    ball_.push_back(Ball(Point(CST::BALL_SPAWN_X, CST::BALL_RESPAWN_Y), CST::BALL_RADIUS));
 
     // Clear projectiles and capsules
     lasers_.clear();

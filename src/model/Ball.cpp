@@ -12,7 +12,7 @@
 
 
 Ball::Ball(Point position, float radius) 
-        : Object(position, Size(radius, radius), Speed(3.0f, 3.0f)), radius_(radius), isCaught_(false) {}
+        : Object(position, Size(radius, radius), Speed(CST::BALL_SPEED_DEFAULT, CST::BALL_SPEED_DEFAULT)), radius_(radius), isCaught_(false) {}
 
 Ball::Ball(Point position, Speed speed, float radius)
     : Object(position, Size(radius, radius), speed), radius_(radius), isCaught_(false) {}
@@ -71,8 +71,8 @@ void Ball::setRadius(float new_radius) {
 }
 
 void Ball::resetBallPosition(){
-    setPosition(CST::SCREEN_WIDTH / 2, 300.0f);
-    setSpeed(3.0f,3.0f);
+    setPosition(CST::SCREEN_WIDTH / 2, CST::BALL_RESPAWN_Y);
+    setSpeed(CST::BALL_SPEED_DEFAULT , CST::BALL_SPEED_DEFAULT);
 }
 
 /**
@@ -94,7 +94,7 @@ void Ball::catchBall(const Paddle& paddle) {
 void Ball::launchBall() {
     isCaught_ = false;
     // Set a normal launch speed when the ball is released
-    setSpeed(3.0f, -3.0f); // Normal speed, launching upward
+    setSpeed(CST::BALL_SPEED_DEFAULT, -CST::BALL_SPEED_DEFAULT); // Normal speed, launching upward
 }
 
 /**
